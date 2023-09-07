@@ -16,8 +16,20 @@ model Artist {
 }
 
 model Album {
-  id       String @id @default(cuid())
+  id       String  @id @default(cuid())
   name     String
-  artist   Artist @relation(fields: [artistId], references: [id])
+  artist   Artist  @relation(fields: [artistId], references: [id])
   artistId String
+  tracks   Track[]
+}
+
+model Track {
+  id          String  @id @default(cuid())
+  album       Album   @relation(fields: [albumId], references: [id])
+  albumId     String
+  durationMs  Int
+  explicit    Boolean
+  name        String
+  popularity  Int     @default(0)
+  trackNumber Int
 }
