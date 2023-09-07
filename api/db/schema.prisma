@@ -9,7 +9,15 @@ generator client {
 }
 
 model Artist {
-  id            String @id @default(cuid())
+  id            String  @id @default(cuid())
   name          String
-  followerCount Int    @default(0)
+  followerCount Int     @default(0)
+  albums        Album[]
+}
+
+model Album {
+  id       String @id @default(cuid())
+  name     String
+  artist   Artist @relation(fields: [artistId], references: [id])
+  artistId String
 }
