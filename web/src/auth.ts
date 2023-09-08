@@ -18,7 +18,7 @@ export interface AuthClient {
   logout: () => Promise<boolean>
   signup: () => never
   getToken: () => Promise<string | null>
-  getUserMetadata: () => User | null
+  getUserMetadata: () => Promise<string | null>
 }
 
 interface User {
@@ -90,10 +90,7 @@ const client: AuthClient = {
 
     return cachedToken
   },
-  getUserMetadata: () => ({
-    id: 'unique-user-id',
-    displayName: 'name',
-  }),
+  getUserMetadata: () => client.getToken(),
 }
 
 function createAuth() {
