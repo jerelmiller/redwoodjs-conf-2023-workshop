@@ -1,7 +1,6 @@
 import fs from 'node:fs'
 import path from 'node:path'
 import toml from 'toml'
-import CryptoJS from 'crypto-js'
 import type { APIGatewayEvent, Context } from 'aws-lambda'
 
 import { logger } from 'src/lib/logger'

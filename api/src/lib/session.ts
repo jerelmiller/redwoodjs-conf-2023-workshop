@@ -1,5 +1,6 @@
 import type { APIGatewayEvent } from 'aws-lambda'
 import { parseCookieAttributes } from './cookie'
+import CryptoJS from 'crypto-js'
 
 export interface SessionData {
   id: string
