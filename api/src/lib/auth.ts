@@ -15,7 +15,7 @@ type User = {
 }
 
 export const authDecoder: Decoder = async (
-  _: string,
+  authHeaderValue: string,
   type: string,
   req: { event: APIGatewayProxyEvent }
 ) => {
@@ -23,7 +23,17 @@ export const authDecoder: Decoder = async (
     return null
   }
 
-  return getSession(extractCookie(req.event)) as Decoded
+  const session = getSession(extractCookie(req.event))
+
+  if (session === null) {
+    return null
+  }
+
+  if (session.id !== authHeaderValue) {
+    throw new Error('Authorization header does not match decrypted user ID')
+  }
+
+  return session as unknown as Decoded
 }
 
 /**
