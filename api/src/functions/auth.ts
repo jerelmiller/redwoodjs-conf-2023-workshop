@@ -28,16 +28,76 @@ export const handler = async (event: APIGatewayEvent, _context: Context) => {
 
   switch (getMethod(event, body)) {
     case 'login':
-      return login()
+      return handlers.login()
     case 'logout':
-      return logout()
+      return handlers.logout()
     case 'getToken':
-      return getToken(event)
+      return handlers.getToken(event)
     default:
       return {
         statusCode: 404,
       }
   }
+}
+
+const handlers = {
+  login: async () => {
+    const config = toml.parse(
+      fs.readFileSync(
+        path.resolve(__dirname, '../../../workshop.config.toml'),
+        'utf-8'
+      )
+    )
+
+    const user = await db.user.findFirst({
+      where: { displayName: config.user.displayName },
+    })
+
+    if (!user) {
+      throw new Error('User not found')
+    }
+
+    const expiresAt = new Date()
+    expiresAt.setSeconds(expiresAt.getSeconds() + EXPIRES)
+
+    return {
+      statusCode: 200,
+      headers: {
+        'Content-Type': 'application/json',
+        'set-cookie': createSessionCookie({
+          data: { id: user.id },
+          expires: expiresAt.toUTCString(),
+        }),
+      },
+      body: JSON.stringify(user),
+    }
+  },
+  logout: () => {
+    return {
+      statusCode: 200,
+      headers: {
+        'set-cookie': createLogoutCookie(),
+      },
+    }
+  },
+  getToken: (event: APIGatewayEvent) => {
+    const cookie = extractCookie(event)
+    const session = getSession(cookie)
+
+    if (!session) {
+      return {
+        statusCode: 200,
+        headers: {
+          'set-cookie': createLogoutCookie(),
+        },
+      }
+    }
+
+    return {
+      statusCode: 200,
+      body: session.id,
+    }
+  },
 }
 
 const getMethod = (
@@ -51,66 +111,6 @@ const getMethod = (
   }
 
   return body.method
-}
-
-const getToken = (event: APIGatewayEvent) => {
-  const cookie = extractCookie(event)
-  const session = getSession(cookie)
-
-  if (!session) {
-    return {
-      statusCode: 200,
-      headers: {
-        'set-cookie': createLogoutCookie(),
-      },
-    }
-  }
-
-  return {
-    statusCode: 200,
-    body: session.id,
-  }
-}
-
-const logout = () => {
-  return {
-    statusCode: 200,
-    headers: {
-      'set-cookie': createLogoutCookie(),
-    },
-  }
-}
-
-const login = async () => {
-  const config = toml.parse(
-    fs.readFileSync(
-      path.resolve(__dirname, '../../../workshop.config.toml'),
-      'utf-8'
-    )
-  )
-
-  const user = await db.user.findFirst({
-    where: { displayName: config.user.displayName },
-  })
-
-  if (!user) {
-    throw new Error('User not found')
-  }
-
-  const expiresAt = new Date()
-  expiresAt.setSeconds(expiresAt.getSeconds() + EXPIRES)
-
-  return {
-    statusCode: 200,
-    headers: {
-      'Content-Type': 'application/json',
-      'set-cookie': createSessionCookie({
-        data: { id: user.id },
-        expires: expiresAt.toUTCString(),
-      }),
-    },
-    body: JSON.stringify(user),
-  }
 }
 
 const parseBody = (event: APIGatewayEvent): Record<string, unknown> => {
