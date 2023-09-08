@@ -7,5 +7,5 @@ export const me: QueryResolvers['me'] = () => {
 }
 
 export const CurrentUser: CurrentUserResolvers = {
-  profile: () => null,
+  profile: () => db.user.findFirst(),
 }
