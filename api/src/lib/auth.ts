@@ -1,5 +1,8 @@
-import { parseJWT, Decoded } from '@redwoodjs/api'
+import { parseJWT, Decoded, Decoder } from '@redwoodjs/api'
+import type { APIGatewayProxyEvent } from 'aws-lambda'
 import { AuthenticationError, ForbiddenError } from '@redwoodjs/graphql-server'
+import { extractCookie } from './cookie'
+import { getSession } from './session'
 
 /**
  * Represents the user attributes returned by the decoding the
@@ -7,10 +10,16 @@ import { AuthenticationError, ForbiddenError } from '@redwoodjs/graphql-server'
  */
 type RedwoodUser = Record<string, unknown> & { roles?: string[] }
 
-export const authDecoder = (authHeaderValue: string, type: string) => {
+export const authDecoder: Decoder = async (
+  _: string,
+  type: string,
+  req: { event: APIGatewayProxyEvent }
+) => {
   if (type !== 'custom-auth') {
     return null
   }
+
+  return getSession(extractCookie(req.event)) as Decoded
 }
 
 /**
@@ -41,6 +50,8 @@ export const getCurrentUser = async (
   if (!decoded) {
     return null
   }
+
+  console.log({ decoded })
 
   const { roles } = parseJWT({ decoded })
 
