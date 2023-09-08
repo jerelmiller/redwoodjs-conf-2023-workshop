@@ -4373,6 +4373,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@redwoodjs/auth-custom-setup@npm:6.1.1":
+  version: 6.1.1
+  resolution: "@redwoodjs/auth-custom-setup@npm:6.1.1"
+  dependencies:
+    "@babel/runtime-corejs3": 7.22.10
+    "@redwoodjs/cli-helpers": 6.1.1
+    core-js: 3.32.0
+  checksum: 1e5742a6bd5357a6e472fe2cd83fc292b7cbdfcd89a66a903a8b412cece77d8e14db2fb59e6c60fe5f8db983b1a7fbfd825ae55cb22541d8e36b1b4cac56c9fc
+  languageName: node
+  linkType: hard
+
 "@redwoodjs/auth@npm:6.1.1":
   version: 6.1.1
   resolution: "@redwoodjs/auth@npm:6.1.1"
@@ -6731,6 +6742,7 @@ __metadata:
   dependencies:
     "@redwoodjs/api": 6.1.1
     "@redwoodjs/graphql-server": 6.1.1
+    crypto-js: ^4.1.1
   languageName: unknown
   linkType: soft
 
@@ -9027,7 +9039,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"crypto-js@npm:4.1.1":
+"crypto-js@npm:4.1.1, crypto-js@npm:^4.1.1":
   version: 4.1.1
   resolution: "crypto-js@npm:4.1.1"
   checksum: 50cc66a35f2738171d9a6d80c85ba7d00cb6440b756db035ba9ccd03032c0a803029a62969ecd4c844106c980af87687c64b204dd967989379c4f354fb482d37
@@ -18145,6 +18157,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "root-workspace-0b6124@workspace:."
   dependencies:
+    "@redwoodjs/auth-custom-setup": 6.1.1
     "@redwoodjs/core": 6.1.1
     prettier-plugin-tailwindcss: 0.4.1
     toml: ^3.0.0
@@ -20769,6 +20782,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "web@workspace:web"
   dependencies:
+    "@redwoodjs/auth": 6.1.1
     "@redwoodjs/forms": 6.1.1
     "@redwoodjs/router": 6.1.1
     "@redwoodjs/vite": 6.1.1
