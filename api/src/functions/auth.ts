@@ -6,16 +6,11 @@ import type { APIGatewayEvent, Context } from 'aws-lambda'
 
 import { logger } from 'src/lib/logger'
 import { db } from 'src/lib/db'
+import { encrypt, getSession } from 'src/lib/session'
+import { extractCookie, getCookieAttributes } from 'src/lib/cookie'
 
 interface SessionData {
   id: string
-}
-
-const COOKIE_OPTS = {
-  HttpOnly: true,
-  Path: '/',
-  SameSite: 'Strict',
-  Secure: process.env.NODE_ENV !== 'development',
 }
 
 // How long a user will remain logged in, in seconds
@@ -125,35 +120,6 @@ const parseBody = (event: APIGatewayEvent): Record<string, unknown> => {
   )
 }
 
-const getCookieAttributes = ({
-  expires = 'now',
-}: {
-  expires?: 'now' | string
-}) => {
-  const attributes = Object.entries(COOKIE_OPTS)
-    .map(([key, value]) => {
-      if (value === true) {
-        return key
-      }
-
-      if (value === false) {
-        return null
-      }
-
-      return `${key}=${value}`
-    })
-    .filter(Boolean)
-
-  const expiresAt =
-    expires === 'now'
-      ? new Date('1970-01-01T00:00:00.000+00:00').toUTCString()
-      : expires
-
-  attributes.push(`Expires=${expiresAt}`)
-
-  return attributes
-}
-
 const createSessionCookie = ({
   data,
   expires = 'now',
@@ -161,54 +127,13 @@ const createSessionCookie = ({
   data: SessionData
   expires?: 'now' | string
 }) => {
-  const encrypted = encrypt(JSON.stringify(data))
-
-  return [`session=${encrypted}`, ...getCookieAttributes({ expires })].join(';')
+  return [`session=${encrypt(data)}`, ...getCookieAttributes({ expires })].join(
+    ';'
+  )
 }
 
 const createLogoutCookie = () => {
   return [`session=`, ...getCookieAttributes({ expires: 'now' })].join(';')
-}
-
-const encrypt = (data: string) => {
-  return CryptoJS.AES.encrypt(data, process.env.SESSION_SECRET!)
-}
-
-const extractCookie = (event: APIGatewayEvent) => {
-  return event.headers.cookie || event.headers.Cookie
-}
-
-const getSession = (cookie: string | undefined): SessionData | null => {
-  if (cookie == null) {
-    return null
-  }
-
-  const attributes = parseCookieAttributes(cookie)
-
-  return attributes.session ? decrypt(attributes.session) : null
-}
-
-const decrypt = (text: string): SessionData => {
-  try {
-    const data = CryptoJS.AES.decrypt(
-      text,
-      process.env.SESSION_SECRET!
-    ).toString(CryptoJS.enc.Utf8)
-
-    return JSON.parse(data)
-  } catch (e) {
-    throw new Error('Cannot decrypt session')
-  }
-}
-
-const parseCookieAttributes = (cookie: string): Record<string, any> => {
-  return Object.fromEntries(
-    cookie.split(';').map((entry) => {
-      const [key, value] = entry.split('=')
-
-      return [key, value ?? true]
-    })
-  )
 }
 
 const getCurrentUser = async (session: SessionData) => {
