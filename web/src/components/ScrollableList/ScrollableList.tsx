@@ -1,19 +1,33 @@
-import { ReactNode, useRef } from 'react'
+import { ComponentPropsWithoutRef, ElementType, ReactNode, useRef } from 'react'
 import cx from 'classnames'
 
-interface ScrollableListProps {
+interface ScrollableListProps<T extends ElementType> {
+  as?: T
   children?: ReactNode
   className?: string
-  onScrollToEnd?: () => void
 }
 
-const ScrollableList = ({ children, className }: ScrollableListProps) => {
-  const ref = useRef<HTMLDivElement>()
+const ScrollableList = <TElement extends ElementType = 'div'>({
+  as,
+  children,
+  className,
+  ...props
+}: ScrollableListProps<TElement> &
+  Omit<
+    ComponentPropsWithoutRef<TElement>,
+    keyof ScrollableListProps<TElement>
+  >) => {
+  const ref = useRef(null)
+  const Component = as || 'div'
 
   return (
-    <div ref={ref} className={cx('overflow-y-auto', className)}>
+    <Component
+      {...props}
+      ref={ref}
+      className={cx('overflow-y-auto', className)}
+    >
       {children}
-    </div>
+    </Component>
   )
 }
 
