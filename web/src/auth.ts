@@ -1,12 +1,23 @@
 import { createAuthentication } from '@redwoodjs/auth'
 
+const TOKEN_CACHE_TIME = 5000
+
+let getTokenPromise: Promise<string | null> | null = null
+let lastCheckedAt: Date = new Date('1970-01-01T00:00:00')
+let cachedToken: string | null = null
+
+const isTokenCacheExpired = () => {
+  const now = new Date()
+  return now.getTime() - lastCheckedAt.getTime() > TOKEN_CACHE_TIME
+}
+
 // If you're integrating with an auth service provider you should delete this interface.
 // Instead you should import the type from their auth client sdk.
 export interface AuthClient {
   login: () => Promise<User>
   logout: () => Promise<boolean>
   signup: () => never
-  getToken: () => Promise<string>
+  getToken: () => Promise<string | null>
   getUserMetadata: () => User | null
 }
 
@@ -57,11 +68,27 @@ const client: AuthClient = {
     return true
   },
   getToken: async () => {
-    const res = await fetch(`${getAuthUrl()}?method=getToken`, {
-      credentials: 'same-origin',
-    })
+    if (getTokenPromise) {
+      return getTokenPromise
+    }
 
-    return res.text()
+    if (isTokenCacheExpired()) {
+      getTokenPromise = fetch(`${getAuthUrl()}?method=getToken`, {
+        credentials: 'same-origin',
+      })
+        .then((res) => res.text())
+        .then((token) => {
+          lastCheckedAt = new Date()
+          cachedToken = token.length === 0 ? null : token
+
+          return cachedToken
+        })
+        .finally(() => {
+          getTokenPromise = null
+        })
+    }
+
+    return cachedToken
   },
   getUserMetadata: () => ({
     id: 'unique-user-id',
