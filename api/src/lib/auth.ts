@@ -3,12 +3,16 @@ import type { APIGatewayProxyEvent } from 'aws-lambda'
 import { AuthenticationError, ForbiddenError } from '@redwoodjs/graphql-server'
 import { extractCookie } from './cookie'
 import { getSession } from './session'
+import { db } from './db'
 
 /**
  * Represents the user attributes returned by the decoding the
  * Authentication provider's JWT together with an optional list of roles.
  */
-type RedwoodUser = Record<string, unknown> & { roles?: string[] }
+type User = {
+  id: string
+  displayName: string
+}
 
 export const authDecoder: Decoder = async (
   _: string,
@@ -35,7 +39,7 @@ export const authDecoder: Decoder = async (
  *
  * @see https://github.com/redwoodjs/redwood/tree/main/packages/auth for examples
  *
- * @param decoded - The decoded access token containing user info and JWT
+ * @param session - The decoded access token containing user info and JWT
  *   claims like `sub`. Note, this could be null.
  * @param { token, SupportedAuthTypes type } - The access token itself as well
  *   as the auth provider type
@@ -45,21 +49,13 @@ export const authDecoder: Decoder = async (
  * @returns RedwoodUser
  */
 export const getCurrentUser = async (
-  decoded: Decoded
-): Promise<RedwoodUser | null> => {
-  if (!decoded) {
+  session: Decoded
+): Promise<User | null> => {
+  if (!session) {
     return null
   }
 
-  console.log({ decoded })
-
-  const { roles } = parseJWT({ decoded })
-
-  if (roles) {
-    return { ...decoded, roles }
-  }
-
-  return { ...decoded }
+  return db.user.findUnique({ where: { id: session.id as string } })
 }
 
 /**
