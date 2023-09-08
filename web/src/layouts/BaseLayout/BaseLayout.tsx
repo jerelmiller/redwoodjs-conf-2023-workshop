@@ -3,6 +3,7 @@ import cx from 'classnames'
 import { Home, Library, Scroll, Search } from 'lucide-react'
 import { useRef } from 'react'
 import ApolloLogo from 'src/components/ApolloLogo'
+import CurrentUserMenuCell from 'src/components/CurrentUserMenuCell'
 import ScrollableList from 'src/components/ScrollableList'
 import SidebarNavLink from 'src/components/SidebarNavLink'
 import SidebarSection from 'src/components/SidebarSection'
@@ -45,7 +46,16 @@ const BaseLayout = ({ children }: BaseLayoutProps) => {
           </SidebarSection>
         </nav>
       </aside>
-      {children}
+      <main className="relative flex h-full flex-col overflow-hidden overflow-y-auto rounded-md bg-black-base text-primary [--main-content--padding:2rem] [--main-header--height:80px] [grid-area:main-view]">
+        <ScrollableList as="article" className="flex flex-1 flex-col">
+          <header className="pointer-events-none absolute top-0 z-10 flex w-full flex-shrink-0 items-center justify-end bg-transparent px-[var(--main-content--padding)] pt-[var(--main-content--padding)] text-primary">
+            <div className="pointer-events-auto flex items-center gap-4">
+              <CurrentUserMenuCell />
+            </div>
+          </header>
+          {children}
+        </ScrollableList>
+      </main>
     </div>
   )
 }
