@@ -10,7 +10,6 @@ export const QUERY = gql`
       profile {
         id
         displayName
-        ...Avatar_profile
       }
     }
   }
