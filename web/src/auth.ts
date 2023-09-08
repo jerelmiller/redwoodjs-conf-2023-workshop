@@ -78,8 +78,11 @@ const client: AuthClient = {
       })
         .then((res) => res.text())
         .then((token) => {
-          lastCheckedAt = new Date()
           cachedToken = token.length === 0 ? null : token
+
+          if (cachedToken) {
+            lastCheckedAt = new Date()
+          }
 
           return cachedToken
         })
