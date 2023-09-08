@@ -1,11 +1,9 @@
 import type { QueryResolvers, CurrentUserResolvers } from 'types/graphql'
 
-import { db } from 'src/lib/db'
-
 export const me: QueryResolvers['me'] = () => {
-  return {}
+  return context.currentUser ? {} : null
 }
 
 export const CurrentUser: CurrentUserResolvers = {
-  profile: () => db.user.findFirst(),
+  profile: () => context.currentUser ?? null,
 }
