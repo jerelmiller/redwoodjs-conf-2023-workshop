@@ -36,5 +36,5 @@ model Track {
 
 model User {
   id          String @id @default(cuid())
-  displayName String
+  displayName String @unique
 }
