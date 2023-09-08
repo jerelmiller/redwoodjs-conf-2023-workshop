@@ -5270,6 +5270,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/crypto-js@npm:^4.1.2":
+  version: 4.1.2
+  resolution: "@types/crypto-js@npm:4.1.2"
+  checksum: c0c75eed120d71ab39add634e70dca787c5f948cc0610dc2d2e702516743a4c6ab1c4b786d896f2a32792476c9f9bb2e5348fbb3cf5e2b32cc175cb7bfc5bafa
+  languageName: node
+  linkType: hard
+
 "@types/debug@npm:4.1.8, @types/debug@npm:^4.1.7":
   version: 4.1.8
   resolution: "@types/debug@npm:4.1.8"
@@ -6742,6 +6749,7 @@ __metadata:
   dependencies:
     "@redwoodjs/api": 6.1.1
     "@redwoodjs/graphql-server": 6.1.1
+    "@types/crypto-js": ^4.1.2
     crypto-js: ^4.1.1
   languageName: unknown
   linkType: soft

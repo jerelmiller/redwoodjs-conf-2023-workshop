@@ -7,6 +7,10 @@ import type { APIGatewayEvent, Context } from 'aws-lambda'
 import { logger } from 'src/lib/logger'
 import { db } from 'src/lib/db'
 
+interface SessionData {
+  id: string
+}
+
 const COOKIE_OPTS = {
   HttpOnly: true,
   Path: '/',
@@ -25,20 +29,14 @@ export const handler = async (event: APIGatewayEvent, _context: Context) => {
   switch (getMethod(event, body)) {
     case 'login':
       return login()
+    case 'logout':
+      return logout()
+    case 'getToken':
+      return getToken(event)
     default:
       return {
         statusCode: 404,
       }
-  }
-
-  return {
-    statusCode: 200,
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      data: 'auth function',
-    }),
   }
 }
 
@@ -53,6 +51,34 @@ const getMethod = (
   }
 
   return body.method
+}
+
+const getToken = (event: APIGatewayEvent) => {
+  const cookie = extractCookie(event)
+  const session = getSession(cookie)
+
+  if (!session) {
+    return {
+      statusCode: 200,
+      headers: {
+        'set-cookie': createLogoutCookie(),
+      },
+    }
+  }
+
+  return {
+    statusCode: 200,
+    body: session.id,
+  }
+}
+
+const logout = () => {
+  return {
+    statusCode: 200,
+    headers: {
+      'set-cookie': createLogoutCookie(),
+    },
+  }
 }
 
 const login = async () => {
@@ -99,16 +125,11 @@ const parseBody = (event: APIGatewayEvent): Record<string, unknown> => {
   )
 }
 
-const createSessionCookie = ({
-  data,
+const getCookieAttributes = ({
   expires = 'now',
 }: {
-  data: Record<string, any>
   expires?: 'now' | string
 }) => {
-  const session = JSON.stringify(data)
-  const encrypted = encrypt(session)
-
   const attributes = Object.entries(COOKIE_OPTS)
     .map(([key, value]) => {
       if (value === true) {
@@ -130,9 +151,66 @@ const createSessionCookie = ({
 
   attributes.push(`Expires=${expiresAt}`)
 
-  return [`session=${encrypted}`, ...attributes].join(';')
+  return attributes
+}
+
+const createSessionCookie = ({
+  data,
+  expires = 'now',
+}: {
+  data: SessionData
+  expires?: 'now' | string
+}) => {
+  const encrypted = encrypt(JSON.stringify(data))
+
+  return [`session=${encrypted}`, ...getCookieAttributes({ expires })].join(';')
+}
+
+const createLogoutCookie = () => {
+  return [`session=`, ...getCookieAttributes({ expires: 'now' })].join(';')
 }
 
 const encrypt = (data: string) => {
-  return CryptoJS.AES.encrypt(data, process.env.SESSION_SECRET)
+  return CryptoJS.AES.encrypt(data, process.env.SESSION_SECRET!)
+}
+
+const extractCookie = (event: APIGatewayEvent) => {
+  return event.headers.cookie || event.headers.Cookie
+}
+
+const getSession = (cookie: string | undefined): SessionData | null => {
+  if (cookie == null) {
+    return null
+  }
+
+  const attributes = parseCookieAttributes(cookie)
+
+  return attributes.session ? decrypt(attributes.session) : null
+}
+
+const decrypt = (text: string): SessionData => {
+  try {
+    const data = CryptoJS.AES.decrypt(
+      text,
+      process.env.SESSION_SECRET!
+    ).toString(CryptoJS.enc.Utf8)
+
+    return JSON.parse(data)
+  } catch (e) {
+    throw new Error('Cannot decrypt session')
+  }
+}
+
+const parseCookieAttributes = (cookie: string): Record<string, any> => {
+  return Object.fromEntries(
+    cookie.split(';').map((entry) => {
+      const [key, value] = entry.split('=')
+
+      return [key, value ?? true]
+    })
+  )
+}
+
+const getCurrentUser = async (session: SessionData) => {
+  return db.user.findUnique({ where: { id: session.id } })
 }

@@ -8,11 +8,14 @@
 // 'src/pages/Admin/BooksPage/BooksPage.js' -> AdminBooksPage
 
 import { Router, Route, Set } from '@redwoodjs/router'
+
 import BaseLayout from 'src/layouts/BaseLayout'
+
+import { useAuth } from './auth'
 
 const Routes = () => {
   return (
-    <Router>
+    <Router useAuth={useAuth}>
       <Set wrap={BaseLayout}>
         <Route path="/" page={HomePage} name="home" />
       </Set>
