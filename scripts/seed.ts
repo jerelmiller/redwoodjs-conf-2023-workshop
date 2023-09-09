@@ -104,7 +104,6 @@ const savePlaylist = async (playlist: PlaylistWithRefs) => {
   const tracks: Prisma.PlaylistTrackCreateOrConnectWithoutPlaylistInput[] = []
 
   for (const playlistTrack of playlist.tracks.items) {
-    console.log(playlistTrack)
     const track = await saveTrack(
       getRecordFromRef<TrackWithRefs>(playlistTrack.track)
     )
