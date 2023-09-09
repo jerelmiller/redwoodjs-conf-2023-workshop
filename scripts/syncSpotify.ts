@@ -2,13 +2,11 @@
 import fs from 'node:fs'
 import path from 'node:path'
 
-import { db } from 'api/src/lib/db'
 import toml from 'toml'
 
 import type {
   Artist,
   Album,
-  Image,
   Playlist,
   Track,
   SpotifyRecord,
@@ -109,10 +107,6 @@ const getWorkshopConfig = (): WorkshopConfig => {
   return toml.parse(
     fs.readFileSync(path.resolve(__dirname, '../workshop.config.toml'), 'utf8')
   )
-}
-
-const getRecordFromRef = <T>(ref: Reference) => {
-  return refs[ref.__ref] as T
 }
 
 const authenticate = async (): Promise<AccessTokenResponse> => {
@@ -267,186 +261,6 @@ const writeStore = async () => {
     path.resolve(__dirname, './spotify.json'),
     JSON.stringify(refs)
   )
-
-  for (const record of Object.values(refs)) {
-    switch (record.type) {
-      case 'artist':
-        await saveArtist(record)
-        break
-      case 'album':
-        await saveAlbum(record)
-        break
-      case 'track':
-        await saveTrack(record)
-        break
-      case 'playlist':
-        await savePlaylist(record)
-    }
-  }
-}
-
-const saveAlbum = async (album: AlbumWithRefs) => {
-  const artists = await Promise.all(
-    album.artists.map(async (ref) => {
-      const artist = await saveArtist(getRecordFromRef<Artist>(ref))
-
-      return { id: artist.id }
-    })
-  )
-
-  return db.album.upsert({
-    where: { id: album.id },
-    create: {
-      id: album.id,
-      name: album.name,
-      artists: {
-        connect: artists,
-      },
-    },
-    update: {
-      name: album.name,
-      artists: {
-        connect: artists,
-      },
-    },
-  })
-}
-
-const saveArtist = async (artist: Artist) => {
-  const images = await Promise.all(
-    artist.images.map(async (img) => {
-      const image = await saveImage(img)
-
-      return {
-        artistId_imageUrl: {
-          artistId: artist.id,
-          imageUrl: image.url,
-        },
-      }
-    })
-  )
-
-  return db.artist.upsert({
-    where: {
-      id: artist.id,
-    },
-    create: {
-      id: artist.id,
-      name: artist.name,
-      followerCount: artist.followers.total,
-      images: {
-        connect: images,
-      },
-    },
-    update: {
-      name: artist.name,
-      followerCount: artist.followers.total,
-      images: {
-        connect: images,
-      },
-    },
-  })
-}
-
-const savePlaylist = async (playlist: PlaylistWithRefs) => {
-  const tracks = await Promise.all(
-    playlist.tracks.items.map(async (playlistTrack) => {
-      const track = await saveTrack(
-        getRecordFromRef<TrackWithRefs>(playlistTrack.track)
-      )
-
-      return {
-        where: {
-          playlistId_trackId: { playlistId: playlist.id, trackId: track.id },
-        },
-        create: {
-          addedAt: new Date(playlistTrack.added_at),
-          track: {
-            connect: { id: track.id },
-          },
-        },
-      }
-    })
-  )
-  return db.playlist.upsert({
-    where: { id: playlist.id },
-    create: {
-      id: playlist.id,
-      name: playlist.name,
-      tracks: {
-        connectOrCreate: tracks,
-      },
-    },
-    update: {
-      name: playlist.name,
-      tracks: {
-        connectOrCreate: tracks,
-      },
-    },
-  })
-}
-
-const saveTrack = async (track: TrackWithRefs) => {
-  const album = await saveAlbum(getRecordFromRef<AlbumWithRefs>(track.album))
-  const artists = await Promise.all(
-    track.artists.map(async (ref) => {
-      const artist = await saveArtist(getRecordFromRef<Artist>(ref))
-
-      return { id: artist.id }
-    })
-  )
-
-  return db.track.upsert({
-    where: { id: track.id },
-    create: {
-      id: track.id,
-      durationMs: track.duration_ms,
-      explicit: track.explicit,
-      name: track.name,
-      popularity: track.popularity,
-      trackNumber: track.track_number,
-      album: {
-        connect: {
-          id: album.id,
-        },
-      },
-      artists: {
-        connect: artists,
-      },
-    },
-    update: {
-      durationMs: track.duration_ms,
-      explicit: track.explicit,
-      name: track.name,
-      popularity: track.popularity,
-      trackNumber: track.track_number,
-      album: {
-        connect: {
-          id: album.id,
-        },
-      },
-      artists: {
-        connect: artists,
-      },
-    },
-  })
-}
-
-const saveImage = (image: Image) => {
-  return db.image.upsert({
-    where: {
-      url: image.url,
-    },
-    create: {
-      url: image.url,
-      height: image.height,
-      width: image.width,
-    },
-    update: {
-      height: image.height,
-      width: image.width,
-    },
-  })
 }
 
 export default async () => {
