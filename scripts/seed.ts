@@ -5,10 +5,10 @@ import type { Prisma } from '@prisma/client'
 import { db } from 'api/src/lib/db'
 
 import type {
-  Artist,
   AlbumWithRefs,
   Reference,
   PlaylistWithRefs,
+  Spotify,
   SpotifyRecordWithRefs,
   TrackWithRefs,
 } from './shared/types'
@@ -34,7 +34,7 @@ const saveRecord = async (record: SpotifyRecordWithRefs) => {
   }
 }
 
-const saveArtist = async (artist: Artist) => {
+const saveArtist = async (artist: Spotify.Object.Artist) => {
   const images = artist.images.map((image) => {
     return {
       where: {
@@ -44,7 +44,11 @@ const saveArtist = async (artist: Artist) => {
         image: {
           connectOrCreate: {
             where: { url: image.url },
-            create: image,
+            create: {
+              url: image.url,
+              height: image.height,
+              width: image.width,
+            },
           },
         },
       },
@@ -77,7 +81,9 @@ const saveAlbum = async (album: AlbumWithRefs) => {
   const artists: Prisma.ArtistWhereUniqueInput[] = []
 
   for (const ref of album.artists) {
-    const artist = await saveArtist(getRecordFromRef<Artist>(ref))
+    const artist = await saveArtist(
+      getRecordFromRef<Spotify.Object.Artist>(ref)
+    )
 
     artists.push({ id: artist.id })
   }
@@ -144,7 +150,9 @@ const saveTrack = async (track: TrackWithRefs) => {
   const artists: Prisma.ArtistWhereUniqueInput[] = []
 
   for (const ref of track.artists) {
-    const artist = await saveArtist(getRecordFromRef<Artist>(ref))
+    const artist = await saveArtist(
+      getRecordFromRef<Spotify.Object.Artist>(ref)
+    )
 
     artists.push({ id: artist.id })
   }
