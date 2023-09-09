@@ -18,7 +18,48 @@ interface Reference {
   __ref: string
 }
 
+const queue = new Map<string, Set<string>>()
 const refs: Record<string, SpotifyRecord> = {}
+
+const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
+
+const deepUpdate = (obj: object, value: unknown, path: string) => {
+  let i: number
+  const segments = path.split('.')
+
+  for (i = 0; i < segments.length - 1; i++) {
+    obj = obj[segments[i]]
+  }
+
+  obj[segments[i]] = value
+}
+
+const mapUpdate = <TKey, TValue>(
+  map: Map<TKey, TValue>,
+  key: TKey,
+  updater: (value: TValue) => TValue,
+  defaultValue: TValue
+) => {
+  map.set(key, map.has(key) ? updater(map.get(key)) : defaultValue)
+
+  return map
+}
+
+const addToQueue = (
+  record: SpotifyRecord,
+  options?: { update: SpotifyRecord; withRefAtPath: string[] }
+) => {
+  const pathString = options
+    ? [getStoreKey(options.update), ...options.withRefAtPath].join('.')
+    : null
+
+  mapUpdate(
+    queue,
+    getStoreKey(record),
+    (set) => (path ? set.add(pathString) : set),
+    new Set(pathString ? [pathString] : undefined)
+  )
+}
 
 interface WorkshopConfig {
   user: {
@@ -26,6 +67,7 @@ interface WorkshopConfig {
   }
   spotify: {
     albumIds: string[]
+    trackIds: string[]
   }
 }
 
@@ -78,75 +120,52 @@ const toReference = (record: SpotifyRecord): Reference => {
   return { __ref: getStoreKey(record) }
 }
 
-const getReference = async (
-  record: SpotifyRecord,
-  fetchRecord: (id: string) => Promise<SpotifyRecord>
-) => {
-  const key = getStoreKey(record)
-
-  if (!refs[key]) {
-    // write something immediately in case something tries to get the same record
-    // before the request is finished
-    refs[key] = await fetchRecord(record.id)
-  }
-
-  return toReference(record)
+const getArtist = async (id: string) => {
+  return get<SpotifyRecord>('/artists/:id', { id })
 }
 
-const getRecordById = (
-  type: string,
-  fetchRecord: (id: string) => Promise<SpotifyRecord>,
-  process: (record: SpotifyRecord) => Promise<void> | void = () => {}
-) => {
-  return async (id: string) => {
-    const key = getStoreKey({ type, id })
-
-    if (refs[key]) {
-      return refs[key]
-    }
-
-    return tap(await fetchRecord(id), async (record) => {
-      refs[key] = record
-
-      await process(record)
+const getAlbum = async (id: string) => {
+  return tap(await get<SpotifyRecord>('/albums/:id', { id }), (album) => {
+    album.artists.forEach((artist, idx) => {
+      addToQueue(artist, { update: album, withRefAtPath: ['artists', idx] })
     })
+
+    album.tracks.items.forEach((track, idx) => {
+      addToQueue(track, {
+        update: album,
+        withRefAtPath: ['tracks', 'items', idx],
+      })
+    })
+  })
+}
+
+const getTrack = async (id: string) => {
+  return tap(await get<SpotifyRecord>('/tracks/:id', { id }), (track) => {
+    addToQueue(track.album, { update: track, withRefAtPath: ['album'] })
+
+    track.artists.forEach((artist, idx) => {
+      addToQueue(artist, { update: track, withRefAtPath: ['artists', idx] })
+    })
+  })
+}
+
+const getByStoreKey = (storeKey: string) => {
+  const [type, id] = storeKey.split(':')
+
+  switch (type) {
+    case 'album':
+      return getAlbum(id)
+    case 'artist':
+      return getArtist(id)
+    case 'track':
+      return getTrack(id)
+    default:
+      throw new Error(`Unknown type: ${type}`)
   }
 }
 
-const getArtist = getRecordById('artist', (id: string) =>
-  get('/artists/:id', { id })
-)
-
-const getAlbum = getRecordById(
-  'album',
-  (id: string) => get('/albums/:id', { id }),
-  async (album) => {
-    await Promise.all([
-      ...album.tracks.items.map(async (track, idx) => {
-        album.tracks.items[idx] = await getReference(track, getTrack)
-      }),
-      ...album.artists.map(async (artist, idx) => {
-        album.artists[idx] = await getReference(artist, getArtist)
-      }),
-    ])
-  }
-)
-
-const getTrack = getRecordById(
-  'track',
-  (id: string) => get<SpotifyRecord>('/tracks/:id', { id }),
-  async (track) => {
-    await Promise.all([
-      getReference(track.album, getAlbum).then((ref) => (track.album = ref)),
-      ...track.artists.map(async (artist, idx) => {
-        track.artists[idx] = await getReference(artist, getArtist)
-      }),
-    ])
-  }
-)
-
-async function tap<T>(value: T, fn: (value: T) => Promise<void> | void) {
-  await fn(value)
+async function tap<T>(value: T, fn: (value: T) => void) {
+  fn(value)
   return value
 }
 
@@ -181,6 +200,17 @@ async function get<TData = unknown>(
   return data
 }
 
+const processQueue = async () => {
+  for (const [key, paths] of queue) {
+    console.log('process', key, 'then update', [...paths])
+    refs[key] ||= await getByStoreKey(key)
+
+    paths.forEach((path) => deepUpdate(refs, toReference(refs[key]), path))
+
+    await sleep(100)
+  }
+}
+
 const writeStore = () => {
   fs.writeFileSync(
     path.resolve(__dirname, './spotify.json'),
@@ -193,8 +223,14 @@ export default async () => {
   accessToken = (await authenticate()).access_token
 
   for (const id of config.albumIds) {
-    await getAlbum(id)
+    addToQueue({ type: 'album', id })
   }
+
+  for (const id of config.trackIds) {
+    addToQueue({ type: 'track', id })
+  }
+
+  await processQueue()
 
   writeStore()
 }
