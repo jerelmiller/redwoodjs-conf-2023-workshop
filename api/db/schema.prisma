@@ -34,7 +34,7 @@ model Album {
 }
 
 model Image {
-  url          String        @unique
+  url          String        @id
   height       Int
   width        Int
   artistImages ArtistImage[]
