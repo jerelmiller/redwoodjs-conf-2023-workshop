@@ -202,10 +202,10 @@ async function get<TData = unknown>(
 
 const processQueue = async () => {
   for (const [key, paths] of queue) {
-    console.log('process', key, 'then update', [...paths])
     refs[key] ||= await getByStoreKey(key)
 
     paths.forEach((path) => deepUpdate(refs, toReference(refs[key]), path))
+    queue.delete(key)
 
     await sleep(100)
   }
