@@ -183,8 +183,8 @@ const getTrack = async (id: string) => {
 
 const getPlaylist = async (id: string) => {
   return tap(await get<Playlist>('/playlists/:id', { id }), (playlist) => {
-    playlist.tracks.items.forEach(({ track }, idx) => {
-      addToQueue(track, {
+    playlist.tracks.items.forEach((item, idx) => {
+      addToQueue(item.track, {
         update: playlist,
         withRefAtPath: ['tracks', 'items', String(idx), 'track'],
       })
