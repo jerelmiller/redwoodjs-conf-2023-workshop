@@ -1,9 +1,11 @@
-import { parseJWT, Decoded, Decoder } from '@redwoodjs/api'
 import type { APIGatewayProxyEvent } from 'aws-lambda'
+
+import { Decoded, Decoder } from '@redwoodjs/api'
 import { AuthenticationError, ForbiddenError } from '@redwoodjs/graphql-server'
+
 import { extractCookie } from './cookie'
-import { getSession } from './session'
 import { db } from './db'
+import { getSession } from './session'
 
 /**
  * Represents the user attributes returned by the decoding the
