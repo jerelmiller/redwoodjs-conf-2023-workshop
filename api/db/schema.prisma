@@ -41,28 +41,32 @@ model Image {
 }
 
 model Playlist {
-  id   String @id @default(cuid())
-  name String
+  id     String          @id @default(cuid())
+  name   String
+  tracks PlaylistTrack[]
 }
 
-model PlaylistTracks {
+model PlaylistTrack {
   addedAt    DateTime
+  playlist   Playlist @relation(fields: [playlistId], references: [id])
   playlistId String
+  track      Track    @relation(fields: [trackId], references: [id])
   trackId    String
 
   @@id([playlistId, trackId])
 }
 
 model Track {
-  id          String   @id @default(cuid())
-  album       Album    @relation(fields: [albumId], references: [id])
-  albumId     String
-  artists     Artist[]
-  durationMs  Int
-  explicit    Boolean
-  name        String
-  popularity  Int      @default(0)
-  trackNumber Int
+  id             String          @id @default(cuid())
+  album          Album           @relation(fields: [albumId], references: [id])
+  albumId        String
+  artists        Artist[]
+  durationMs     Int
+  explicit       Boolean
+  name           String
+  popularity     Int             @default(0)
+  trackNumber    Int
+  playlistTracks PlaylistTrack[]
 }
 
 model User {
