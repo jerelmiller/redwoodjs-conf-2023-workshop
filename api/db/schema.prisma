@@ -17,11 +17,10 @@ model Artist {
 }
 
 model Album {
-  id       String  @id @default(cuid())
-  name     String
-  artist   Artist  @relation(fields: [artistId], references: [id])
-  artistId String
-  tracks   Track[]
+  id      String   @id @default(cuid())
+  name    String
+  artists Artist[]
+  tracks  Track[]
 }
 
 model Track {
