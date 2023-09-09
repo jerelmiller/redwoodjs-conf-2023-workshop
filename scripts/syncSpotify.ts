@@ -29,6 +29,11 @@ interface Album {
   }
 }
 
+type AlbumWithRefs = Omit<Album, 'artists' | 'tracks'> & {
+  artists: Reference[]
+  tracks: { items: Reference[] }
+}
+
 interface Image {
   url: string
   height: number
@@ -52,13 +57,14 @@ interface Track {
 }
 
 type SpotifyRecord = Artist | Album | Playlist | Track
+type SpotifyRecordWithRefs = Artist | AlbumWithRefs
 
 interface Reference {
   __ref: string
 }
 
 const queue = new Map<string, Set<string>>()
-const refs: Record<string, SpotifyRecord> = {}
+const refs: Record<string, SpotifyRecordWithRefs> = {}
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
 
@@ -126,6 +132,10 @@ const getWorkshopConfig = (): WorkshopConfig => {
   )
 }
 
+const getRecordFromRef = <T>(ref: Reference) => {
+  return refs[ref.__ref] as T
+}
+
 const authenticate = async (): Promise<AccessTokenResponse> => {
   const credentials = [
     process.env.SPOTIFY_CLIENT_ID,
@@ -153,7 +163,7 @@ const getStoreKey = ({ type, id }: { type: string; id: string }) => {
   return `${type}:${id}`
 }
 
-const toReference = (record: SpotifyRecord): Reference => {
+const toReference = (record: { type: string; id: string }): Reference => {
   if (record.type == null) {
     throw new Error(
       `Record did not have type: \n ${JSON.stringify(record, null, 2)}`
@@ -264,7 +274,7 @@ async function get<TData = unknown>(
 
 const processQueue = async () => {
   for (const [key, paths] of queue) {
-    refs[key] ||= await getByStoreKey(key)
+    refs[key] ||= (await getByStoreKey(key)) as SpotifyRecordWithRefs
 
     paths.forEach((path) => deepUpdate(refs, toReference(refs[key]), path))
     queue.delete(key)
@@ -283,8 +293,39 @@ const writeStore = async () => {
     switch (record.type) {
       case 'artist':
         await saveArtist(record)
+        break
+      case 'album':
+        await saveAlbum(record)
+        break
     }
   }
+}
+
+const saveAlbum = async (album: AlbumWithRefs) => {
+  const artists = await Promise.all(
+    album.artists.map(async (ref) => {
+      const artist = await saveArtist(getRecordFromRef<Artist>(ref))
+
+      return { id: artist.id }
+    })
+  )
+
+  return db.album.upsert({
+    where: { id: album.id },
+    create: {
+      id: album.id,
+      name: album.name,
+      artists: {
+        connect: artists,
+      },
+    },
+    update: {
+      name: album.name,
+      artists: {
+        connect: artists,
+      },
+    },
+  })
 }
 
 const saveArtist = async (artist: Artist) => {
