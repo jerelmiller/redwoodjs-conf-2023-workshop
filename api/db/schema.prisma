@@ -9,11 +9,21 @@ generator client {
 }
 
 model Artist {
-  id            String  @id @default(cuid())
+  id            String        @id @default(cuid())
   name          String
-  followerCount Int     @default(0)
+  followerCount Int           @default(0)
   albums        Album[]
   tracks        Track[]
+  images        ArtistImage[]
+}
+
+model ArtistImage {
+  artist   Artist @relation(fields: [artistId], references: [id])
+  artistId String
+  image    Image  @relation(fields: [imageUrl], references: [url])
+  imageUrl String
+
+  @@id([artistId, imageUrl])
 }
 
 model Album {
@@ -21,6 +31,13 @@ model Album {
   name    String
   artists Artist[]
   tracks  Track[]
+}
+
+model Image {
+  url          String        @unique
+  height       Int
+  width        Int
+  artistImages ArtistImage[]
 }
 
 model Playlist {
