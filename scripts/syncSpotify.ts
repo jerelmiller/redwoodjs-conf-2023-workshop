@@ -5,48 +5,22 @@ import path from 'node:path'
 import { db } from 'api/src/lib/db'
 import toml from 'toml'
 
+import type {
+  Artist,
+  Album,
+  Image,
+  Playlist,
+  Track,
+  SpotifyRecord,
+  Reference,
+} from './shared/types'
+
 const BASE_URI = 'https://api.spotify.com'
 let accessToken!: string
-
-interface Artist {
-  id: string
-  type: 'artist'
-  name: string
-  images: Image[]
-  followers: {
-    href: string | null
-    total: number
-  }
-}
-
-interface Album {
-  id: string
-  type: 'album'
-  artists: Artist[]
-  name: string
-  tracks: {
-    items: Track[]
-  }
-}
 
 type AlbumWithRefs = Omit<Album, 'artists' | 'tracks'> & {
   artists: Reference[]
   tracks: { items: Reference[] }
-}
-
-interface Image {
-  url: string
-  height: number
-  width: number
-}
-
-interface Playlist {
-  id: string
-  type: 'playlist'
-  name: string
-  tracks: {
-    items: Array<{ added_at: string; track: Track }>
-  }
 }
 
 type PlaylistWithRefs = Omit<Playlist, 'tracks'> & {
@@ -57,34 +31,16 @@ type PlaylistWithRefs = Omit<Playlist, 'tracks'> & {
   }
 }
 
-interface Track {
-  id: string
-  type: 'track'
-  disc_number: number
-  duration_ms: number
-  explicit: boolean
-  name: string
-  popularity: number
-  track_number: number
-  album: Album
-  artists: Artist[]
-}
-
 type TrackWithRefs = Omit<Track, 'album' | 'artists'> & {
   album: Reference
   artists: Reference[]
 }
 
-type SpotifyRecord = Artist | Album | Playlist | Track
 type SpotifyRecordWithRefs =
   | Artist
   | AlbumWithRefs
   | PlaylistWithRefs
   | TrackWithRefs
-
-interface Reference {
-  __ref: string
-}
 
 const queue = new Map<string, Set<string>>()
 const refs: Record<string, SpotifyRecordWithRefs> = {}

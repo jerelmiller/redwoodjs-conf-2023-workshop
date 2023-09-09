@@ -1,67 +1,65 @@
 import fs from 'node:fs'
 import path from 'node:path'
 
-import type { Prisma } from '@prisma/client'
 import { db } from 'api/src/lib/db'
-import toml from 'toml'
 
-const workshopConfig = toml.parse(
-  fs.readFileSync(path.resolve(__dirname, '../workshop.config.toml'), 'utf8')
-)
+import type { Artist, SpotifyRecordWithRefs } from './shared/types'
+
+const saveRecord = async (record: SpotifyRecordWithRefs) => {
+  switch (record.type) {
+    case 'artist':
+      return saveArtist(record)
+  }
+}
+
+const saveArtist = async (artist: Artist) => {
+  const images = artist.images.map((image) => {
+    return {
+      where: {
+        artistId_imageUrl: { artistId: artist.id, imageUrl: image.url },
+      },
+      create: {
+        image: {
+          connectOrCreate: {
+            where: { url: image.url },
+            create: image,
+          },
+        },
+      },
+    }
+  })
+
+  return db.artist.upsert({
+    where: {
+      id: artist.id,
+    },
+    create: {
+      id: artist.id,
+      name: artist.name,
+      followerCount: artist.followers.total,
+      images: {
+        connectOrCreate: images,
+      },
+    },
+    update: {
+      name: artist.name,
+      followerCount: artist.followers.total,
+      images: {
+        connectOrCreate: images,
+      },
+    },
+  })
+}
 
 export default async () => {
   try {
-    //
-    // Manually seed via `yarn rw prisma db seed`
-    // Seeds automatically with `yarn rw prisma migrate dev` and `yarn rw prisma migrate reset`
-    //
-    // Update "const data = []" to match your data model and seeding needs
-    //
-    const data: Prisma.UserCreateArgs['data'][] = [
-      workshopConfig.user,
-      // To try this example data with the UserExample model in schema.prisma,
-      // uncomment the lines below and run 'yarn rw prisma migrate dev'
-      //
-      // { name: 'alice', email: 'alice@example.com' },
-      // { name: 'mark', email: 'mark@example.com' },
-      // { name: 'jackie', email: 'jackie@example.com' },
-      // { name: 'bob', email: 'bob@example.com' },
-    ]
-
-    // Note: if using PostgreSQL, using `createMany` to insert multiple records is much faster
-    // @see: https://www.prisma.io/docs/reference/api-reference/prisma-client-reference#createmany
-    Promise.all(
-      //
-      // Change to match your data model and seeding needs
-      //
-      data.map(async (data: Prisma.UserCreateArgs['data']) => {
-        const record = await db.user.create({ data })
-        console.log(record)
-      })
+    const data = JSON.parse(
+      fs.readFileSync(path.resolve(__dirname, './spotify.json'), 'utf8')
     )
 
-    // If using dbAuth and seeding users, you'll need to add a `hashedPassword`
-    // and associated `salt` to their record. Here's how to create them using
-    // the same algorithm that dbAuth uses internally:
-    //
-    //   import { hashPassword } from '@redwoodjs/auth-dbauth-api'
-    //
-    //   const users = [
-    //     { name: 'john', email: 'john@example.com', password: 'secret1' },
-    //     { name: 'jane', email: 'jane@example.com', password: 'secret2' }
-    //   ]
-    //
-    //   for (const user of users) {
-    //     const [hashedPassword, salt] = hashPassword(user.password)
-    //     await db.user.create({
-    //       data: {
-    //         name: user.name,
-    //         email: user.email,
-    //         hashedPassword,
-    //         salt
-    //       }
-    //     })
-    //   }
+    for (const record of Object.values(data)) {
+      await saveRecord(record as SpotifyRecordWithRefs)
+    }
   } catch (error) {
     console.warn('Please define your seed data.')
     console.error(error)
