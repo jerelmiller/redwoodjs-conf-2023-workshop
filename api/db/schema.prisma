@@ -23,6 +23,19 @@ model Album {
   tracks  Track[]
 }
 
+model Playlist {
+  id   String @id @default(cuid())
+  name String
+}
+
+model PlaylistTracks {
+  addedAt    DateTime
+  playlistId String
+  trackId    String
+
+  @@id([playlistId, trackId])
+}
+
 model Track {
   id          String   @id @default(cuid())
   album       Album    @relation(fields: [albumId], references: [id])
