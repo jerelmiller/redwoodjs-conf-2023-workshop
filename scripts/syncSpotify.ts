@@ -5,37 +5,19 @@ import path from 'node:path'
 import toml from 'toml'
 
 import type {
-  Artist,
-  Album,
-  Playlist,
-  Track,
-  SpotifyRecord,
+  AlbumWithRefs,
+  PlaylistWithRefs,
   Reference,
+  Spotify,
+  SpotifyRecord,
+  TrackWithRefs,
 } from './shared/types'
 
 const BASE_URI = 'https://api.spotify.com'
 let accessToken!: string
 
-type AlbumWithRefs = Omit<Album, 'artists' | 'tracks'> & {
-  artists: Reference[]
-  tracks: { items: Reference[] }
-}
-
-type PlaylistWithRefs = Omit<Playlist, 'tracks'> & {
-  tracks: {
-    items: Array<
-      Omit<Playlist['tracks']['items'][0], 'track'> & { track: Reference }
-    >
-  }
-}
-
-type TrackWithRefs = Omit<Track, 'album' | 'artists'> & {
-  album: Reference
-  artists: Reference[]
-}
-
 type SpotifyRecordWithRefs =
-  | Artist
+  | Spotify.Object.Artist
   | AlbumWithRefs
   | PlaylistWithRefs
   | TrackWithRefs
