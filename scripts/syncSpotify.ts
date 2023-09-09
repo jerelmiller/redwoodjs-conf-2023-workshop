@@ -309,7 +309,7 @@ const processQueue = async () => {
 const writeStore = async () => {
   fs.writeFileSync(
     path.resolve(__dirname, './spotify.json'),
-    JSON.stringify(refs, null, 2)
+    JSON.stringify(refs)
   )
 
   for (const record of Object.values(refs)) {
