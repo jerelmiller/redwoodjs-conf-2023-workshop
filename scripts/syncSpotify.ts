@@ -21,6 +21,14 @@ interface Album {
   }
 }
 
+interface Playlist {
+  id: string
+  type: 'playlist'
+  tracks: {
+    items: Array<{ track: Track }>
+  }
+}
+
 interface Track {
   id: string
   type: 'track'
@@ -31,8 +39,6 @@ interface Track {
 interface SpotifyRecord {
   id: string
   type: string
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  [field: string]: any
 }
 
 interface Reference {
@@ -92,6 +98,7 @@ interface WorkshopConfig {
   spotify: {
     albumIds: string[]
     trackIds: string[]
+    playlistIds: string[]
   }
 }
 
@@ -179,6 +186,17 @@ const getTrack = async (id: string) => {
   })
 }
 
+const getPlaylist = async (id: string) => {
+  return tap(await get<Playlist>('/playlists/:id', { id }), (playlist) => {
+    playlist.tracks.items.forEach(({ track }, idx) => {
+      addToQueue(track, {
+        update: playlist,
+        withRefAtPath: ['tracks', 'items', String(idx)],
+      })
+    })
+  })
+}
+
 const getByStoreKey = (storeKey: string) => {
   const [type, id] = storeKey.split(':')
 
@@ -189,6 +207,8 @@ const getByStoreKey = (storeKey: string) => {
       return getArtist(id)
     case 'track':
       return getTrack(id)
+    case 'playlist':
+      return getPlaylist(id)
     default:
       throw new Error(`Unknown type: ${type}`)
   }
@@ -258,6 +278,10 @@ export default async () => {
 
   for (const id of config.trackIds) {
     addToQueue({ type: 'track', id })
+  }
+
+  for (const id of config.playlistIds) {
+    addToQueue({ type: 'playlist', id })
   }
 
   await processQueue()
