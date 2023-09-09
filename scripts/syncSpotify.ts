@@ -43,9 +43,17 @@ interface Image {
 interface Playlist {
   id: string
   type: 'playlist'
+  name: string
   tracks: {
-    added_at: string
-    items: Array<{ track: Track }>
+    items: Array<{ added_at: string; track: Track }>
+  }
+}
+
+type PlaylistWithRefs = Omit<Playlist, 'tracks'> & {
+  tracks: {
+    items: Array<
+      Omit<Playlist['tracks']['items'][0], 'track'> & { track: Reference }
+    >
   }
 }
 
@@ -68,7 +76,11 @@ type TrackWithRefs = Omit<Track, 'album' | 'artists'> & {
 }
 
 type SpotifyRecord = Artist | Album | Playlist | Track
-type SpotifyRecordWithRefs = Artist | AlbumWithRefs | TrackWithRefs
+type SpotifyRecordWithRefs =
+  | Artist
+  | AlbumWithRefs
+  | PlaylistWithRefs
+  | TrackWithRefs
 
 interface Reference {
   __ref: string
@@ -224,7 +236,7 @@ const getPlaylist = async (id: string) => {
     playlist.tracks.items.forEach(({ track }, idx) => {
       addToQueue(track, {
         update: playlist,
-        withRefAtPath: ['tracks', 'items', String(idx)],
+        withRefAtPath: ['tracks', 'items', String(idx), 'track'],
       })
     })
   })
@@ -311,6 +323,8 @@ const writeStore = async () => {
       case 'track':
         await saveTrack(record)
         break
+      case 'playlist':
+        await savePlaylist(record)
     }
   }
 }
@@ -373,6 +387,44 @@ const saveArtist = async (artist: Artist) => {
       followerCount: artist.followers.total,
       images: {
         connect: images,
+      },
+    },
+  })
+}
+
+const savePlaylist = async (playlist: PlaylistWithRefs) => {
+  const tracks = await Promise.all(
+    playlist.tracks.items.map(async (playlistTrack) => {
+      const track = await saveTrack(
+        getRecordFromRef<TrackWithRefs>(playlistTrack.track)
+      )
+
+      return {
+        where: {
+          playlistId_trackId: { playlistId: playlist.id, trackId: track.id },
+        },
+        create: {
+          addedAt: new Date(playlistTrack.added_at),
+          track: {
+            connect: { id: track.id },
+          },
+        },
+      }
+    })
+  )
+  return db.playlist.upsert({
+    where: { id: playlist.id },
+    create: {
+      id: playlist.id,
+      name: playlist.name,
+      tracks: {
+        connectOrCreate: tracks,
+      },
+    },
+    update: {
+      name: playlist.name,
+      tracks: {
+        connectOrCreate: tracks,
       },
     },
   })
