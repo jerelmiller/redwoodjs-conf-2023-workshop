@@ -329,23 +329,18 @@ const saveAlbum = async (album: AlbumWithRefs) => {
 }
 
 const saveArtist = async (artist: Artist) => {
-  const images = artist.images.map((image) => ({
-    create: {
-      image: {
-        create: {
-          url: image.url,
-          height: image.height,
-          width: image.width,
+  const images = await Promise.all(
+    artist.images.map(async (img) => {
+      const image = await saveImage(img)
+
+      return {
+        artistId_imageUrl: {
+          artistId: artist.id,
+          imageUrl: image.url,
         },
-      },
-    },
-    where: {
-      artistId_imageUrl: {
-        artistId: artist.id,
-        imageUrl: image.url,
-      },
-    },
-  }))
+      }
+    })
+  )
 
   return db.artist.upsert({
     where: {
@@ -356,15 +351,32 @@ const saveArtist = async (artist: Artist) => {
       name: artist.name,
       followerCount: artist.followers.total,
       images: {
-        connectOrCreate: images,
+        connect: images,
       },
     },
     update: {
       name: artist.name,
       followerCount: artist.followers.total,
       images: {
-        connectOrCreate: images,
+        connect: images,
       },
+    },
+  })
+}
+
+const saveImage = (image: Image) => {
+  return db.image.upsert({
+    where: {
+      url: image.url,
+    },
+    create: {
+      url: image.url,
+      height: image.height,
+      width: image.width,
+    },
+    update: {
+      height: image.height,
+      width: image.width,
     },
   })
 }
