@@ -7,6 +7,27 @@ import toml from 'toml'
 const BASE_URI = 'https://api.spotify.com'
 let accessToken!: string
 
+interface Artist {
+  id: string
+  type: 'artist'
+}
+
+interface Album {
+  id: string
+  type: 'album'
+  artists: Artist[]
+  tracks: {
+    items: Track[]
+  }
+}
+
+interface Track {
+  id: string
+  type: 'track'
+  album: Album
+  artists: Artist[]
+}
+
 interface SpotifyRecord {
   id: string
   type: string
@@ -28,10 +49,13 @@ const deepUpdate = (obj: object, value: unknown, path: string) => {
   const segments = path.split('.')
 
   for (i = 0; i < segments.length - 1; i++) {
-    obj = obj[segments[i]]
+    const segment = segments[i]
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    obj = (obj as any)[segment]
   }
 
-  obj[segments[i]] = value
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  ;(obj as any)[segments[i]] = value
 }
 
 const mapUpdate = <TKey, TValue>(
@@ -40,7 +64,7 @@ const mapUpdate = <TKey, TValue>(
   updater: (value: TValue) => TValue,
   defaultValue: TValue
 ) => {
-  map.set(key, map.has(key) ? updater(map.get(key)) : defaultValue)
+  map.set(key, map.has(key) ? updater(map.get(key)!) : defaultValue)
 
   return map
 }
@@ -56,7 +80,7 @@ const addToQueue = (
   mapUpdate(
     queue,
     getStoreKey(record),
-    (set) => (path ? set.add(pathString) : set),
+    (set) => (pathString ? set.add(pathString) : set),
     new Set(pathString ? [pathString] : undefined)
   )
 }
@@ -121,30 +145,36 @@ const toReference = (record: SpotifyRecord): Reference => {
 }
 
 const getArtist = async (id: string) => {
-  return get<SpotifyRecord>('/artists/:id', { id })
+  return get<Artist>('/artists/:id', { id })
 }
 
 const getAlbum = async (id: string) => {
-  return tap(await get<SpotifyRecord>('/albums/:id', { id }), (album) => {
+  return tap(await get<Album>('/albums/:id', { id }), (album) => {
     album.artists.forEach((artist, idx) => {
-      addToQueue(artist, { update: album, withRefAtPath: ['artists', idx] })
+      addToQueue(artist, {
+        update: album,
+        withRefAtPath: ['artists', String(idx)],
+      })
     })
 
     album.tracks.items.forEach((track, idx) => {
       addToQueue(track, {
         update: album,
-        withRefAtPath: ['tracks', 'items', idx],
+        withRefAtPath: ['tracks', 'items', String(idx)],
       })
     })
   })
 }
 
 const getTrack = async (id: string) => {
-  return tap(await get<SpotifyRecord>('/tracks/:id', { id }), (track) => {
+  return tap(await get<Track>('/tracks/:id', { id }), (track) => {
     addToQueue(track.album, { update: track, withRefAtPath: ['album'] })
 
     track.artists.forEach((artist, idx) => {
-      addToQueue(artist, { update: track, withRefAtPath: ['artists', idx] })
+      addToQueue(artist, {
+        update: track,
+        withRefAtPath: ['artists', String(idx)],
+      })
     })
   })
 }
@@ -214,7 +244,7 @@ const processQueue = async () => {
 const writeStore = () => {
   fs.writeFileSync(
     path.resolve(__dirname, './spotify.json'),
-    JSON.stringify(refs, null, 2)
+    JSON.stringify(refs)
   )
 }
 
