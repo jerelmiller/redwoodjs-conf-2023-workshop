@@ -2,6 +2,7 @@
 import fs from 'node:fs'
 import path from 'node:path'
 
+import { db } from 'api/src/lib/db'
 import toml from 'toml'
 
 const BASE_URI = 'https://api.spotify.com'
@@ -10,21 +11,35 @@ let accessToken!: string
 interface Artist {
   id: string
   type: 'artist'
+  name: string
+  images: Image[]
+  followers: {
+    href: string | null
+    total: number
+  }
 }
 
 interface Album {
   id: string
   type: 'album'
   artists: Artist[]
+  name: string
   tracks: {
     items: Track[]
   }
+}
+
+interface Image {
+  url: string
+  height: number
+  width: number
 }
 
 interface Playlist {
   id: string
   type: 'playlist'
   tracks: {
+    added_at: string
     items: Array<{ track: Track }>
   }
 }
@@ -36,10 +51,7 @@ interface Track {
   artists: Artist[]
 }
 
-interface SpotifyRecord {
-  id: string
-  type: string
-}
+type SpotifyRecord = Artist | Album | Playlist | Track
 
 interface Reference {
   __ref: string
@@ -76,7 +88,7 @@ const mapUpdate = <TKey, TValue>(
 }
 
 const addToQueue = (
-  record: SpotifyRecord,
+  record: { type: string; id: string },
   options?: { update: SpotifyRecord; withRefAtPath: string[] }
 ) => {
   const pathString = options
@@ -261,11 +273,59 @@ const processQueue = async () => {
   }
 }
 
-const writeStore = () => {
+const writeStore = async () => {
   fs.writeFileSync(
     path.resolve(__dirname, './spotify.json'),
-    JSON.stringify(refs)
+    JSON.stringify(refs, null, 2)
   )
+
+  for (const record of Object.values(refs)) {
+    switch (record.type) {
+      case 'artist':
+        await saveArtist(record)
+    }
+  }
+}
+
+const saveArtist = async (artist: Artist) => {
+  const images = artist.images.map((image) => ({
+    create: {
+      image: {
+        create: {
+          url: image.url,
+          height: image.height,
+          width: image.width,
+        },
+      },
+    },
+    where: {
+      artistId_imageUrl: {
+        artistId: artist.id,
+        imageUrl: image.url,
+      },
+    },
+  }))
+
+  return db.artist.upsert({
+    where: {
+      id: artist.id,
+    },
+    create: {
+      id: artist.id,
+      name: artist.name,
+      followerCount: artist.followers.total,
+      images: {
+        connectOrCreate: images,
+      },
+    },
+    update: {
+      name: artist.name,
+      followerCount: artist.followers.total,
+      images: {
+        connectOrCreate: images,
+      },
+    },
+  })
 }
 
 export default async () => {
@@ -285,6 +345,5 @@ export default async () => {
   }
 
   await processQueue()
-
-  writeStore()
+  await writeStore()
 }
