@@ -1,2 +1,25 @@
 [user]
-  displayName = 'Jerel Miller'
+displayName = 'Jerel Miller'
+
+[spotify]
+albumIds = ['4ZaAM16hw3xpp680FJahJJ']
+trackIds = [
+  '5kBAk4dSQX4aXbTqjaPvF6', # Space Oddity
+  '683hRieVmYdAhVA1DkjSAk', # Space Jam
+  '1bcoI2VWqABMDhwoZHf5dp', # Starman
+  '1JucQJXvQLH6qRJX0VGfYh', # Allergic to Gravity
+  '2CVV8PtUYYsux8XOzWkCP0', # Subterranean Homesick Alien
+  '2CzXAeABCmbEB52ZziuMsH', # Seeing  Stars
+  '2EoOZnxNgtmZaD8uUmz2nD', # Black Hole Sun
+  '2mEhT8wY4VE72wWhLQnGew', # Lazerray
+  '2NeSirLM2VHQW4upn0nMfB', # Stgarry Night - Edit
+  '2TjdnqlpwOjhijHCwHCP2d', # The Great Gig in the Sky
+  '2x5Frs6ts14U4MSLrQQlXg', # Why iii Love The Moon.
+  '3skn2lauGk7Dx6bVIt5DVj', # Starlight - Over the moon start
+  '3XyC1bFuMZ66GsZLkuZslB', # Dark Star
+  '4KROoGIaPaR1pBHPnR3bwC', # Pink Moon
+  '4lhhYqzREcts4uOOqWHjRJ', # Apollo
+  '4uXCp5l9gZzfaeYaFsEva8', # Heathens
+  '7azVZvIvANuD4sLlwqs2g2', # Starkiller - Over the moon end
+  '2dR5WkrpwylTuT3jRWNufa', # Fly Me To The Moon
+]
