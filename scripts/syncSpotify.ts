@@ -52,12 +52,23 @@ interface Playlist {
 interface Track {
   id: string
   type: 'track'
+  disc_number: number
+  duration_ms: number
+  explicit: boolean
+  name: string
+  popularity: number
+  track_number: number
   album: Album
   artists: Artist[]
 }
 
+type TrackWithRefs = Omit<Track, 'album' | 'artists'> & {
+  album: Reference
+  artists: Reference[]
+}
+
 type SpotifyRecord = Artist | Album | Playlist | Track
-type SpotifyRecordWithRefs = Artist | AlbumWithRefs
+type SpotifyRecordWithRefs = Artist | AlbumWithRefs | TrackWithRefs
 
 interface Reference {
   __ref: string
@@ -297,6 +308,9 @@ const writeStore = async () => {
       case 'album':
         await saveAlbum(record)
         break
+      case 'track':
+        await saveTrack(record)
+        break
     }
   }
 }
@@ -359,6 +373,52 @@ const saveArtist = async (artist: Artist) => {
       followerCount: artist.followers.total,
       images: {
         connect: images,
+      },
+    },
+  })
+}
+
+const saveTrack = async (track: TrackWithRefs) => {
+  const album = await saveAlbum(getRecordFromRef<AlbumWithRefs>(track.album))
+  const artists = await Promise.all(
+    track.artists.map(async (ref) => {
+      const artist = await saveArtist(getRecordFromRef<Artist>(ref))
+
+      return { id: artist.id }
+    })
+  )
+
+  return db.track.upsert({
+    where: { id: track.id },
+    create: {
+      id: track.id,
+      durationMs: track.duration_ms,
+      explicit: track.explicit,
+      name: track.name,
+      popularity: track.popularity,
+      trackNumber: track.track_number,
+      album: {
+        connect: {
+          id: album.id,
+        },
+      },
+      artists: {
+        connect: artists,
+      },
+    },
+    update: {
+      durationMs: track.duration_ms,
+      explicit: track.explicit,
+      name: track.name,
+      popularity: track.popularity,
+      trackNumber: track.track_number,
+      album: {
+        connect: {
+          id: album.id,
+        },
+      },
+      artists: {
+        connect: artists,
       },
     },
   })
