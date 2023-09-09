@@ -13,6 +13,7 @@ model Artist {
   name          String
   followerCount Int     @default(0)
   albums        Album[]
+  tracks        Track[]
 }
 
 model Album {
@@ -24,13 +25,14 @@ model Album {
 }
 
 model Track {
-  id          String  @id @default(cuid())
-  album       Album   @relation(fields: [albumId], references: [id])
+  id          String   @id @default(cuid())
+  album       Album    @relation(fields: [albumId], references: [id])
   albumId     String
+  artists     Artist[]
   durationMs  Int
   explicit    Boolean
   name        String
-  popularity  Int     @default(0)
+  popularity  Int      @default(0)
   trackNumber Int
 }
 
