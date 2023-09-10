@@ -8,7 +8,7 @@ import {
 
 import cx from 'classnames'
 
-interface ButtonProps<TButtonElement extends ElementType = 'button'> {
+export interface ButtonProps<TButtonElement extends ElementType = 'button'> {
   as?: TButtonElement
   children: ReactNode
   className?: string
