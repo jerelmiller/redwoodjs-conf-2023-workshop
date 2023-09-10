@@ -28,7 +28,7 @@ export const Loading = () => {
   )
 }
 
-export const Empty = () => <div>Empty</div>
+export const Empty = () => null
 
 export const Failure = ({
   error,
