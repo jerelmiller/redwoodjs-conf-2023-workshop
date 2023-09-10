@@ -1,6 +1,7 @@
 export const schema = gql`
   type CurrentUser {
     profile: CurrentUserProfile
+    playlists: PlaylistConnection
   }
 
   type Query {
