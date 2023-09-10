@@ -1,13 +1,16 @@
-import { Link, routes } from '@redwoodjs/router'
+import { useRef } from 'react'
+
 import cx from 'classnames'
 import { Home, Library, Scroll, Search } from 'lucide-react'
-import { useRef } from 'react'
+
+import { Link, routes } from '@redwoodjs/router'
+
 import ApolloLogo from 'src/components/ApolloLogo'
 import CurrentUserMenuCell from 'src/components/CurrentUserMenuCell'
 import ScrollableList from 'src/components/ScrollableList'
 import SidebarNavLink from 'src/components/SidebarNavLink'
-import SidebarSection from 'src/components/SidebarSection'
 import SidebarPlaylistsCell from 'src/components/SidebarPlaylistsCell'
+import SidebarSection from 'src/components/SidebarSection'
 
 type BaseLayoutProps = {
   children?: React.ReactNode

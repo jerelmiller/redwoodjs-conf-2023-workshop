@@ -1,4 +1,5 @@
 import { ComponentPropsWithoutRef, useEffect, useState } from 'react'
+
 import cx from 'classnames'
 
 type LazyImageProps = ComponentPropsWithoutRef<'img'> & { animateIn?: boolean }

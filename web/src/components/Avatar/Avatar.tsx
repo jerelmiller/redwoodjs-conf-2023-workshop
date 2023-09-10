@@ -1,4 +1,5 @@
 import { CSSProperties } from 'react'
+
 import LazyImage from 'src/components/LazyImage'
 
 interface AvatarProps {

@@ -1,12 +1,13 @@
 import fs from 'node:fs'
 import path from 'node:path'
-import toml from 'toml'
-import type { APIGatewayEvent, Context } from 'aws-lambda'
 
-import { logger } from 'src/lib/logger'
-import { db } from 'src/lib/db'
-import { encrypt, getSession } from 'src/lib/session'
+import type { APIGatewayEvent, Context } from 'aws-lambda'
+import toml from 'toml'
+
 import { extractCookie, getCookieAttributes } from 'src/lib/cookie'
+import { db } from 'src/lib/db'
+import { logger } from 'src/lib/logger'
+import { encrypt, getSession } from 'src/lib/session'
 
 interface SessionData {
   id: string

@@ -4,8 +4,10 @@ import {
   ReactElement,
   ReactNode,
 } from 'react'
-import { NavLink } from '@redwoodjs/router'
+
 import cx from 'classnames'
+
+import { NavLink } from '@redwoodjs/router'
 
 type ForwardedProps = Omit<
   ComponentPropsWithoutRef<typeof NavLink>,
