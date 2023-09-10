@@ -1,7 +1,4 @@
-import { useRef } from 'react'
-
-import cx from 'classnames'
-import { Home, Library, Scroll, Search } from 'lucide-react'
+import { Home, Library, Search } from 'lucide-react'
 
 import { Link, routes } from '@redwoodjs/router'
 

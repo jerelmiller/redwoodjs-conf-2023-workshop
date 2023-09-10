@@ -1,4 +1,3 @@
-import type { APIGatewayEvent } from 'aws-lambda'
 import CryptoJS from 'crypto-js'
 
 import { parseCookieAttributes } from './cookie'

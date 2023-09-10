@@ -135,7 +135,3 @@ const createSessionCookie = ({
 const createLogoutCookie = () => {
   return [`session=`, ...getCookieAttributes({ expires: 'now' })].join(';')
 }
-
-const getCurrentUser = async (session: SessionData) => {
-  return db.user.findUnique({ where: { id: session.id } })
-}
