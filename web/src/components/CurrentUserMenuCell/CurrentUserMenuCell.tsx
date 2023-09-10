@@ -5,6 +5,10 @@ import type {
 
 import type { CellSuccessProps, CellFailureProps } from '@redwoodjs/web'
 
+import Avatar from 'src/components/Avatar'
+import DropdownMenu from 'src/components/DropdownMenu'
+import Skeleton from 'src/components/Skeleton'
+
 export const QUERY = gql`
   query CurrentUserMenuQuery {
     me {
@@ -15,8 +19,14 @@ export const QUERY = gql`
     }
   }
 `
-
-export const Loading = () => <div>Loading...</div>
+export const Loading = () => {
+  return (
+    <div className="flex items-center gap-2">
+      <Skeleton.Avatar size="2rem" />
+      <Skeleton.Text width="10ch" />
+    </div>
+  )
+}
 
 export const Empty = () => <div>Empty</div>
 
@@ -29,5 +39,21 @@ export const Failure = ({
 export const Success = ({
   me,
 }: CellSuccessProps<CurrentUserMenuQuery, CurrentUserMenuQueryVariables>) => {
-  return <div>{JSON.stringify(me)}</div>
+  const { profile } = me
+
+  return (
+    <DropdownMenu>
+      <DropdownMenu.Trigger
+        className="!bg-black-pure py-[0.125rem] pl-[0.125rem] pr-2 !text-sm normal-case tracking-normal hover:bg-surface aria-expanded:bg-surface"
+        variant="ghost"
+        size="sm"
+      >
+        <Avatar size="2rem" imageUrl="nope" />
+        {profile?.displayName ?? 'RedwoodJS Workshop'}
+      </DropdownMenu.Trigger>
+      <DropdownMenu.Menu align="end">
+        <DropdownMenu.Item to="/logout">Logout</DropdownMenu.Item>
+      </DropdownMenu.Menu>
+    </DropdownMenu>
+  )
 }
