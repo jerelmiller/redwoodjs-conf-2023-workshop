@@ -7,16 +7,20 @@ export const me: QueryResolvers['me'] = () => {
 }
 
 export const CurrentUser: CurrentUserResolvers = {
-  playlists: async () => {
-    const playlists = await db.playlist.findMany()
+  playlists: async ({ limit, offset }) => {
+    const total = await db.playlist.count()
+    const playlists = await db.playlist.findMany({
+      skip: offset,
+      take: limit,
+    })
 
     return {
       pageInfo: {
-        limit: 0,
-        offset: 0,
-        total: 0,
-        hasNextPage: false,
-        hasPreviousPage: false,
+        limit,
+        offset,
+        total,
+        hasNextPage: offset + playlists.length < total,
+        hasPreviousPage: total > 0 && offset > 0,
       },
       edges: playlists.map((playlist) => ({ node: playlist })),
     }
