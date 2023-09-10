@@ -3,9 +3,7 @@ import type { QueryResolvers, CurrentUserResolvers } from 'types/graphql'
 import { db } from 'src/lib/db'
 
 export const me: QueryResolvers['me'] = () => {
-  return context.currentUser
-    ? { profile: context.currentUser, playlists: null }
-    : null
+  return context.currentUser ?? null
 }
 
 export const CurrentUser: CurrentUserResolvers = {
