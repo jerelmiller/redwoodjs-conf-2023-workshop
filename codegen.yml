@@ -1,5 +1,5 @@
 config:
-  nonOptionalTypename: true,
   mappers:
     CurrentUser: 'PrismaUser'
+    CurrentUserProfile: 'PrismaUser'
     Playlist: 'PrismaPlaylist'
