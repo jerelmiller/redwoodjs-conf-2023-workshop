@@ -44,26 +44,26 @@ const saveRecord = async (record: SpotifyRecordWithRefs) => {
   }
 }
 
-const saveArtist = async (artist: Spotify.Object.Artist) => {
-  const images = artist.images.map((image) => {
-    return {
-      where: {
-        artistId_imageUrl: { artistId: artist.id, imageUrl: image.url },
-      },
-      create: {
-        image: {
-          connectOrCreate: {
-            where: { url: image.url },
-            create: {
-              url: image.url,
-              height: image.height,
-              width: image.width,
-            },
-          },
-        },
-      },
-    }
+const saveImage = (image: Spotify.Object.Image) => {
+  return db.image.upsert({
+    where: { url: image.url },
+    create: image,
+    update: image,
   })
+}
+
+const saveArtist = async (artist: Spotify.Object.Artist) => {
+  const images: Prisma.ImageCreateOrConnectWithoutArtistsInput[] = []
+  for (const img of artist.images) {
+    const image = await saveImage(img)
+
+    images.push({
+      where: { id: image.id, url: image.url },
+      create: {
+        url: image.url,
+      },
+    })
+  }
 
   return db.artist.upsert({
     where: {
