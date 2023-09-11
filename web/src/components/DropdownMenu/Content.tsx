@@ -3,12 +3,12 @@ import { ReactNode } from 'react'
 import * as Dropdown from '@radix-ui/react-dropdown-menu'
 import type { DropdownMenuContentProps } from '@radix-ui/react-dropdown-menu'
 
-interface MenuProps {
+interface ContentProps {
   align?: DropdownMenuContentProps['align']
   children?: ReactNode
 }
 
-const Menu = ({ align, children }: MenuProps) => {
+const Content = ({ align, children }: ContentProps) => {
   return (
     <Dropdown.Portal>
       <Dropdown.Content
@@ -29,4 +29,4 @@ const Menu = ({ align, children }: MenuProps) => {
   )
 }
 
-export default Menu
+export default Content

@@ -2,8 +2,8 @@ import { ReactNode, useState } from 'react'
 
 import * as Dropdown from '@radix-ui/react-dropdown-menu'
 
+import Content from './Content'
 import Item from './Item'
-import Menu from './Menu'
 import Separator from './Separator'
 import Trigger from './Trigger'
 
@@ -21,9 +21,9 @@ const DropdownMenu = ({ children }: DropdownMenuProps) => {
   )
 }
 
-DropdownMenu.Trigger = Trigger
+DropdownMenu.Content = Content
 DropdownMenu.Item = Item
-DropdownMenu.Menu = Menu
 DropdownMenu.Separator = Separator
+DropdownMenu.Trigger = Trigger
 
 export default DropdownMenu
