@@ -1,4 +1,5 @@
 config:
+  nonOptionalTypename: true,
   mappers:
     CurrentUser: 'PrismaUser'
     Playlist: 'PrismaPlaylist'
