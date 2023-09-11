@@ -1,7 +1,7 @@
 import fs from 'node:fs'
 import path from 'node:path'
 
-import type { Prisma } from '@prisma/client'
+import type { Prisma, Image as PrismaImage } from '@prisma/client'
 import { db } from 'api/src/lib/db'
 import toml from 'toml'
 
@@ -224,18 +224,30 @@ const saveTrack = async (track: TrackWithRefs) => {
   })
 }
 
-const saveUser = (user: Prisma.UserCreateInput) => {
+const saveUser = (user: { displayName: string; images: PrismaImage[] }) => {
   return db.user.upsert({
     where: { displayName: user.displayName ?? undefined },
     create: {
       displayName: user.displayName,
+      images: {
+        connect: user.images.map((image) => ({ id: image.id })),
+      },
     },
-    update: {},
+    update: {
+      images: {
+        connect: user.images.map((image) => ({ id: image.id })),
+      },
+    },
   })
 }
 
 export default async () => {
-  await saveUser(config.user)
+  const image = await saveImage({
+    url: '/avatar.png',
+    height: null,
+    width: null,
+  })
+  await saveUser({ ...config.user, images: [image] })
 
   for (const record of Object.values(refs)) {
     await saveRecord(record as SpotifyRecordWithRefs)
