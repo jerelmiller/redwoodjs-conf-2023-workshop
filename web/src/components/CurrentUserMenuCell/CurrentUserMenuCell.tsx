@@ -8,6 +8,7 @@ import type { CellSuccessProps, CellFailureProps } from '@redwoodjs/web'
 import Avatar from 'src/components/Avatar'
 import DropdownMenu from 'src/components/DropdownMenu'
 import Skeleton from 'src/components/Skeleton'
+import { thumbnail } from 'src/utils/image'
 
 export const QUERY = gql`
   query CurrentUserMenuQuery {
@@ -15,6 +16,10 @@ export const QUERY = gql`
       profile {
         id
         displayName
+        images {
+          __typename
+          url
+        }
       }
     }
   }
@@ -40,6 +45,7 @@ export const Success = ({
   me,
 }: CellSuccessProps<CurrentUserMenuQuery, CurrentUserMenuQueryVariables>) => {
   const { profile } = me
+  const image = thumbnail(profile?.images ?? [])
 
   return (
     <DropdownMenu>
@@ -48,12 +54,12 @@ export const Success = ({
         variant="ghost"
         size="sm"
       >
-        <Avatar size="2rem" imageUrl="nope" />
+        {image && <Avatar size="2rem" imageUrl={image.url} />}
         {profile?.displayName ?? 'RedwoodJS Workshop'}
       </DropdownMenu.Trigger>
-      <DropdownMenu.Menu align="end">
+      <DropdownMenu.Content align="end">
         <DropdownMenu.Item to="/logout">Logout</DropdownMenu.Item>
-      </DropdownMenu.Menu>
+      </DropdownMenu.Content>
     </DropdownMenu>
   )
 }
