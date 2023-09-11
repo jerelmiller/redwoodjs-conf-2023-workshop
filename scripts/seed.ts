@@ -244,18 +244,24 @@ const saveUser = (user: { displayName: string; images: PrismaImage[] }) => {
   })
 }
 
+const resetUserImage = () => {
+  return db.image.deleteMany({
+    where: { url: { in: ['/avatar.png', '/defaultAvatar.png'] } },
+  })
+}
+
 export default async () => {
-  const imageUrl = fs.existsSync(
+  await resetUserImage()
+  const avatarExists = fs.existsSync(
     getPathFromRelative('../web/public/avatar.png')
   )
-    ? '/avatar.png'
-    : '/defaultAvatar.png'
 
   const image = await saveImage({
-    url: imageUrl,
+    url: avatarExists ? '/avatar.png' : '/defaultAvatar.png',
     height: null,
     width: null,
   })
+
   await saveUser({ ...config.user, images: [image] })
 
   for (const record of Object.values(refs)) {
