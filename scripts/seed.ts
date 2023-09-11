@@ -118,6 +118,16 @@ const saveAlbum = async (album: AlbumWithRefs) => {
 
 const savePlaylist = async (playlist: PlaylistWithRefs) => {
   const tracks: Prisma.PlaylistTrackCreateOrConnectWithoutPlaylistInput[] = []
+  const images: Prisma.ImageCreateOrConnectWithoutPlaylistsInput[] = []
+
+  for (const img of playlist.images) {
+    const image = await saveImage(img)
+
+    images.push({
+      where: { id: image.id, url: image.url },
+      create: { id: image.id, url: image.url },
+    })
+  }
 
   for (const playlistTrack of playlist.tracks.items) {
     const track = await saveTrack(
@@ -142,6 +152,9 @@ const savePlaylist = async (playlist: PlaylistWithRefs) => {
     create: {
       id: playlist.id,
       name: playlist.name,
+      images: {
+        connectOrCreate: images,
+      },
       tracks: {
         connectOrCreate: tracks,
       },
@@ -153,6 +166,9 @@ const savePlaylist = async (playlist: PlaylistWithRefs) => {
     },
     update: {
       name: playlist.name,
+      images: {
+        connectOrCreate: images,
+      },
       tracks: {
         connectOrCreate: tracks,
       },
@@ -208,7 +224,7 @@ const saveTrack = async (track: TrackWithRefs) => {
   })
 }
 
-const saveUser = (user: Prisma.UserCreateWithoutPlaylistsInput) => {
+const saveUser = (user: Prisma.UserCreateInput) => {
   return db.user.upsert({
     where: { displayName: user.displayName },
     create: {
