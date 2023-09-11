@@ -55,7 +55,7 @@ export const Success = ({ me }: CellSuccessProps<SidebarPlaylistsQuery>) => {
               activeClassName="bg-surface text-primary hover:bg-[#393939]"
             >
               <div className="flex items-center gap-3">
-                <CoverPhoto image={thumbnail(playlist.images ?? [])} />
+                <CoverPhoto image={thumbnail(playlist.images)} />
                 <div className="flex flex-1 flex-col justify-around self-stretch overflow-hidden text-ellipsis whitespace-nowrap">
                   <div
                     className={cx(
