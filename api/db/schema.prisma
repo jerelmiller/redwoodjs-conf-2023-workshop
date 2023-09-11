@@ -44,6 +44,8 @@ model Playlist {
   id     String          @id @default(cuid())
   name   String
   tracks PlaylistTrack[]
+  owner  User            @relation(fields: [userId], references: [id])
+  userId String
 }
 
 model PlaylistTrack {
@@ -70,6 +72,7 @@ model Track {
 }
 
 model User {
-  id          String @id @default(cuid())
-  displayName String @unique
+  id          String     @id @default(cuid())
+  displayName String     @unique
+  playlists   Playlist[]
 }
