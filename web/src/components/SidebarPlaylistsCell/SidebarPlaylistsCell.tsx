@@ -2,7 +2,7 @@ import cx from 'classnames'
 import { Pin, Volume2 } from 'lucide-react'
 import type { SidebarPlaylistsQuery } from 'types/graphql'
 
-import { NavLink } from '@redwoodjs/router'
+import { NavLink, routes } from '@redwoodjs/router'
 import type { CellSuccessProps, CellFailureProps } from '@redwoodjs/web'
 
 import CoverPhoto from 'src/components/CoverPhoto'
@@ -50,7 +50,7 @@ export const Success = ({ me }: CellSuccessProps<SidebarPlaylistsQuery>) => {
         return (
           <li key={playlist.id}>
             <NavLink
-              to={`/playlists/${playlist.id}`}
+              to={routes.playlist({ id: playlist.id })}
               className="transition-color block justify-between rounded-md py-2 pl-2 pr-4 leading-none transition-colors duration-200 ease-out hover:bg-[#1A1A1A] hover:no-underline"
               activeClassName="bg-surface text-primary hover:bg-[#393939]"
             >
