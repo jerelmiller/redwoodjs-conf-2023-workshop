@@ -7,6 +7,15 @@ export const schema = gql`
     id: ID!
 
     """
+    Images for the playlist. The array may be empty or contain up to three images.
+    The images are returned by size in descending order.
+    See [Working with Playlists](https://developer.spotify.com/documentation/general/guides/working-with-playlists/).
+    **Note**: If returned, the source URL for the image (\`url\`) is temporary and
+    will expire in less than a day.
+    """
+    images: [Image!]!
+
+    """
     The name of the playlist.
     """
     name: String!

@@ -17,6 +17,9 @@ export const QUERY = gql`
           node {
             id
             name
+            images {
+              url
+            }
             owner {
               id
               displayName
