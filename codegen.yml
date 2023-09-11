@@ -1,3 +1,4 @@
 config:
   mappers:
     CurrentUser: 'PrismaUser'
+    Playlist: 'PrismaPlaylist'

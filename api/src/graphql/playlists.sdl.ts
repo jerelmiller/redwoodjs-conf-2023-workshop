@@ -10,6 +10,11 @@ export const schema = gql`
     The name of the playlist.
     """
     name: String!
+
+    """
+    The user who owns the playlist.
+    """
+    owner: User!
   }
 
   type PlaylistConnection {
