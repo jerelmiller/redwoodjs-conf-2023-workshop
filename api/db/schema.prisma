@@ -31,6 +31,7 @@ model Image {
   width     Int?
   artists   Artist[]
   playlists Playlist[]
+  users     User[]
 }
 
 model Playlist {
@@ -69,4 +70,5 @@ model User {
   id          String     @id @default(cuid())
   displayName String?    @unique
   playlists   Playlist[]
+  images      Image[]
 }
