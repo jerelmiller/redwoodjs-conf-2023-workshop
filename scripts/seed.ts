@@ -20,8 +20,11 @@ interface WorkshopConfig {
   }
 }
 
+const getPathFromRelative = (relativePath: string) =>
+  path.resolve(__dirname, relativePath)
+
 const readFile = (relativePath: string) => {
-  return fs.readFileSync(path.resolve(__dirname, relativePath), 'utf8')
+  return fs.readFileSync(getPathFromRelative(relativePath), 'utf8')
 }
 
 const config: WorkshopConfig = toml.parse(readFile('../workshop.config.toml'))
@@ -242,8 +245,14 @@ const saveUser = (user: { displayName: string; images: PrismaImage[] }) => {
 }
 
 export default async () => {
+  const imageUrl = fs.existsSync(
+    getPathFromRelative('../web/public/avatar.png')
+  )
+    ? '/avatar.png'
+    : '/defaultAvatar.png'
+
   const image = await saveImage({
-    url: '/avatar.png',
+    url: imageUrl,
     height: null,
     width: null,
   })
