@@ -3,6 +3,7 @@ import path from 'node:path'
 
 import type { Prisma } from '@prisma/client'
 import { db } from 'api/src/lib/db'
+import toml from 'toml'
 
 import type {
   AlbumWithRefs,
@@ -13,9 +14,18 @@ import type {
   TrackWithRefs,
 } from './shared/types'
 
-const refs = JSON.parse(
-  fs.readFileSync(path.resolve(__dirname, './spotify.json'), 'utf8')
-)
+interface WorkshopConfig {
+  user: {
+    displayName: string
+  }
+}
+
+const readFile = (relativePath: string) => {
+  return fs.readFileSync(path.resolve(__dirname, relativePath), 'utf8')
+}
+
+const config: WorkshopConfig = toml.parse(readFile('../workshop.config.toml'))
+const refs = JSON.parse(readFile('./spotify.json'))
 
 const getRecordFromRef = <T>(ref: Reference) => {
   return refs[ref.__ref] as T
@@ -135,6 +145,11 @@ const savePlaylist = async (playlist: PlaylistWithRefs) => {
       tracks: {
         connectOrCreate: tracks,
       },
+      owner: {
+        connect: {
+          displayName: config.user.displayName,
+        },
+      },
     },
     update: {
       name: playlist.name,
@@ -193,13 +208,20 @@ const saveTrack = async (track: TrackWithRefs) => {
   })
 }
 
+const saveUser = (user: Prisma.UserCreateWithoutPlaylistsInput) => {
+  return db.user.upsert({
+    where: { displayName: user.displayName },
+    create: {
+      displayName: user.displayName,
+    },
+    update: {},
+  })
+}
+
 export default async () => {
-  try {
-    for (const record of Object.values(refs)) {
-      await saveRecord(record as SpotifyRecordWithRefs)
-    }
-  } catch (error) {
-    console.warn('Please define your seed data.')
-    console.error(error)
+  await saveUser(config.user)
+
+  for (const record of Object.values(refs)) {
+    await saveRecord(record as SpotifyRecordWithRefs)
   }
 }
