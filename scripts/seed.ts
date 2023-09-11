@@ -195,6 +195,7 @@ const saveTrack = async (track: TrackWithRefs) => {
     where: { id: track.id },
     create: {
       id: track.id,
+      discNumber: track.disc_number,
       durationMs: track.duration_ms,
       explicit: track.explicit,
       name: track.name,

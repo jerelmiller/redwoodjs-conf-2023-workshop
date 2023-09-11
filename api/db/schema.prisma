@@ -58,6 +58,7 @@ model Track {
   album          Album           @relation(fields: [albumId], references: [id])
   albumId        String
   artists        Artist[]
+  discNumber     Int             @default(1)
   durationMs     Int
   explicit       Boolean
   name           String
