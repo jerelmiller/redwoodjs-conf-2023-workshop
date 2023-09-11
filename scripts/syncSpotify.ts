@@ -165,6 +165,15 @@ const getTrack = async (id: string) => {
 
 const getPlaylist = async (id: string) => {
   return tap(await get('/playlists/:id', { id }), (playlist) => {
+    const hasEpisodes = playlist.tracks.items.some(
+      (item) => item.track.type === 'episode'
+    )
+    if (hasEpisodes) {
+      throw new Error(
+        'Playlists with episodes are not supported in this workshop. Please pick a playlist that only contains tracks.'
+      )
+    }
+
     playlist.tracks.items.forEach((item, idx) => {
       addToQueue(item.track, {
         update: playlist,
