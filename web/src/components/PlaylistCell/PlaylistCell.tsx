@@ -9,7 +9,8 @@ import PageCoverPhoto from 'src/components/PageCoverPhoto'
 import PageContent from 'src/components/PageContent'
 import PageHeader from 'src/components/PageHeader'
 import PageTitle from 'src/components/PageTitle'
-import PlayButton from '../PlayButton/PlayButton'
+import PlayButton from 'src/components/PlayButton'
+import PageMediaType from 'src/components/PageMediaType'
 
 export const QUERY = gql`
   query FindPlaylistQuery($id: ID!) {
@@ -40,7 +41,10 @@ export const Success = ({
     <PageContainer>
       <PageHeader>
         <PageCoverPhoto image={playlist.images[0]} />
-        <PageTitle>{playlist.name}</PageTitle>
+        <div className="flex flex-1 flex-col gap-2">
+          <PageTitle>{playlist.name}</PageTitle>
+          <PageMediaType mediaType="playlist" />
+        </div>
       </PageHeader>
       <PageContent>
         <div>
