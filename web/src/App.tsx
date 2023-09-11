@@ -1,5 +1,6 @@
 import { FatalErrorBoundary, RedwoodProvider } from '@redwoodjs/web'
 import { RedwoodApolloProvider } from '@redwoodjs/web/apollo'
+import * as Tooltip from '@radix-ui/react-tooltip'
 
 import FatalErrorPage from 'src/pages/FatalErrorPage'
 import Routes from 'src/Routes'
@@ -13,7 +14,9 @@ const App = () => (
     <RedwoodProvider titleTemplate="%PageTitle | %AppTitle">
       <AuthProvider>
         <RedwoodApolloProvider useAuth={useAuth}>
-          <Routes />
+          <Tooltip.Provider delayDuration={300}>
+            <Routes />
+          </Tooltip.Provider>
         </RedwoodApolloProvider>
       </AuthProvider>
     </RedwoodProvider>
