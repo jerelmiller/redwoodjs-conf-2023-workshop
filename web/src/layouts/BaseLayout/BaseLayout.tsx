@@ -31,10 +31,6 @@ const BaseLayout = ({ children }: BaseLayoutProps) => {
               <Home size="1.5rem" />
               Home
             </SidebarNavLink>
-            <SidebarNavLink to={routes.home()}>
-              <Search size="1.5rem" />
-              Search
-            </SidebarNavLink>
           </SidebarSection>
           <SidebarSection className="flex flex-1 flex-col overflow-hidden pb-0">
             <header className="px-4 py-2">
