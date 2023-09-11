@@ -38,4 +38,11 @@ export const schema = gql`
     "The playlist"
     node: Playlist!
   }
+
+  type Query {
+    """
+    Get a playlist owned by a Spotify user.
+    """
+    playlist(id: ID!): Playlist
+  }
 `

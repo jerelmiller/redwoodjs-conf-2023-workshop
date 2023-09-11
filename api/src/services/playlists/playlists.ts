@@ -1,6 +1,10 @@
-import type { PlaylistRelationResolvers } from 'types/graphql'
+import type { QueryResolvers, PlaylistRelationResolvers } from 'types/graphql'
 
 import { db } from 'src/lib/db'
+
+export const playlist: QueryResolvers['playlist'] = ({ id }) => {
+  return db.playlist.findUnique({ where: { id } })
+}
 
 export const Playlist: PlaylistRelationResolvers = {
   images: (_, { root }) => {
