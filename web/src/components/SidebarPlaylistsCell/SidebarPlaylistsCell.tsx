@@ -17,6 +17,10 @@ export const QUERY = gql`
           node {
             id
             name
+            owner {
+              id
+              displayName
+            }
           }
         }
       }
@@ -70,7 +74,7 @@ export const Success = ({ me }: CellSuccessProps<SidebarPlaylistsQuery>) => {
                     <span className="text-sm text-muted">
                       <DelimitedList delimiter=" · ">
                         <span>Playlist</span>
-                        <span>{playlist.owner?.displayName}</span>
+                        <span>{playlist.owner.displayName}</span>
                       </DelimitedList>
                     </span>
                   </div>
