@@ -1,24 +1,19 @@
-import { ComponentPropsWithoutRef, ReactElement } from 'react'
+import { ComponentPropsWithoutRef } from 'react'
 
 import cx from 'classnames'
 
 import { NavLink } from '@redwoodjs/router'
 
-type ForwardedProps = Omit<
+type SidebarNavLinkProps = Omit<
   ComponentPropsWithoutRef<typeof NavLink>,
   'activeClassName'
 >
 
-interface SidebarNavLinkProps {
-  icon?: ReactElement
-}
-
 const SidebarNavLink = ({
   children,
   className,
-  icon,
   ...props
-}: SidebarNavLinkProps & ForwardedProps) => {
+}: SidebarNavLinkProps) => {
   return (
     <li className="px-0 py-1 leading-none text-muted transition-colors duration-200 ease-out hover:text-primary">
       <NavLink
@@ -29,7 +24,6 @@ const SidebarNavLink = ({
           className
         )}
       >
-        {icon}
         {children}
       </NavLink>
     </li>

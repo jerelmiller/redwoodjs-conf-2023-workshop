@@ -27,10 +27,12 @@ const BaseLayout = ({ children }: BaseLayoutProps) => {
             <ApolloLogo size="225px" className="relative -left-3" />
           </Link>
           <SidebarSection className="px-4 py-2">
-            <SidebarNavLink to={routes.home()} icon={<Home size="1.5rem" />}>
+            <SidebarNavLink to={routes.home()}>
+              <Home size="1.5rem" />
               Home
             </SidebarNavLink>
-            <SidebarNavLink to={routes.home()} icon={<Search size="1.5rem" />}>
+            <SidebarNavLink to={routes.home()}>
+              <Search size="1.5rem" />
               Search
             </SidebarNavLink>
           </SidebarSection>
