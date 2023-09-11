@@ -226,7 +226,7 @@ const saveTrack = async (track: TrackWithRefs) => {
 
 const saveUser = (user: Prisma.UserCreateInput) => {
   return db.user.upsert({
-    where: { displayName: user.displayName },
+    where: { displayName: user.displayName ?? undefined },
     create: {
       displayName: user.displayName,
     },
