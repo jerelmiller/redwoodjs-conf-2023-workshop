@@ -1,4 +1,6 @@
 /* eslint-disable @typescript-eslint/no-namespace */
+type Prop<T, Key extends string> = Key extends keyof T ? T[Key] : never
+type WithinKey<Key extends string, T> = { [K in Key]: T }
 
 export type AlbumWithRefs = Omit<Spotify.Object.Album, 'artists' | 'tracks'> & {
   artists: Reference[]
@@ -164,19 +166,16 @@ export namespace Spotify {
     export type CurrentlyPlayingType = 'track' | 'episode' | 'ad' | 'unknown'
 
     export interface CurrentUser {
-      country: RestrictScope<string, 'user-read-private'>
+      country: string
       display_name: string | null
-      email: RestrictScope<string, 'user-read-email'>
-      explicit_content: RestrictScope<
-        ExplicitContentSettings,
-        'user-read-private'
-      >
+      email: string
+      explicit_content: ExplicitContentSettings
       external_urls: ExternalUrl
       followers: Followers
       href: string
       id: string
       images: Image[]
-      product: RestrictScope<string, 'user-read-private'>
+      product: string
       type: 'user'
       uri: string
     }
@@ -231,7 +230,7 @@ export namespace Spotify {
       name: string
       release_date: string
       release_date_precision: ReleaseDatePrecision
-      resume_point: RestrictScope<ResumePoint, 'user-read-playback-position'>
+      resume_point: ResumePoint
       show: ShowSimplified
       type: 'episode'
       uri: string
@@ -259,7 +258,7 @@ export namespace Spotify {
       name: string
       release_date: string
       release_date_precision: ReleaseDatePrecision
-      resume_point: RestrictScope<ResumePoint, 'user-read-playback-position'>
+      resume_point: ResumePoint
       type: 'episode'
       uri: string
     }
