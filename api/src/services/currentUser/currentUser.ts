@@ -8,8 +8,13 @@ export const me: QueryResolvers['me'] = () => {
 
 export const CurrentUser: CurrentUserResolvers = {
   playlists: async ({ limit, offset }) => {
-    const total = await db.playlist.count()
+    // We can safely assume we have a current user since the `me` field returns
+    // `null` otherwise
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const currentUser = context.currentUser!
+    const total = await db.playlist.count({ where: { userId: currentUser.id } })
     const playlists = await db.playlist.findMany({
+      where: { userId: currentUser.id },
       skip: offset,
       take: limit,
     })
