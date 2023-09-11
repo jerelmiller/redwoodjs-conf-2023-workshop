@@ -25,11 +25,12 @@ model Album {
 }
 
 model Image {
-  id      String   @id @default(cuid())
-  url     String   @unique
-  height  Int?
-  width   Int?
-  artists Artist[]
+  id        String     @id @default(cuid())
+  url       String     @unique
+  height    Int?
+  width     Int?
+  artists   Artist[]
+  playlists Playlist[]
 }
 
 model Playlist {
@@ -37,6 +38,7 @@ model Playlist {
   name   String
   tracks PlaylistTrack[]
   owner  User            @relation(fields: [userId], references: [id])
+  images Image[]
   userId String
 }
 
