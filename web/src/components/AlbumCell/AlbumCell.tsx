@@ -30,6 +30,10 @@ export const QUERY = gql`
         url
         vibrantColor(alpha: 0.9)
       }
+      copyrights {
+        text
+        type
+      }
       artists {
         id
         name
@@ -125,14 +129,14 @@ export const Success = ({
           <div className="text-sm text-muted">
             <ReleaseDate releaseDate={album.releaseDate} />
           </div>
-          {/* album.copyrights.map((copyright) => (
+          {album.copyrights.map((copyright) => (
             <span
               key={copyright.text.concat(copyright.type ?? '')}
               className="text-xxs text-muted"
             >
               {copyright.text}
             </span>
-          )) */}
+          ))}
         </div>
       </PageContent>
     </PageContainer>
