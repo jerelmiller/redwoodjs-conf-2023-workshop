@@ -21924,6 +21924,7 @@ __metadata:
     "@tanstack/react-table": ^8.9.8
     autoprefixer: ^10.4.15
     classnames: ^2.3.2
+    date-fns: ^2.30.0
     lucide-react: ^0.274.0
     postcss: ^8.4.29
     postcss-loader: ^7.3.3

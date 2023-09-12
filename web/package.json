@@ -19,6 +19,7 @@
     "@redwoodjs/web": "6.1.1",
     "@tanstack/react-table": "^8.9.8",
     "classnames": "^2.3.2",
+    "date-fns": "^2.30.0",
     "lucide-react": "^0.274.0",
     "prop-types": "15.8.1",
     "react": "18.2.0",
