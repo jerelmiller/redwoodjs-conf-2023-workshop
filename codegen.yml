@@ -3,3 +3,4 @@ config:
     CurrentUser: 'PrismaUser'
     CurrentUserProfile: 'PrismaUser'
     Playlist: 'PrismaPlaylist'
+    Track: 'PrismaTrack'
