@@ -77,6 +77,6 @@ export const schema = gql`
     """
     Get a playlist owned by a Spotify user.
     """
-    playlist(id: ID!): Playlist @skipAuth
+    playlist(id: ID!): Playlist @requireAuth
   }
 `
