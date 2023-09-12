@@ -6,3 +6,6 @@ CREATE TABLE "Copyright" (
     "type" TEXT NOT NULL,
     CONSTRAINT "Copyright_albumId_fkey" FOREIGN KEY ("albumId") REFERENCES "Album" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
 );
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Copyright_albumId_text_type_key" ON "Copyright"("albumId", "text", "type");

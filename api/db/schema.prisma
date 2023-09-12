@@ -35,6 +35,8 @@ model Copyright {
   album   Album  @relation(fields: [albumId], references: [id])
   albumId String
   type    String
+
+  @@unique([albumId, text, type])
 }
 
 model Image {
