@@ -66,7 +66,6 @@ export const schema = gql`
   enum AlbumGroup {
     ALBUM
     SINGLE
-    APPEARS_ON
     COMPILATION
   }
 
