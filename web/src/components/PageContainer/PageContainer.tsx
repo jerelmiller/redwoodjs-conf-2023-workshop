@@ -3,7 +3,7 @@ import { CSSProperties, ReactNode } from 'react'
 import cx from 'classnames'
 
 interface PageContainerProps {
-  bgColor?: string
+  bgColor?: string | null
   children?: ReactNode
   className?: string
 }
