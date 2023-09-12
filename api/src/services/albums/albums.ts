@@ -16,6 +16,9 @@ export const Album: AlbumRelationResolvers = {
   artists: (_, { root }) => {
     return db.album.findUniqueOrThrow({ where: { id: root.id } }).artists()
   },
+  copyrights: (_, { root }) => {
+    return db.album.findUniqueOrThrow({ where: { id: root.id } }).copyrights()
+  },
   images: (_, { root }) => {
     return db.album.findUniqueOrThrow({ where: { id: root.id } }).images()
   },

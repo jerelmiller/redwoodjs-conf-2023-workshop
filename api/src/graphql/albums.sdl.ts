@@ -9,6 +9,11 @@ export const schema = gql`
     artists: [Artist!]!
 
     """
+    The copyrights for the album.
+    """
+    copyrights: [Copyright!]!
+
+    """
     The [Spotify ID](https://developer.spotify.com/documentation/web-api/#spotify-uris-and-ids)
     for the album.
     """
