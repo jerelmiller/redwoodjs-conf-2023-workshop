@@ -1,14 +1,16 @@
 import { MetaTags } from '@redwoodjs/web'
 
-const ArtistPage = () => {
+import ArtistCell from 'src/components/ArtistCell'
+
+interface ArtistPageProps {
+  id: string
+}
+
+const ArtistPage = ({ id }: ArtistPageProps) => {
   return (
     <>
       <MetaTags title="Artist" description="Artist page" />
-
-      <h1>ArtistPage</h1>
-      <p>
-        Find me in <code>./web/src/pages/ArtistPage/ArtistPage.tsx</code>
-      </p>
+      <ArtistCell id={id} />
     </>
   )
 }
