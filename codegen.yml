@@ -1,6 +1,7 @@
 config:
   mappers:
     Album: 'PrismaAlbum'
+    Artist: 'PrismaArtist'
     CurrentUser: 'PrismaUser'
     CurrentUserProfile: 'PrismaUser'
     Playlist: 'PrismaPlaylist'
