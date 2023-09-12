@@ -24,6 +24,21 @@ export const schema = gql`
     The user who owns the playlist.
     """
     owner: User!
+
+    "The tracks of the playlist."
+    tracks(
+      """
+      The maximum number of items to return. Default: 20. Minimum: 1. Maximum: 50.
+      """
+      limit: Int = 20
+
+      """
+      The index of the first item to return. Default: 0 (the first item).
+
+      Use with \`limit\` to get the next set of items.
+      """
+      offset: Int = 0
+    ): PlaylistTrackConnection!
   }
 
   type PlaylistConnection {
@@ -39,10 +54,29 @@ export const schema = gql`
     node: Playlist!
   }
 
+  type PlaylistTrackConnection {
+    "Pagination information for the tracks belonging to a playlist"
+    edges: [PlaylistTrackEdge!]!
+
+    "Pagination information for the tracks belonging to a playlist"
+    pageInfo: PageInfo!
+  }
+
+  type PlaylistTrackEdge {
+    "The date and time the track was added to the playlist"
+    addedAt: DateTime
+
+    "The user that added the track to the playlist"
+    addedBy: User!
+
+    "The playlist track"
+    node: Track!
+  }
+
   type Query {
     """
     Get a playlist owned by a Spotify user.
     """
-    playlist(id: ID!): Playlist
+    playlist(id: ID!): Playlist @skipAuth
   }
 `
