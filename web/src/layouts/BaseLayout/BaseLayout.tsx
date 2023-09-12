@@ -16,7 +16,6 @@ type BaseLayoutProps = {
 const BaseLayout = ({ children }: BaseLayoutProps) => {
   return (
     <div
-      onContextMenu={(e) => e.preventDefault()}
       className={
         'grid h-screen grid-cols-[375px_1fr] gap-2 p-2 [grid-template-areas:"sidebar_main-view""playbar_playbar"] [grid-template-rows:1fr_auto]'
       }
