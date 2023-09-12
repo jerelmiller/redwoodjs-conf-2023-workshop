@@ -8,6 +8,7 @@ import PageContainer from 'src/components/PageContainer'
 import PageCoverPhoto from 'src/components/PageCoverPhoto'
 import PageContent from 'src/components/PageContent'
 import PageHeader from 'src/components/PageHeader'
+import PageHeaderDetails from 'src/components/PageHeaderDetails'
 import PageTitle from 'src/components/PageTitle'
 import PlayButton from 'src/components/PlayButton'
 import PageMediaType from 'src/components/PageMediaType'
@@ -17,8 +18,17 @@ export const QUERY = gql`
     playlist(id: $id) {
       id
       name
+      owner {
+        id
+        displayName
+      }
       images {
         url
+      }
+      tracks {
+        pageInfo {
+          total
+        }
       }
     }
   }
@@ -37,13 +47,21 @@ export const Failure = ({
 export const Success = ({
   playlist,
 }: CellSuccessProps<FindPlaylistQuery, FindPlaylistQueryVariables>) => {
+  const totalTracks = playlist.tracks.pageInfo.total
+
   return (
     <PageContainer>
       <PageHeader>
         <PageCoverPhoto image={playlist.images[0]} />
         <div className="flex flex-1 flex-col gap-2">
-          <PageTitle>{playlist.name}</PageTitle>
           <PageMediaType mediaType="playlist" />
+          <PageTitle>{playlist.name}</PageTitle>
+          <PageHeaderDetails>
+            <span className="font-bold">{playlist.owner.displayName}</span>
+            <span>
+              {totalTracks} {totalTracks === 1 ? 'song' : 'songs'}
+            </span>
+          </PageHeaderDetails>
         </div>
       </PageHeader>
       <PageContent>
