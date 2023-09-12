@@ -11,6 +11,36 @@ export const schema = gql`
     string.
     """
     name: String!
+
+    """
+    The tracks of the album.
+    """
+    tracks(
+      """
+      The maximum number of items to return. Default: 20. Minimum: 1. Maximum: 50.
+      """
+      limit: Int = 20
+
+      """
+      The index of the first playlist to return. Default: 0 (the first object).
+
+      Use with \`limit\` to get the next set of tracks.
+      """
+      offset: Int = 0
+    ): AlbumTrackConnection
+  }
+
+  type AlbumTrackConnection {
+    "The set of tracks."
+    edges: [AlbumTrackEdge!]!
+
+    "Pagination information for the set of tracks."
+    pageInfo: PageInfo!
+  }
+
+  type AlbumTrackEdge {
+    "The track on the album"
+    node: Track!
   }
 
   type Query {
