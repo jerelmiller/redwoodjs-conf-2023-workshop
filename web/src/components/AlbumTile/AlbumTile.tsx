@@ -2,18 +2,17 @@ import { ReactElement, ReactNode, forwardRef, cloneElement } from 'react'
 
 import { gql } from '@apollo/client'
 import cx from 'classnames'
-
 import { AlbumTile_album as Album } from 'types/graphql'
+
 import { Link } from '@redwoodjs/router'
 
 import { fragments } from 'src/apollo/fragmentRegistry'
 import CoverPhoto from 'src/components/CoverPhoto'
 import DelimitedList from 'src/components/DelimitedList'
-
 import MediaTile from 'src/components/MediaTile'
 import MediaTileCoverPhoto from 'src/components/MediaTileCoverPhoto'
-import MediaTileTitle from 'src/components/MediaTileTitle'
 import MediaTileDetails from 'src/components/MediaTileDetails'
+import MediaTileTitle from 'src/components/MediaTileTitle'
 import { yearOfRelease } from 'src/utils/releaseDate'
 import { capitalize } from 'src/utils/string'
 

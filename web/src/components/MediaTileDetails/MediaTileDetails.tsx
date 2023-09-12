@@ -1,4 +1,5 @@
 import { ReactNode } from 'react'
+
 import DelimitedList from 'src/components/DelimitedList'
 
 interface MediaTileDetailsProps {

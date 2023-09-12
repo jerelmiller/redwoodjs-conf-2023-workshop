@@ -1,4 +1,5 @@
 import { ComponentPropsWithoutRef, ReactNode } from 'react'
+
 import { Link } from '@redwoodjs/router'
 
 type LinkProps = ComponentPropsWithoutRef<typeof Link>

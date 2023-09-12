@@ -1,6 +1,8 @@
 import { CSSProperties } from 'react'
+
 import cx from 'classnames'
 import { Play, Pause } from 'lucide-react'
+
 import Tooltip from 'src/components/Tooltip'
 
 type PlayButtonProps = {
