@@ -9,13 +9,22 @@ export const artist: QueryResolvers['artist'] = ({ id }) => {
 }
 
 export const Artist: ArtistRelationResolvers = {
-  albums: async ({ limit, offset }, { root }) => {
+  albums: async ({ includeTypes, limit, offset }, { root }) => {
+    const types = includeTypes?.map((str) => str.toLowerCase())
+
     const total = await db.album.count({
-      where: { artists: { some: { id: root.id } } },
+      where: {
+        albumType: { in: types },
+        artists: { some: { id: root.id } },
+      },
     })
     const albums = await db.artist
       .findUniqueOrThrow({ where: { id: root.id } })
-      .albums({ take: limit, skip: offset })
+      .albums({
+        take: limit,
+        skip: offset,
+        where: { albumType: { in: types } },
+      })
 
     return {
       pageInfo: {
