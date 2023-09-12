@@ -191,9 +191,7 @@ const columns = [
         <div className="flex items-end gap-2">
           <CoverPhoto image={coverPhoto} size="2.5rem" />
           <div className="flex flex-col">
-            <Link className="text-base text-primary" to="/tracks/id">
-              {track.name}
-            </Link>
+            <span className="text-base text-primary">{track.name}</span>
             <div className="flex items-center gap-2">
               {track.explicit && <ExplicitBadge />}
               <DelimitedList delimiter=", ">
