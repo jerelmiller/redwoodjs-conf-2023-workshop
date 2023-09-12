@@ -31,11 +31,6 @@ fragments.register(gql`
     images {
       url
     }
-    tracks {
-      pageInfo {
-        total
-      }
-    }
   }
 `)
 
