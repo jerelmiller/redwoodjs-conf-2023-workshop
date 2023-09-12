@@ -150,11 +150,11 @@ const columns = [
       return (
         <div className="flex items-end gap-2">
           <CoverPhoto image={coverPhoto} size="2.5rem" />
-          <div className="flex-col">
+          <div className="flex flex-col">
             <Link className="text-base text-primary" to="/tracks/id">
               {track.name}
             </Link>
-            <div className="items-center gap-2">
+            <div className="flex items-center gap-2">
               {track.explicit && <ExplicitBadge />}
               <DelimitedList delimiter=", ">
                 {track.artists.map((artist) => (

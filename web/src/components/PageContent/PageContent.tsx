@@ -17,7 +17,7 @@ const PageContent = ({ children, gap }: PageContentProps) => {
         )}
       />
       <div
-        className="isolate flex-1 flex-col gap-4 p-[var(--main-content--padding)]"
+        className="isolate flex flex-1 flex-col gap-4 p-[var(--main-content--padding)]"
         style={{ gap }}
       >
         {children}
