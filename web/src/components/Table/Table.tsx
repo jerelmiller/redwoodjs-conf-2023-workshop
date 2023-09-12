@@ -19,9 +19,6 @@ interface TableProps<TData>
   meta?: TableMeta<TData>
   visibility?: VisibilityState
   onDoubleClickRow?: (rows: Row<TData>) => void
-  enableRowSelection?: boolean
-  enableMultiSelect?: boolean
-  enableRangeSelect?: boolean
 }
 
 function Table<TData>({
