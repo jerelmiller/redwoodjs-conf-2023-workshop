@@ -2,16 +2,17 @@ import type {
   FindPlaylistQuery,
   FindPlaylistQueryVariables,
 } from 'types/graphql'
+
 import type { CellSuccessProps, CellFailureProps } from '@redwoodjs/web'
 
 import PageContainer from 'src/components/PageContainer'
-import PageCoverPhoto from 'src/components/PageCoverPhoto'
 import PageContent from 'src/components/PageContent'
+import PageCoverPhoto from 'src/components/PageCoverPhoto'
 import PageHeader from 'src/components/PageHeader'
 import PageHeaderDetails from 'src/components/PageHeaderDetails'
+import PageMediaType from 'src/components/PageMediaType'
 import PageTitle from 'src/components/PageTitle'
 import PlayButton from 'src/components/PlayButton'
-import PageMediaType from 'src/components/PageMediaType'
 
 export const QUERY = gql`
   query FindPlaylistQuery($id: ID!) {
@@ -24,6 +25,7 @@ export const QUERY = gql`
       }
       images {
         url
+        vibrantColor(alpha: 0.9)
       }
       tracks {
         pageInfo {
@@ -48,9 +50,10 @@ export const Success = ({
   playlist,
 }: CellSuccessProps<FindPlaylistQuery, FindPlaylistQueryVariables>) => {
   const totalTracks = playlist.tracks.pageInfo.total
+  const coverPhoto = playlist.images[0]
 
   return (
-    <PageContainer>
+    <PageContainer bgColor={coverPhoto.vibrantColor}>
       <PageHeader>
         <PageCoverPhoto image={playlist.images[0]} />
         <div className="flex flex-1 flex-col gap-2">
