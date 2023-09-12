@@ -23,6 +23,7 @@ import PageHeaderDetails from 'src/components/PageHeaderDetails'
 import PageMediaType from 'src/components/PageMediaType'
 import PageTitle from 'src/components/PageTitle'
 import PlayButton from 'src/components/PlayButton'
+import Skeleton from 'src/components/Skeleton'
 import Table from 'src/components/Table'
 import TrackNumberColumn from 'src/components/TrackNumberColumn'
 
@@ -68,7 +69,46 @@ export const QUERY = gql`
   }
 `
 
-export const Loading = () => <div>Loading...</div>
+export const Loading = () => {
+  return (
+    <PageContainer>
+      <PageHeader>
+        <Skeleton.CoverPhoto size="250px" />
+        <div className="flex max-h-[250px] flex-1 flex-col gap-2">
+          <Skeleton.Heading level={1} width="50%" fontSize="5rem" />
+          <PageHeaderDetails>
+            <Skeleton.Text width="20%" />
+          </PageHeaderDetails>
+        </div>
+      </PageHeader>
+      <PageContent>
+        <div>
+          <PlayButton
+            disabled
+            variant="primary"
+            size="3.5rem"
+            playing={false}
+          />
+        </div>
+        <Skeleton.Table
+          rows={10}
+          columns={[
+            <Skeleton.Text key="text" />,
+            <div key="header" className="flex items-end gap-2">
+              <Skeleton.CoverPhoto size="2.5rem" />
+              <div className="flex flex-1 flex-col gap-2">
+                <Skeleton.Text width="25%" fontSize="1rem" />
+                <Skeleton.Text width="20%" fontSize="0.75rem" />
+              </div>
+            </div>,
+            <Skeleton.Text key="text2" />,
+            <Skeleton.Text key="text3" />,
+          ]}
+        />
+      </PageContent>
+    </PageContainer>
+  )
+}
 
 export const Empty = () => <div>Empty</div>
 
