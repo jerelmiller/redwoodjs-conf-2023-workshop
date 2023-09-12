@@ -1,7 +1,8 @@
 import type {
   AlbumType,
-  QueryResolvers,
   AlbumRelationResolvers,
+  QueryResolvers,
+  ReleaseDatePrecision,
 } from 'types/graphql'
 
 import { db } from 'src/lib/db'
@@ -14,6 +15,13 @@ export const Album: AlbumRelationResolvers = {
   albumType: (_, { root }) => root.albumType.toUpperCase() as AlbumType,
   images: (_, { root }) => {
     return db.album.findUniqueOrThrow({ where: { id: root.id } }).images()
+  },
+  releaseDate: (_, { root }) => {
+    return {
+      date: root.releaseDate,
+      precision:
+        root.releaseDatePrecision.toUpperCase() as ReleaseDatePrecision,
+    }
   },
   tracks: async ({ limit, offset }, { root }) => {
     const total = await db.track.count({ where: { albumId: root.id } })
