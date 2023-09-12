@@ -1,6 +1,11 @@
 export const schema = gql`
   type Album {
     """
+    The type of the album.
+    """
+    albumType: AlbumType!
+
+    """
     The [Spotify ID](https://developer.spotify.com/documentation/web-api/#spotify-uris-and-ids)
     for the album.
     """
@@ -46,6 +51,12 @@ export const schema = gql`
   type AlbumTrackEdge {
     "The track on the album"
     node: Track!
+  }
+
+  enum AlbumType {
+    ALBUM
+    SINGLE
+    COMPILATION
   }
 
   type Query {

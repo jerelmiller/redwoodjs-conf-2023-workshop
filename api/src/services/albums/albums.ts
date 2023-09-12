@@ -1,4 +1,8 @@
-import type { QueryResolvers, AlbumRelationResolvers } from 'types/graphql'
+import type {
+  AlbumType,
+  QueryResolvers,
+  AlbumRelationResolvers,
+} from 'types/graphql'
 
 import { db } from 'src/lib/db'
 
@@ -7,6 +11,7 @@ export const album: QueryResolvers['album'] = ({ id }) => {
 }
 
 export const Album: AlbumRelationResolvers = {
+  albumType: (_, { root }) => root.albumType.toUpperCase() as AlbumType,
   images: (_, { root }) => {
     return db.album.findUniqueOrThrow({ where: { id: root.id } }).images()
   },

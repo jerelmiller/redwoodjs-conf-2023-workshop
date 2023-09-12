@@ -63,12 +63,6 @@ export const schema = gql`
     node: Album!
   }
 
-  enum AlbumType {
-    ALBUM
-    SINGLE
-    COMPILATION
-  }
-
   type Query {
     artist(id: ID!): Artist @skipAuth
   }
