@@ -11,7 +11,7 @@ CREATE TABLE "new_Album" (
     "id" TEXT NOT NULL PRIMARY KEY,
     "name" TEXT NOT NULL,
     "albumType" TEXT NOT NULL DEFAULT 'album',
-    "releaseDate" DATETIME NOT NULL,
+    "releaseDate" TEXT NOT NULL,
     "releaseDatePrecision" TEXT NOT NULL
 );
 INSERT INTO "new_Album" ("albumType", "id", "name") SELECT "albumType", "id", "name" FROM "Album";

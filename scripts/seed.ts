@@ -114,7 +114,7 @@ const saveAlbum = async (album: AlbumWithRefs) => {
       id: album.id,
       name: album.name,
       albumType: album.album_type,
-      releaseDate: new Date(album.release_date),
+      releaseDate: album.release_date,
       releaseDatePrecision: album.release_date_precision,
       artists: {
         connect: artists,
@@ -126,7 +126,7 @@ const saveAlbum = async (album: AlbumWithRefs) => {
     update: {
       albumType: album.album_type,
       name: album.name,
-      releaseDate: new Date(album.release_date),
+      releaseDate: album.release_date,
       releaseDatePrecision: album.release_date_precision,
       artists: {
         connect: artists,

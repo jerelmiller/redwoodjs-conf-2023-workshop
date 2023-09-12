@@ -22,7 +22,7 @@ model Album {
   name                 String
   albumType            String   @default("album")
   artists              Artist[]
-  releaseDate          DateTime
+  releaseDate          String
   releaseDatePrecision String
   images               Image[]
   tracks               Track[]
