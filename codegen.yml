@@ -1,6 +1,8 @@
 config:
   mappers:
+    Album: 'PrismaAlbum'
     CurrentUser: 'PrismaUser'
     CurrentUserProfile: 'PrismaUser'
     Playlist: 'PrismaPlaylist'
+    PlaylistTrackEdge: 'PrismaPlaylistTrack'
     Track: 'PrismaTrack'

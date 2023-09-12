@@ -1,9 +1,9 @@
 export const schema = gql`
   type Track {
-    # """
-    # The album on which the track appears.
-    # """
-    # album: Album!
+    """
+    The album on which the track appears.
+    """
+    album: Album!
 
     "The artists who performed the track."
     artists: [Artist!]!
