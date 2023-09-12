@@ -6,7 +6,7 @@ import type {
   FindPlaylistQueryVariables,
 } from 'types/graphql'
 
-import { Link } from '@redwoodjs/router'
+import { Link, routes } from '@redwoodjs/router'
 import type { CellSuccessProps, CellFailureProps } from '@redwoodjs/web'
 
 import CoverPhoto from 'src/components/CoverPhoto'
@@ -199,7 +199,7 @@ const columns = [
                   <Link
                     key={artist.id}
                     className="text-muted transition-colors duration-150 hover:text-primary"
-                    to="/artists/id"
+                    to={routes.artist({ id: artist.id })}
                   >
                     {artist.name}
                   </Link>
