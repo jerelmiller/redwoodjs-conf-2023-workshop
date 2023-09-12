@@ -18,14 +18,23 @@ model Artist {
 }
 
 model Album {
-  id                   String   @id @default(cuid())
+  id                   String      @id @default(cuid())
   name                 String
-  albumType            String   @default("album")
+  albumType            String      @default("album")
   artists              Artist[]
   releaseDate          String
   releaseDatePrecision String
   images               Image[]
   tracks               Track[]
+  copyrights           Copyright[]
+}
+
+model Copyright {
+  id      String @id @default(cuid())
+  text    String
+  album   Album  @relation(fields: [albumId], references: [id])
+  albumId String
+  type    String
 }
 
 model Image {
