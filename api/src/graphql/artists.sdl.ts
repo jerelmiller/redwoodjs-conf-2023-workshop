@@ -48,7 +48,7 @@ export const schema = gql`
     """
     A list of albums that belong to the artist.
     """
-    edges: [ArtistAlbumEdge!]
+    edges: [ArtistAlbumEdge!]!
 
     """
     "Pagination information for the set of albums"
