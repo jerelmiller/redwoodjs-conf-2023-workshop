@@ -3,5 +3,6 @@ export const schema = gql`
     url: String!
     height: Int
     width: Int
+    vibrantColor(alpha: Float): String
   }
 `

@@ -7491,6 +7491,7 @@ __metadata:
     "@redwoodjs/graphql-server": 6.1.1
     "@types/crypto-js": ^4.1.2
     crypto-js: ^4.1.1
+    node-vibrant: 3.1.6
   languageName: unknown
   linkType: soft
 
@@ -21904,7 +21905,6 @@ __metadata:
     autoprefixer: ^10.4.15
     classnames: ^2.3.2
     lucide-react: ^0.274.0
-    node-vibrant: 3.1.6
     postcss: ^8.4.29
     postcss-loader: ^7.3.3
     prop-types: 15.8.1
