@@ -20,6 +20,7 @@ const Routes = () => {
       <Route path="/logout" page={LogoutPage} name="logout" />
       <Set wrap={BaseLayout}>
         <Route path="/" page={HomePage} name="home" />
+        <Route path="/artists/{id}" page={ArtistPage} name="artist" />
         <Route path="/playlists/{id}" page={PlaylistPage} name="playlist" />
       </Set>
       <Route notfound page={NotFoundPage} />
