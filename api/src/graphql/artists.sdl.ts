@@ -8,7 +8,7 @@ export const schema = gql`
       Used to filter the response. If not supplied, all album types will be
       returned.
       """
-      includeGroups: [AlbumGroup!]
+      includeTypes: [AlbumType!]
 
       """
       The maximum number of items to return. Default: 20. Minimum: 1. Maximum: 50.
@@ -63,7 +63,7 @@ export const schema = gql`
     node: Album!
   }
 
-  enum AlbumGroup {
+  enum AlbumType {
     ALBUM
     SINGLE
     COMPILATION
