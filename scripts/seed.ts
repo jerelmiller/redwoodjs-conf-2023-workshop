@@ -1,7 +1,7 @@
 import fs from 'node:fs'
 import path from 'node:path'
 
-import type { Prisma, Image as PrismaImage } from '@prisma/client'
+import { Prisma, Image as PrismaImage } from '@prisma/client'
 import { db } from 'api/src/lib/db'
 import toml from 'toml'
 
@@ -107,6 +107,19 @@ const saveAlbum = async (album: AlbumWithRefs) => {
 
     images.push({ id: image.id })
   }
+  const copyrights =
+    album.copyrights.map<Prisma.CopyrightCreateOrConnectWithoutAlbumInput>(
+      (copyright) => ({
+        where: {
+          albumId_text_type: {
+            albumId: album.id,
+            text: copyright.text,
+            type: copyright.type,
+          },
+        },
+        create: copyright,
+      })
+    )
 
   return db.album.upsert({
     where: { id: album.id },
@@ -119,6 +132,9 @@ const saveAlbum = async (album: AlbumWithRefs) => {
       artists: {
         connect: artists,
       },
+      copyrights: {
+        connectOrCreate: copyrights,
+      },
       images: {
         connect: images,
       },
@@ -130,6 +146,9 @@ const saveAlbum = async (album: AlbumWithRefs) => {
       releaseDatePrecision: album.release_date_precision,
       artists: {
         connect: artists,
+      },
+      copyrights: {
+        connectOrCreate: copyrights,
       },
       images: {
         connect: images,
