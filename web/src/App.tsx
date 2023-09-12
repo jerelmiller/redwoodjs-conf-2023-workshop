@@ -1,6 +1,7 @@
 import { FatalErrorBoundary, RedwoodProvider } from '@redwoodjs/web'
 import { RedwoodApolloProvider } from '@redwoodjs/web/apollo'
 import * as Tooltip from '@radix-ui/react-tooltip'
+import { typePolicies } from 'src/apollo/typePolicies'
 
 import FatalErrorPage from 'src/pages/FatalErrorPage'
 import Routes from 'src/Routes'
@@ -13,7 +14,14 @@ const App = () => (
   <FatalErrorBoundary page={FatalErrorPage}>
     <RedwoodProvider titleTemplate="%PageTitle | %AppTitle">
       <AuthProvider>
-        <RedwoodApolloProvider useAuth={useAuth}>
+        <RedwoodApolloProvider
+          useAuth={useAuth}
+          graphQLClientConfig={{
+            cacheConfig: {
+              typePolicies,
+            },
+          }}
+        >
           <Tooltip.Provider delayDuration={300}>
             <Routes />
           </Tooltip.Provider>
