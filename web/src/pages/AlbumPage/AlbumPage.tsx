@@ -1,15 +1,16 @@
-import { Link, routes } from '@redwoodjs/router'
 import { MetaTags } from '@redwoodjs/web'
 
-const AlbumPage = () => {
+import AlbumCell from 'src/components/AlbumCell'
+
+interface AlbumPageProps {
+  id: string
+}
+
+const AlbumPage = ({ id }: AlbumPageProps) => {
   return (
     <>
       <MetaTags title="Album" description="Album page" />
-
-      <h1>AlbumPage</h1>
-      <p>
-        Find me in <code>./web/src/pages/AlbumPage/AlbumPage.tsx</code>
-      </p>
+      <AlbumCell id={id} />
     </>
   )
 }
