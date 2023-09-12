@@ -18,12 +18,14 @@ model Artist {
 }
 
 model Album {
-  id        String   @id @default(cuid())
-  name      String
-  albumType String   @default("album")
-  artists   Artist[]
-  images    Image[]
-  tracks    Track[]
+  id                   String   @id @default(cuid())
+  name                 String
+  albumType            String   @default("album")
+  artists              Artist[]
+  releaseDate          DateTime
+  releaseDatePrecision String
+  images               Image[]
+  tracks               Track[]
 }
 
 model Image {
