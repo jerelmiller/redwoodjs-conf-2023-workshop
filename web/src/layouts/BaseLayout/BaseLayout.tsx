@@ -23,7 +23,7 @@ const BaseLayout = ({ children }: BaseLayoutProps) => {
     >
       <aside className="overflow-auto pb-0 pt-4 text-primary [grid-area:sidebar]">
         <nav className="flex h-full flex-col">
-          <Link to={routes.home()} className="-left-3 flex justify-center">
+          <Link to={routes.home()} className="-left-3 flex justify-center py-2">
             <ApolloLogo size="225px" className="relative -left-3" />
           </Link>
           <SidebarSection className="px-4 py-2">
