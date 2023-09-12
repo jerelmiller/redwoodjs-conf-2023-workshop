@@ -4,7 +4,7 @@ import { gql } from '@apollo/client'
 import cx from 'classnames'
 import { AlbumTile_album as Album } from 'types/graphql'
 
-import { Link } from '@redwoodjs/router'
+import { routes } from '@redwoodjs/router'
 
 import { fragments } from 'src/apollo/fragmentRegistry'
 import CoverPhoto from 'src/components/CoverPhoto'
@@ -36,7 +36,7 @@ fragments.register(gql`
 
 const AlbumTile = ({ album }: AlbumTileProps) => {
   return (
-    <MediaTile to="/albums/id">
+    <MediaTile to={routes.album({ id: album.id })}>
       <MediaTileCoverPhoto image={album.images[0]} />
       <div className="flex flex-col">
         <MediaTileTitle>{album.name}</MediaTileTitle>

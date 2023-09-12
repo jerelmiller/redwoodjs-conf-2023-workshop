@@ -217,7 +217,7 @@ const columns = [
     cell: (info) => {
       const album = info.getValue()
 
-      return <Link to={'/albums/id'}>{album.name}</Link>
+      return <Link to={routes.album({ id: album.id })}>{album.name}</Link>
     },
   }),
   columnHelper.accessor('addedAt', {
