@@ -113,6 +113,7 @@ const saveAlbum = async (album: AlbumWithRefs) => {
     create: {
       id: album.id,
       name: album.name,
+      albumType: album.album_type,
       artists: {
         connect: artists,
       },
@@ -121,6 +122,7 @@ const saveAlbum = async (album: AlbumWithRefs) => {
       },
     },
     update: {
+      albumType: album.album_type,
       name: album.name,
       artists: {
         connect: artists,
