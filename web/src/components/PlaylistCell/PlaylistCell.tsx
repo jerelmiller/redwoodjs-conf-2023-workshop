@@ -56,7 +56,7 @@ export const Success = ({
     <PageContainer bgColor={coverPhoto.vibrantColor}>
       <PageHeader>
         <PageCoverPhoto image={playlist.images[0]} />
-        <div className="flex flex-1 flex-col gap-2">
+        <div className="flex max-h-[250px] flex-1 flex-col gap-2">
           <PageMediaType mediaType="playlist" />
           <PageTitle>{playlist.name}</PageTitle>
           <PageHeaderDetails>
