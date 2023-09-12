@@ -92,6 +92,7 @@ const saveArtist = async (artist: Spotify.Object.Artist) => {
 
 const saveAlbum = async (album: AlbumWithRefs) => {
   const artists: Prisma.ArtistWhereUniqueInput[] = []
+  const images: Prisma.ImageWhereUniqueInput[] = []
 
   for (const ref of album.artists) {
     const artist = await saveArtist(
@@ -99,6 +100,12 @@ const saveAlbum = async (album: AlbumWithRefs) => {
     )
 
     artists.push({ id: artist.id })
+  }
+
+  for (const img of album.images) {
+    const image = await saveImage(img)
+
+    images.push({ id: image.id })
   }
 
   return db.album.upsert({
@@ -109,11 +116,17 @@ const saveAlbum = async (album: AlbumWithRefs) => {
       artists: {
         connect: artists,
       },
+      images: {
+        connect: images,
+      },
     },
     update: {
       name: album.name,
       artists: {
         connect: artists,
+      },
+      images: {
+        connect: images,
       },
     },
   })
