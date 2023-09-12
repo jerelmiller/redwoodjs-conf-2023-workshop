@@ -7,7 +7,8 @@ import type { CellSuccessProps, CellFailureProps } from '@redwoodjs/web'
 
 import CoverPhoto from 'src/components/CoverPhoto'
 import DelimitedList from 'src/components/DelimitedList'
-import { thumbnail } from 'src/utils/image'
+import Skeleton from 'src/components/Skeleton'
+import { randomBetween, range } from 'src/utils/common'
 
 export const QUERY = gql`
   query SidebarPlaylistsQuery {
@@ -31,9 +32,31 @@ export const QUERY = gql`
   }
 `
 
-export const Loading = () => <div>Loading...</div>
+export const Loading = () => {
+  const skeletons = range(0, randomBetween(10, 15))
 
-export const Empty = () => <div>Empty</div>
+  return (
+    <ul className="-mx-1 flex-1 overflow-y-auto px-3">
+      {skeletons.map((num) => (
+        <li key={num} className="px-0 py-2">
+          <div className="flex gap-2">
+            <Skeleton.CoverPhoto size="3rem" />
+            <div className="flex flex-1 flex-col gap-4">
+              <Skeleton.Text
+                width={`${randomBetween(40, 60)}%`}
+                fontSize="1rem"
+              />
+              <Skeleton.Text
+                width={`${randomBetween(50, 70)}%`}
+                fontSize="0.75rem"
+              />
+            </div>
+          </div>
+        </li>
+      ))}
+    </ul>
+  )
+}
 
 export const Failure = ({ error }: CellFailureProps) => (
   <div style={{ color: 'red' }}>Error: {error?.message}</div>
@@ -46,7 +69,7 @@ export const Success = ({ me }: CellSuccessProps<SidebarPlaylistsQuery>) => {
 
   return (
     <ul>
-      {me.playlists?.edges?.map(({ node: playlist }) => {
+      {me?.playlists?.edges?.map(({ node: playlist }) => {
         return (
           <li key={playlist.id}>
             <NavLink
@@ -55,7 +78,7 @@ export const Success = ({ me }: CellSuccessProps<SidebarPlaylistsQuery>) => {
               activeClassName="bg-surface text-primary hover:bg-[#393939]"
             >
               <div className="flex items-center gap-3">
-                <CoverPhoto image={thumbnail(playlist.images)} />
+                <CoverPhoto image={playlist.images.at(-1)} />
                 <div className="flex flex-1 flex-col justify-around self-stretch overflow-hidden text-ellipsis whitespace-nowrap">
                   <div
                     className={cx(
