@@ -13,6 +13,9 @@ export const album: QueryResolvers['album'] = ({ id }) => {
 
 export const Album: AlbumRelationResolvers = {
   albumType: (_, { root }) => root.albumType.toUpperCase() as AlbumType,
+  artists: (_, { root }) => {
+    return db.album.findUniqueOrThrow({ where: { id: root.id } }).artists()
+  },
   images: (_, { root }) => {
     return db.album.findUniqueOrThrow({ where: { id: root.id } }).images()
   },

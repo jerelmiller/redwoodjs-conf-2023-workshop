@@ -5,6 +5,9 @@ export const schema = gql`
     """
     albumType: AlbumType!
 
+    "The artists of the album."
+    artists: [Artist!]!
+
     """
     The [Spotify ID](https://developer.spotify.com/documentation/web-api/#spotify-uris-and-ids)
     for the album.
