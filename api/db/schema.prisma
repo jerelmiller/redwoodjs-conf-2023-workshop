@@ -21,6 +21,7 @@ model Album {
   id      String   @id @default(cuid())
   name    String
   artists Artist[]
+  images  Image[]
   tracks  Track[]
 }
 
@@ -29,6 +30,7 @@ model Image {
   url       String     @unique
   height    Int?
   width     Int?
+  albums    Album[]
   artists   Artist[]
   playlists Playlist[]
   users     User[]
