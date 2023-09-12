@@ -17,5 +17,8 @@
   port = 8911
 [browser]
   open = true
+[generate]
+  tests = false
+  stories = false
 [notifications]
   versionUpdates = ["latest"]
