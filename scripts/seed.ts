@@ -143,6 +143,11 @@ const savePlaylist = async (playlist: PlaylistWithRefs) => {
       },
       create: {
         addedAt: new Date(playlistTrack.added_at),
+        addedBy: {
+          connect: {
+            displayName: config.user.displayName,
+          },
+        },
         track: {
           connect: { id: track.id },
         },
