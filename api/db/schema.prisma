@@ -49,6 +49,8 @@ model PlaylistTrack {
   playlistId String
   track      Track    @relation(fields: [trackId], references: [id])
   trackId    String
+  addedBy    User     @relation(fields: [addedById], references: [id])
+  addedById  String
 
   @@id([playlistId, trackId])
 }
@@ -68,8 +70,9 @@ model Track {
 }
 
 model User {
-  id          String     @id @default(cuid())
-  displayName String?    @unique
-  playlists   Playlist[]
-  images      Image[]
+  id             String          @id @default(cuid())
+  displayName    String?         @unique
+  playlists      Playlist[]
+  images         Image[]
+  playlistTracks PlaylistTrack[]
 }
