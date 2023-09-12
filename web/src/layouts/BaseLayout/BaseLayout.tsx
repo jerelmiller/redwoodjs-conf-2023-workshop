@@ -1,4 +1,4 @@
-import { Home, Library, Search } from 'lucide-react'
+import { Home, Library } from 'lucide-react'
 
 import { Link, routes } from '@redwoodjs/router'
 
