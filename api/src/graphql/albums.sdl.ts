@@ -23,6 +23,11 @@ export const schema = gql`
     images: [Image!]!
 
     """
+    The date the album was first released.
+    """
+    releaseDate: ReleaseDate!
+
+    """
     The tracks of the album.
     """
     tracks(
