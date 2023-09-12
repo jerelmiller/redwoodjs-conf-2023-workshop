@@ -13,6 +13,11 @@ export const schema = gql`
     name: String!
 
     """
+    The cover art for the album in various sizes, widest first.
+    """
+    images: [Image!]!
+
+    """
     The tracks of the album.
     """
     tracks(

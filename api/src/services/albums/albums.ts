@@ -7,6 +7,9 @@ export const album: QueryResolvers['album'] = ({ id }) => {
 }
 
 export const Album: AlbumRelationResolvers = {
+  images: (_, { root }) => {
+    return db.album.findUniqueOrThrow({ where: { id: root.id } }).images()
+  },
   tracks: async ({ limit, offset }, { root }) => {
     const total = await db.track.count({ where: { albumId: root.id } })
     const tracks = await db.album
