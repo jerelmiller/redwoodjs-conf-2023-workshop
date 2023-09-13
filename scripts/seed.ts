@@ -5,14 +5,7 @@ import { Prisma } from '@prisma/client'
 import { db } from 'api/src/lib/db'
 import toml from 'toml'
 
-import type {
-  AlbumWithRefs,
-  Reference,
-  PlaylistWithRefs,
-  Spotify,
-  SpotifyRecordWithRefs,
-  TrackWithRefs,
-} from './shared/types'
+import type { Spotify, SpotifyRecord } from './shared/types'
 
 interface WorkshopConfig {
   user: {
@@ -27,14 +20,41 @@ const readFile = (relativePath: string) => {
   return fs.readFileSync(getPathFromRelative(relativePath), 'utf8')
 }
 
-const config: WorkshopConfig = toml.parse(readFile('../workshop.config.toml'))
-const refs = JSON.parse(readFile('./spotify.json'))
-
-const getRecordFromRef = <T>(ref: Reference) => {
-  return refs[ref.__ref] as T
+const getStoreKey = (record: { type: string; id: string }) => {
+  return [record.type, record.id].join(':')
 }
 
-const saveRecord = async (record: SpotifyRecordWithRefs) => {
+const config: WorkshopConfig = toml.parse(readFile('../workshop.config.toml'))
+const refs = JSON.parse(readFile('./spotify.json')) as Record<
+  string,
+  SpotifyRecord
+>
+
+const isShallowRecord = (
+  simplified: Spotify.Object.AlbumSimplified | Spotify.Object.ArtistSimplified
+) => {
+  console.log({
+    key: getStoreKey(simplified),
+    exists: Boolean(refs[getStoreKey(simplified)]),
+  })
+  return !refs[getStoreKey(simplified)]
+}
+
+const getFullRecord = <
+  TSimplified extends
+    | Spotify.Object.ArtistSimplified
+    | Spotify.Object.AlbumSimplified
+>(
+  simplified: TSimplified
+): TSimplified extends Spotify.Object.ArtistSimplified
+  ? Spotify.Object.Artist
+  : TSimplified extends Spotify.Object.AlbumSimplified
+  ? Spotify.Object.Album
+  : unknown => {
+  return (refs[getStoreKey(simplified)] || simplified) as never
+}
+
+const saveRecord = async (record: SpotifyRecord) => {
   switch (record.type) {
     case 'artist':
       return saveArtist(record)
@@ -47,10 +67,16 @@ const saveRecord = async (record: SpotifyRecordWithRefs) => {
   }
 }
 
-const saveArtist = async (artist: Spotify.Object.Artist) => {
-  const images =
-    artist.images.map<Prisma.ArtistImageCreateOrConnectWithoutArtistInput>(
-      (image) => ({
+const saveArtist = async (
+  artist: Spotify.Object.Artist | Spotify.Object.ArtistSimplified
+) => {
+  artist = getFullRecord(artist)
+  const images: Prisma.ArtistImageCreateOrConnectWithoutArtistInput[] = []
+  const followerCount = 'followers' in artist ? artist.followers.total : 0
+
+  if ('images' in artist) {
+    for (const image of artist.images) {
+      images.push({
         where: { url: image.url },
         create: {
           url: image.url,
@@ -58,7 +84,8 @@ const saveArtist = async (artist: Spotify.Object.Artist) => {
           width: image.height,
         },
       })
-    )
+    }
+  }
 
   return db.artist.upsert({
     where: {
@@ -67,14 +94,16 @@ const saveArtist = async (artist: Spotify.Object.Artist) => {
     create: {
       id: artist.id,
       name: artist.name,
-      followerCount: artist.followers.total,
+      followerCount,
+      shallow: isShallowRecord(artist),
       images: {
         connectOrCreate: images,
       },
     },
     update: {
       name: artist.name,
-      followerCount: artist.followers.total,
+      followerCount,
+      shallow: isShallowRecord(artist),
       images: {
         connectOrCreate: images,
       },
@@ -82,7 +111,10 @@ const saveArtist = async (artist: Spotify.Object.Artist) => {
   })
 }
 
-const saveAlbum = async (album: AlbumWithRefs) => {
+const saveAlbum = async (
+  album: Spotify.Object.Album | Spotify.Object.AlbumSimplified
+) => {
+  album = getFullRecord(album)
   const artists: Prisma.ArtistWhereUniqueInput[] = []
   const images =
     album.images.map<Prisma.AlbumImageCreateOrConnectWithoutAlbumInput>(
@@ -97,16 +129,16 @@ const saveAlbum = async (album: AlbumWithRefs) => {
     )
 
   for (const ref of album.artists) {
-    const artist = await saveArtist(
-      getRecordFromRef<Spotify.Object.Artist>(ref)
-    )
+    const artist = await saveArtist(ref)
 
     artists.push({ id: artist.id })
   }
 
-  const copyrights =
-    album.copyrights.map<Prisma.CopyrightCreateOrConnectWithoutAlbumInput>(
-      (copyright) => ({
+  const copyrights: Prisma.CopyrightCreateOrConnectWithoutAlbumInput[] = []
+
+  if ('copyrights' in album) {
+    for (const copyright of album.copyrights) {
+      copyrights.push({
         where: {
           albumId_text_type: {
             albumId: album.id,
@@ -116,7 +148,8 @@ const saveAlbum = async (album: AlbumWithRefs) => {
         },
         create: copyright,
       })
-    )
+    }
+  }
 
   return db.album.upsert({
     where: { id: album.id },
@@ -126,6 +159,7 @@ const saveAlbum = async (album: AlbumWithRefs) => {
       albumType: album.album_type,
       releaseDate: album.release_date,
       releaseDatePrecision: album.release_date_precision,
+      shallow: isShallowRecord(album),
       artists: {
         connect: artists,
       },
@@ -141,6 +175,7 @@ const saveAlbum = async (album: AlbumWithRefs) => {
       name: album.name,
       releaseDate: album.release_date,
       releaseDatePrecision: album.release_date_precision,
+      shallow: isShallowRecord(album),
       artists: {
         connect: artists,
       },
@@ -154,7 +189,7 @@ const saveAlbum = async (album: AlbumWithRefs) => {
   })
 }
 
-const savePlaylist = async (playlist: PlaylistWithRefs) => {
+const savePlaylist = async (playlist: Spotify.Object.Playlist) => {
   const images =
     playlist.images.map<Prisma.PlaylistImageCreateOrConnectWithoutPlaylistInput>(
       (image) => ({
@@ -195,9 +230,7 @@ const savePlaylist = async (playlist: PlaylistWithRefs) => {
   })
 
   for (const playlistTrack of playlist.tracks.items) {
-    const track = await saveTrack(
-      getRecordFromRef<TrackWithRefs>(playlistTrack.track)
-    )
+    const track = await saveTrack(playlistTrack.track)
 
     await db.playlistTrack.upsert({
       where: {
@@ -238,14 +271,12 @@ const savePlaylist = async (playlist: PlaylistWithRefs) => {
   return playlist
 }
 
-const saveTrack = async (track: TrackWithRefs) => {
-  const album = await saveAlbum(getRecordFromRef<AlbumWithRefs>(track.album))
+const saveTrack = async (track: Spotify.Object.Track) => {
+  const album = await saveAlbum(track.album)
   const artists: Prisma.ArtistWhereUniqueInput[] = []
 
   for (const ref of track.artists) {
-    const artist = await saveArtist(
-      getRecordFromRef<Spotify.Object.Artist>(ref)
-    )
+    const artist = await saveArtist(ref)
 
     artists.push({ id: artist.id })
   }
@@ -349,7 +380,7 @@ export default async () => {
   })
 
   for (const record of Object.values(refs)) {
-    await saveRecord(record as SpotifyRecordWithRefs)
+    await saveRecord(record as SpotifyRecord)
   }
 
   await removeOldUsers()
