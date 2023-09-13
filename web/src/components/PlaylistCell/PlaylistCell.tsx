@@ -19,6 +19,7 @@ import PageContainer from 'src/components/PageContainer'
 import PageContent from 'src/components/PageContent'
 import PageCoverPhoto from 'src/components/PageCoverPhoto'
 import PageHeader from 'src/components/PageHeader'
+import PageHeaderContent from 'src/components/PageHeaderContent'
 import PageHeaderDetails from 'src/components/PageHeaderDetails'
 import PageMediaType from 'src/components/PageMediaType'
 import PageTitle from 'src/components/PageTitle'
@@ -128,7 +129,7 @@ export const Success = ({
     <PageContainer bgColor={coverPhoto.vibrantColor}>
       <PageHeader>
         <PageCoverPhoto image={playlist.images[0]} />
-        <div className="flex max-h-[250px] flex-1 flex-col gap-2">
+        <PageHeaderContent>
           <PageMediaType mediaType="playlist" />
           <PageTitle>{playlist.name}</PageTitle>
           <PageHeaderDetails>
@@ -137,7 +138,7 @@ export const Success = ({
               {totalTracks} {totalTracks === 1 ? 'song' : 'songs'}
             </span>
           </PageHeaderDetails>
-        </div>
+        </PageHeaderContent>
       </PageHeader>
       <PageContent>
         <div>

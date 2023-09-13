@@ -10,6 +10,7 @@ import PageContainer from 'src/components/PageContainer'
 import PageContent from 'src/components/PageContent'
 import PageCoverPhoto from 'src/components/PageCoverPhoto'
 import PageHeader from 'src/components/PageHeader'
+import PageHeaderContent from 'src/components/PageHeaderContent'
 import PageHeaderDetails from 'src/components/PageHeaderDetails'
 import PageMediaType from 'src/components/PageMediaType'
 import PageTitle from 'src/components/PageTitle'
@@ -126,7 +127,7 @@ export const Success = ({
     <PageContainer bgColor={coverPhoto.vibrantColor}>
       <PageHeader>
         <PageCoverPhoto image={coverPhoto} />
-        <div className="flex max-h-[250px] flex-1 flex-col gap-2">
+        <PageHeaderContent>
           <PageMediaType mediaType="album" />
           <PageTitle>{album.name}</PageTitle>
           <PageHeaderDetails>
@@ -140,7 +141,7 @@ export const Success = ({
               {totalTracks} {pluralize('song', totalTracks)}
             </span>
           </PageHeaderDetails>
-        </div>
+        </PageHeaderContent>
       </PageHeader>
       <PageContent>
         <div className="flex gap-4">
