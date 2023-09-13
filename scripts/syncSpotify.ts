@@ -32,6 +32,7 @@ interface AccessTokenResponse {
 
 const BASE_URI = 'https://api.spotify.com'
 let accessToken!: string
+let maxDepth!: number
 
 const queue = new Set<string>()
 const refs: Record<string, SpotifyRecord> = {}
@@ -80,12 +81,15 @@ interface QueueOptions {
 
 const getArtist = async (id: string, { depth }: QueueOptions) => {
   const artist = await get('/artists/:id', { params: { id } })
-  const albums = await get('/artists/:id/albums', { params: { id } })
-  const allAlbums = await getPaginated(albums)
 
-  albums.items
-    .concat(allAlbums)
-    .forEach((album) => addToQueue(album, { depth: depth + 1 }))
+  if (depth + 1 <= maxDepth) {
+    const albums = await get('/artists/:id/albums', { params: { id } })
+    const allAlbums = await getPaginated(albums)
+
+    albums.items
+      .concat(allAlbums)
+      .forEach((album) => addToQueue(album, { depth: depth + 1 }))
+  }
 
   return artist
 }
@@ -240,6 +244,7 @@ interface Program {
 }
 
 export default async ({ args }: Program) => {
+  maxDepth = args.maxDepth ?? 3
   const { spotify: config } = getWorkshopConfig()
   accessToken = (await authenticate()).access_token
 
