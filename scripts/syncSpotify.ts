@@ -38,8 +38,18 @@ const refs: Record<string, SpotifyRecord> = {}
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
 
+const encode = (record: BareRecord, { depth }: { depth: number }) => {
+  return [record.type, record.id, depth].join(':')
+}
+
+const decode = (key: string) => {
+  const [type, id, depth] = key.split(':')
+
+  return { type, id, depth: parseInt(depth, 10), refKey: [type, id].join(':') }
+}
+
 const addToQueue = (record: BareRecord, { depth }: { depth: number }) => {
-  queue.add([record.type, record.id, depth].join(':'))
+  queue.add(encode(record, { depth }))
 }
 
 const getWorkshopConfig = (): WorkshopConfig => {
@@ -214,18 +224,21 @@ const toURLSearchParams = (queryParams: Record<string, string | number>) => {
   )
 }
 
+const processItem = async (key: string) => {
+  const { type, id, depth, refKey } = decode(key)
+
+  if (depth <= maxDepth) {
+    // Avoid rate limiting by sleeping for a short duration
+    refs[refKey] ||= (await sleep(50), await getRecord(type, id, depth))
+  }
+
+  queue.delete(key)
+}
+
 const processQueue = async () => {
   for (const key of queue) {
-    const [type, id, depthStr] = key.split(':')
-    const storeKey = [type, id].join(':')
-    const depth = parseInt(depthStr, 10)
-
-    if (depth <= maxDepth) {
-      // Avoid rate limiting by sleeping for a short duration
-      refs[storeKey] ||= (await sleep(50), await getRecord(type, id, depth))
-    }
-
-    queue.delete(key)
+    // const [type] = key.split(':')
+    await processItem(key)
   }
 }
 
