@@ -205,7 +205,7 @@ const getByStoreKey = (storeKey: string) => {
   }
 }
 
-// async function tap<T>(value: T, fn: (value: T) => void) {
+// function tap<T>(value: T, fn: (value: T) => void) {
 //   fn(value)
 //   return value
 // }
@@ -288,7 +288,7 @@ const processQueue = async () => {
 const writeStore = async () => {
   fs.writeFileSync(
     path.resolve(__dirname, './spotify.json'),
-    JSON.stringify(refs, null, 2)
+    JSON.stringify(refs)
   )
 }
 
