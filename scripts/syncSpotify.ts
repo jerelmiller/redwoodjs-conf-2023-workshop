@@ -4,20 +4,7 @@ import path from 'node:path'
 
 import toml from 'toml'
 
-import type {
-  // AlbumWithRefs,
-  // PlaylistWithRefs,
-  // Reference,
-  Spotify,
-  SpotifyRecord,
-  // TrackWithRefs,
-} from './shared/types'
-
-// type SpotifyRecordWithRefs =
-//   | Spotify.Object.Artist
-//   | AlbumWithRefs
-//   | PlaylistWithRefs
-//   | TrackWithRefs
+import type { Spotify, SpotifyRecord } from './shared/types'
 
 interface BareRecord {
   id: string
@@ -49,56 +36,12 @@ const refs: Record<string, SpotifyRecord> = {}
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
 
-// const deepUpdate = (
-//   obj: object,
-//   value: unknown,
-//   path: Array<string | number>
-// ) => {
-//   let i: number
-//
-//   for (i = 0; i < path.length - 1; i++) {
-//     const segment = path[i]
-//     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-//     obj = (obj as any)[segment]
-//   }
-//
-//   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-//   ;(obj as any)[path[i]] = value
-// }
-
-// const mapUpdate = <TKey, TValue>(
-//   map: Map<TKey, TValue>,
-//   key: TKey,
-//   updater: (value: TValue) => TValue,
-//   defaultValue: TValue
-// ) => {
-//   map.set(key, map.has(key) ? updater(map.get(key)!) : defaultValue)
-//
-//   return map
-// }
-
 const addToQueue = (
   record: BareRecord,
   { depth = 1 }: { depth?: number } = {}
 ) => {
   queue.add([record.type, record.id, depth].join(':'))
 }
-
-// const addToQueue = (
-//   record: BareRecord,
-//   options?: { update: SpotifyRecord; withRefAtPath: string[] }
-// ) => {
-//   const pathString = options
-//     ? [getStoreKey(options.update), ...options.withRefAtPath].join('.')
-//     : null
-//
-//   mapUpdate(
-//     queue,
-//     getStoreKey(record),
-//     (set) => (pathString ? set.add(pathString) : set),
-//     new Set(pathString ? [pathString] : undefined)
-//   )
-// }
 
 const getWorkshopConfig = (): WorkshopConfig => {
   return toml.parse(
@@ -129,23 +72,6 @@ const authenticate = async (): Promise<AccessTokenResponse> => {
   return res.json()
 }
 
-// const getStoreKey = ({ type, id }: BareRecord) => {
-//   return `${type}:${id}`
-// }
-
-// const toReference = (record: { type: string; id: string }): Reference => {
-//   if (record.type == null) {
-//     throw new Error(
-//       `Record did not have type: \n ${JSON.stringify(record, null, 2)}`
-//     )
-//   }
-//
-//   return { __ref: getStoreKey(record) }
-// }
-
-// const isReference = (obj: object): obj is Reference => {
-//   return '__ref' in obj && obj.__ref === 'string'
-// }
 interface QueueOptions {
   depth: number
 }
@@ -282,22 +208,6 @@ const toURLSearchParams = (queryParams: Record<string, string | number>) => {
     Object.entries(queryParams).map(([key, value]) => [key, String(value)])
   )
 }
-
-// const replaceWithRef = (
-//   record: SpotifyRecord,
-//   path: Array<string | number>
-// ) => {
-//   const relation = path.reduce<SpotifyRecord>(
-//     (memo, segment) => (memo as never)[segment],
-//     record
-//   )
-//
-//   if (isReference(relation)) {
-//     return
-//   }
-//
-//   deepUpdate(record, toReference(relation), path)
-// }
 
 const processQueue = async (maxDepth: number) => {
   for (const key of queue) {
