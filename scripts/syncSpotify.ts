@@ -83,7 +83,7 @@ const getArtist = async (id: string, { depth }: QueueOptions) => {
 
   albums.items
     .concat(allAlbums)
-    .forEach((album) => [addToQueue(album, { depth: depth + 1 })])
+    .forEach((album) => addToQueue(album, { depth: depth + 1 }))
 
   return artist
 }
