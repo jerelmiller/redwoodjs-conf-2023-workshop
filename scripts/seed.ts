@@ -47,26 +47,18 @@ const saveRecord = async (record: SpotifyRecordWithRefs) => {
   }
 }
 
-const saveImage = (image: Spotify.Object.Image) => {
-  return db.image.upsert({
-    where: { url: image.url },
-    create: image,
-    update: image,
-  })
-}
-
 const saveArtist = async (artist: Spotify.Object.Artist) => {
-  const images: Prisma.ImageCreateOrConnectWithoutArtistsInput[] = []
-  for (const img of artist.images) {
-    const image = await saveImage(img)
-
-    images.push({
-      where: { id: image.id, url: image.url },
-      create: {
-        url: image.url,
-      },
-    })
-  }
+  const images =
+    artist.images.map<Prisma.ArtistImageCreateOrConnectWithoutArtistInput>(
+      (image) => ({
+        where: { url: image.url },
+        create: {
+          url: image.url,
+          height: image.height,
+          width: image.height,
+        },
+      })
+    )
 
   return db.artist.upsert({
     where: {
@@ -92,7 +84,17 @@ const saveArtist = async (artist: Spotify.Object.Artist) => {
 
 const saveAlbum = async (album: AlbumWithRefs) => {
   const artists: Prisma.ArtistWhereUniqueInput[] = []
-  const images: Prisma.ImageWhereUniqueInput[] = []
+  const images =
+    album.images.map<Prisma.AlbumImageCreateOrConnectWithoutAlbumInput>(
+      (image) => ({
+        where: { url: image.url },
+        create: {
+          url: image.url,
+          height: image.height,
+          width: image.height,
+        },
+      })
+    )
 
   for (const ref of album.artists) {
     const artist = await saveArtist(
@@ -102,11 +104,6 @@ const saveAlbum = async (album: AlbumWithRefs) => {
     artists.push({ id: artist.id })
   }
 
-  for (const img of album.images) {
-    const image = await saveImage(img)
-
-    images.push({ id: image.id })
-  }
   const copyrights =
     album.copyrights.map<Prisma.CopyrightCreateOrConnectWithoutAlbumInput>(
       (copyright) => ({
@@ -136,7 +133,7 @@ const saveAlbum = async (album: AlbumWithRefs) => {
         connectOrCreate: copyrights,
       },
       images: {
-        connect: images,
+        connectOrCreate: images,
       },
     },
     update: {
@@ -151,7 +148,7 @@ const saveAlbum = async (album: AlbumWithRefs) => {
         connectOrCreate: copyrights,
       },
       images: {
-        connect: images,
+        connectOrCreate: images,
       },
     },
   })
@@ -159,16 +156,17 @@ const saveAlbum = async (album: AlbumWithRefs) => {
 
 const savePlaylist = async (playlist: PlaylistWithRefs) => {
   const tracks: Prisma.PlaylistTrackCreateOrConnectWithoutPlaylistInput[] = []
-  const images: Prisma.ImageCreateOrConnectWithoutPlaylistsInput[] = []
-
-  for (const img of playlist.images) {
-    const image = await saveImage(img)
-
-    images.push({
-      where: { id: image.id, url: image.url },
-      create: { id: image.id, url: image.url },
-    })
-  }
+  const images =
+    playlist.images.map<Prisma.PlaylistImageCreateOrConnectWithoutPlaylistInput>(
+      (image) => ({
+        where: { url: image.url },
+        create: {
+          url: image.url,
+          height: image.height,
+          width: image.height,
+        },
+      })
+    )
 
   for (const playlistTrack of playlist.tracks.items) {
     const track = await saveTrack(
@@ -217,6 +215,11 @@ const savePlaylist = async (playlist: PlaylistWithRefs) => {
       },
       tracks: {
         connectOrCreate: tracks,
+      },
+      owner: {
+        connect: {
+          displayName: config.user.displayName,
+        },
       },
     },
   })
@@ -272,25 +275,43 @@ const saveTrack = async (track: TrackWithRefs) => {
 }
 
 const saveUser = (user: { displayName: string; images: PrismaImage[] }) => {
+  const images =
+    user.images.map<Prisma.UserImageCreateOrConnectWithoutUserInput>(
+      (image) => ({
+        where: { url: image.url },
+        create: {
+          url: image.url,
+          height: image.height,
+          width: image.height,
+        },
+      })
+    )
+
   return db.user.upsert({
     where: { displayName: user.displayName ?? undefined },
     create: {
       displayName: user.displayName,
       images: {
-        connect: user.images.map((image) => ({ id: image.id })),
+        connectOrCreate: images,
       },
     },
     update: {
       images: {
-        connect: user.images.map((image) => ({ id: image.id })),
+        connectOrCreate: images,
       },
     },
   })
 }
 
 const resetUserImage = () => {
-  return db.image.deleteMany({
+  return db.userImage.deleteMany({
     where: { url: { in: ['/avatar.png', '/defaultAvatar.png'] } },
+  })
+}
+
+const removeOldUsers = async () => {
+  await db.user.deleteMany({
+    where: { displayName: { not: config.user.displayName } },
   })
 }
 
@@ -300,15 +321,14 @@ export default async () => {
     getPathFromRelative('../web/public/avatar.png')
   )
 
-  const image = await saveImage({
-    url: avatarExists ? '/avatar.png' : '/defaultAvatar.png',
-    height: null,
-    width: null,
+  await saveUser({
+    ...config.user,
+    images: [{ url: avatarExists ? '/avatar.png' : '/defaultAvatar.png' }],
   })
-
-  await saveUser({ ...config.user, images: [image] })
 
   for (const record of Object.values(refs)) {
     await saveRecord(record as SpotifyRecordWithRefs)
   }
+
+  await removeOldUsers()
 }
