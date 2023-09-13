@@ -8,6 +8,23 @@ export type SpotifyRecord =
   | Spotify.Object.Playlist
   | Spotify.Object.Track
 
+export type WorkshopConfig = {
+  user: {
+    displayName: string
+  }
+  spotify: {
+    saved: {
+      albumIds: string[]
+      trackIds: string[]
+    }
+    synced: {
+      albumIds: string[]
+      artistIds: string[]
+      playlistIds: string[]
+    }
+  }
+}
+
 export namespace Spotify {
   export type HTTPMethod = 'DELETE' | 'GET' | 'POST' | 'PUT'
 

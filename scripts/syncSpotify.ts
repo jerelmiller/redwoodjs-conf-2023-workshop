@@ -4,24 +4,23 @@ import path from 'node:path'
 
 import toml from 'toml'
 
-import type { Spotify, SpotifyRecord } from './shared/types'
+import type { Spotify, SpotifyRecord, WorkshopConfig } from './shared/types'
 
-const REDWOOD_CONF_PLAYLIST_ID = '6dct72C91vKsJtsznrCAm3'
+const DEFAULT_SYNCED_ALBUMS = [
+  '151w1FgRZfnKZA9FEcg9Z3', // Midnights - Taylor Swift
+]
+
+const DEFAULT_SYNCED_PLAYLISTS = [
+  '6dct72C91vKsJtsznrCAm3', // RedwoodJS Conf 2023
+]
+
+const DEFAULT_SYNCED_ARTISTS = [
+  '06HL4z0CvFAxyc27GXpf02', // Taylor Swift
+]
 
 interface BareRecord {
   id: string
   type: string
-}
-
-interface WorkshopConfig {
-  user: {
-    displayName: string
-  }
-  spotify: {
-    artistIds: string[]
-    albumIds: string[]
-    playlistIds: string[]
-  }
 }
 
 interface AccessTokenResponse {
@@ -245,15 +244,15 @@ export default async ({ args }: Program) => {
   accessToken = (await authenticate()).access_token
   const { spotify: config } = getWorkshopConfig()
 
-  for (const id of config.artistIds) {
+  for (const id of DEFAULT_SYNCED_ARTISTS.concat(config.synced.artistIds)) {
     addToQueue({ type: 'artist', id }, { depth: 1 })
   }
 
-  for (const id of config.albumIds) {
+  for (const id of DEFAULT_SYNCED_ALBUMS.concat(config.synced.albumIds)) {
     addToQueue({ type: 'album', id }, { depth: 1 })
   }
 
-  for (const id of [REDWOOD_CONF_PLAYLIST_ID].concat(config.playlistIds)) {
+  for (const id of DEFAULT_SYNCED_PLAYLISTS.concat(config.synced.playlistIds)) {
     addToQueue({ type: 'playlist', id }, { depth: 1 })
   }
 
