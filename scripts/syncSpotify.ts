@@ -13,14 +13,30 @@ import type {
   TrackWithRefs,
 } from './shared/types'
 
-const BASE_URI = 'https://api.spotify.com'
-let accessToken!: string
-
 type SpotifyRecordWithRefs =
   | Spotify.Object.Artist
   | AlbumWithRefs
   | PlaylistWithRefs
   | TrackWithRefs
+
+interface WorkshopConfig {
+  user: {
+    displayName: string
+  }
+  spotify: {
+    albumIds: string[]
+    playlistIds: string[]
+  }
+}
+
+interface AccessTokenResponse {
+  access_token: string
+  token_type: 'bearer'
+  expires_in: number
+}
+
+const BASE_URI = 'https://api.spotify.com'
+let accessToken!: string
 
 const queue = new Map<string, Set<string>>()
 const refs: Record<string, SpotifyRecordWithRefs> = {}
@@ -66,22 +82,6 @@ const addToQueue = (
     (set) => (pathString ? set.add(pathString) : set),
     new Set(pathString ? [pathString] : undefined)
   )
-}
-
-interface WorkshopConfig {
-  user: {
-    displayName: string
-  }
-  spotify: {
-    albumIds: string[]
-    playlistIds: string[]
-  }
-}
-
-interface AccessTokenResponse {
-  access_token: string
-  token_type: 'bearer'
-  expires_in: number
 }
 
 const getWorkshopConfig = (): WorkshopConfig => {
