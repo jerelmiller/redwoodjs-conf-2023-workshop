@@ -2,13 +2,16 @@ import type { HomeQuery, HomeQueryVariables } from 'types/graphql'
 
 import type { CellSuccessProps, CellFailureProps } from '@redwoodjs/web'
 
+import AlbumTile from 'src/components/AlbumTile'
+import TileGrid from 'src/components/TileGrid'
+
 export const QUERY = gql`
   query HomeQuery {
     albums(limit: 10) {
       edges {
         node {
           id
-          name
+          ...AlbumTile_album
         }
       }
     }
@@ -24,7 +27,16 @@ export const Failure = ({ error }: CellFailureProps<HomeQueryVariables>) => (
 )
 
 export const Success = ({
-  home,
+  albums,
 }: CellSuccessProps<HomeQuery, HomeQueryVariables>) => {
-  return <div>{JSON.stringify(home)}</div>
+  return (
+    <div className="flex-1 bg-black-base p-[var(--main-content--padding)]">
+      <h1 className="mb-8 text-5xl">Dive into something new</h1>
+      <TileGrid gap="2.5rem 1rem" minTileWidth="200px">
+        {albums.edges.map(({ node }) => (
+          <AlbumTile key={node.id} album={node} />
+        ))}
+      </TileGrid>
+    </div>
+  )
 }
