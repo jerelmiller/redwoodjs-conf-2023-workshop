@@ -242,8 +242,8 @@ interface Program {
 
 export default async ({ args }: Program) => {
   maxDepth = args.maxDepth ?? 3
-  const { spotify: config } = getWorkshopConfig()
   accessToken = (await authenticate()).access_token
+  const { spotify: config } = getWorkshopConfig()
 
   for (const id of config.artistIds) {
     addToQueue({ type: 'artist', id }, { depth: 1 })
