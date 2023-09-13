@@ -1,7 +1,7 @@
 import fs from 'node:fs'
 import path from 'node:path'
 
-import { Prisma, Image as PrismaImage } from '@prisma/client'
+import { Prisma } from '@prisma/client'
 import { db } from 'api/src/lib/db'
 import toml from 'toml'
 
@@ -274,7 +274,10 @@ const saveTrack = async (track: TrackWithRefs) => {
   })
 }
 
-const saveUser = (user: { displayName: string; images: PrismaImage[] }) => {
+const saveUser = (user: {
+  displayName: string
+  images: Array<{ url: string; height: number | null; width: number | null }>
+}) => {
   const images =
     user.images.map<Prisma.UserImageCreateOrConnectWithoutUserInput>(
       (image) => ({
@@ -323,7 +326,13 @@ export default async () => {
 
   await saveUser({
     ...config.user,
-    images: [{ url: avatarExists ? '/avatar.png' : '/defaultAvatar.png' }],
+    images: [
+      {
+        url: avatarExists ? '/avatar.png' : '/defaultAvatar.png',
+        height: null,
+        width: null,
+      },
+    ],
   })
 
   for (const record of Object.values(refs)) {
