@@ -89,6 +89,16 @@ model PlaylistTrack {
   @@id([playlistId, trackId])
 }
 
+model SavedTrack {
+  addedAt DateTime @default(now())
+  track   Track    @relation(fields: [trackId], references: [id])
+  trackId String
+  user    User     @relation(fields: [userId], references: [id])
+  userId  String
+
+  @@id([trackId, userId])
+}
+
 model Track {
   id             String          @id @default(cuid())
   album          Album           @relation(fields: [albumId], references: [id])
@@ -101,6 +111,7 @@ model Track {
   popularity     Int             @default(0)
   trackNumber    Int
   shallow        Boolean         @default(false)
+  savedTracks    SavedTrack[]
   playlistTracks PlaylistTrack[]
 }
 
@@ -110,6 +121,7 @@ model User {
   playlists      Playlist[]
   images         UserImage[]
   playlistTracks PlaylistTrack[]
+  savedTracks    SavedTrack[]
 }
 
 model UserImage {
