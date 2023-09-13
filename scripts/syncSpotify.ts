@@ -217,7 +217,7 @@ async function get<Pathname extends keyof Spotify.Response.GET>(
     queryParams,
   }: {
     params?: Record<string, string>
-    queryParams?: Record<string, string>
+    queryParams?: Record<string, string | number>
   } = {}
 ): Promise<Spotify.Response.GET[Pathname]> {
   const base = path.join(
@@ -225,8 +225,7 @@ async function get<Pathname extends keyof Spotify.Response.GET>(
     'v1',
     replaceUrlParams(pathname, params ?? {})
   )
-  const query = new URLSearchParams(queryParams)
-  const uri = query.size === 0 ? base : `${base}?${query}`
+  const uri = queryParams ? `${base}?${toURLSearchParams(queryParams)}` : base
 
   const res = await fetch(uri, {
     headers: { Authorization: `Bearer ${accessToken}` },
@@ -241,6 +240,12 @@ async function get<Pathname extends keyof Spotify.Response.GET>(
   }
 
   return data
+}
+
+const toURLSearchParams = (queryParams: Record<string, string | number>) => {
+  return new URLSearchParams(
+    Object.entries(queryParams).map(([key, value]) => [key, String(value)])
+  )
 }
 
 const processQueue = async () => {
