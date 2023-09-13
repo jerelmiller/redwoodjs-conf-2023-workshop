@@ -212,11 +212,12 @@ const toURLSearchParams = (queryParams: Record<string, string | number>) => {
 const processQueue = async (maxDepth: number) => {
   for (const key of queue) {
     const [type, id, depthStr] = key.split(':')
+    const storeKey = [type, id].join(':')
     const depth = parseInt(depthStr, 10)
 
     if (depth <= maxDepth) {
       // Avoid rate limiting by sleeping for a short duration
-      refs[key] ||= (await sleep(50), await getRecord(type, id, depth))
+      refs[storeKey] ||= (await sleep(50), await getRecord(type, id, depth))
     }
 
     queue.delete(key)
