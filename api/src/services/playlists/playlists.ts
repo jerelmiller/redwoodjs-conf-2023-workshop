@@ -12,10 +12,7 @@ export const playlist: QueryResolvers['playlist'] = ({ id }) => {
 
 export const Playlist: PlaylistRelationResolvers = {
   images: (_, { root }) => {
-    return db.image.findMany({
-      where: { playlists: { some: { id: root.id } } },
-      orderBy: [{ width: 'desc' }, { height: 'desc' }],
-    })
+    return db.playlist.findUniqueOrThrow({ where: { id: root.id } }).images()
   },
   owner: (_, { root }) => {
     return db.user.findFirstOrThrow({ where: { id: root.userId } })
