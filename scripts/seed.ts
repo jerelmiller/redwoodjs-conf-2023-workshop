@@ -55,10 +55,16 @@ const saveRecord = async (record: SpotifyRecord) => {
     case 'artist':
       return saveArtist(record)
     case 'album':
+      for (const artist of record.artists) {
+        await saveArtist(artist)
+      }
       return saveAlbum(record)
     case 'playlist':
       return savePlaylist(record)
     case 'track':
+      for (const artist of record.artists.concat(record.album.artists)) {
+        await saveArtist(artist)
+      }
       await saveAlbum(record.album)
       return saveTrack(record)
   }
@@ -112,7 +118,6 @@ const saveAlbum = async (
   album: Spotify.Object.Album | Spotify.Object.AlbumSimplified
 ) => {
   album = getFullRecord(album)
-  const artists: Prisma.ArtistWhereUniqueInput[] = []
   const images =
     album.images.map<Prisma.AlbumImageCreateOrConnectWithoutAlbumInput>(
       (image) => ({
@@ -125,11 +130,9 @@ const saveAlbum = async (
       })
     )
 
-  for (const ref of album.artists) {
-    const artist = await saveArtist(ref)
-
-    artists.push({ id: artist.id })
-  }
+  const artists = album.artists.map<Prisma.ArtistWhereUniqueInput>(
+    (artist) => ({ id: artist.id })
+  )
 
   const copyrights: Prisma.CopyrightCreateOrConnectWithoutAlbumInput[] = []
 
@@ -227,6 +230,11 @@ const savePlaylist = async (playlist: Spotify.Object.Playlist) => {
   })
 
   for (const playlistTrack of playlist.tracks.items) {
+    for (const artist of playlistTrack.track.artists.concat(
+      playlistTrack.track.album.artists
+    )) {
+      await saveArtist(artist)
+    }
     await saveAlbum(playlistTrack.track.album)
     const track = await saveTrack(playlistTrack.track)
 
@@ -270,13 +278,9 @@ const savePlaylist = async (playlist: Spotify.Object.Playlist) => {
 }
 
 const saveTrack = async (track: Spotify.Object.Track) => {
-  const artists: Prisma.ArtistWhereUniqueInput[] = []
-
-  for (const ref of track.artists) {
-    const artist = await saveArtist(ref)
-
-    artists.push({ id: artist.id })
-  }
+  const artists = track.artists.map<Prisma.ArtistWhereUniqueInput>(
+    (artist) => ({ id: artist.id })
+  )
 
   return db.track.upsert({
     where: { id: track.id },
