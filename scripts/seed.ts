@@ -33,10 +33,6 @@ const refs = JSON.parse(readFile('./spotify.json')) as Record<
 const isShallowRecord = (
   simplified: Spotify.Object.AlbumSimplified | Spotify.Object.ArtistSimplified
 ) => {
-  console.log({
-    key: getStoreKey(simplified),
-    exists: Boolean(refs[getStoreKey(simplified)]),
-  })
   return !refs[getStoreKey(simplified)]
 }
 
@@ -63,6 +59,7 @@ const saveRecord = async (record: SpotifyRecord) => {
     case 'playlist':
       return savePlaylist(record)
     case 'track':
+      await saveAlbum(record.album)
       return saveTrack(record)
   }
 }
@@ -230,6 +227,7 @@ const savePlaylist = async (playlist: Spotify.Object.Playlist) => {
   })
 
   for (const playlistTrack of playlist.tracks.items) {
+    await saveAlbum(playlistTrack.track.album)
     const track = await saveTrack(playlistTrack.track)
 
     await db.playlistTrack.upsert({
@@ -272,7 +270,6 @@ const savePlaylist = async (playlist: Spotify.Object.Playlist) => {
 }
 
 const saveTrack = async (track: Spotify.Object.Track) => {
-  const album = await saveAlbum(track.album)
   const artists: Prisma.ArtistWhereUniqueInput[] = []
 
   for (const ref of track.artists) {
@@ -293,7 +290,7 @@ const saveTrack = async (track: Spotify.Object.Track) => {
       trackNumber: track.track_number,
       album: {
         connect: {
-          id: album.id,
+          id: track.album.id,
         },
       },
       artists: {
@@ -308,7 +305,7 @@ const saveTrack = async (track: Spotify.Object.Track) => {
       trackNumber: track.track_number,
       album: {
         connect: {
-          id: album.id,
+          id: track.album.id,
         },
       },
       artists: {
