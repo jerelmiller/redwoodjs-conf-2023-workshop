@@ -79,7 +79,10 @@ const getArtist = async (id: string, { depth }: QueueOptions) => {
   const artist = await get('/artists/:id', { params: { id } })
 
   if (depth + 1 <= maxDepth) {
-    const albums = await get('/artists/:id/albums', { params: { id } })
+    const albums = await get('/artists/:id/albums', {
+      params: { id },
+      queryParams: { include_groups: 'album,single,compilation' },
+    })
     const allAlbums = await getPaginated(albums)
 
     albums.items
@@ -245,7 +248,8 @@ export default async ({ args }: Program) => {
   const { spotify: config } = getWorkshopConfig()
 
   const artistIds = DEFAULT_SYNCED_ARTISTS.concat(config.synced.artistIds)
-  const albumIds = DEFAULT_SYNCED_ALBUMS.concat(config.synced.albumIds).concat(
+  const albumIds = DEFAULT_SYNCED_ALBUMS.concat(
+    config.synced.albumIds,
     config.saved.albumIds
   )
   const playlistIds = DEFAULT_SYNCED_PLAYLISTS.concat(config.synced.playlistIds)
