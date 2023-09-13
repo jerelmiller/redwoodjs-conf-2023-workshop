@@ -12,6 +12,7 @@ model Artist {
   id            String        @id @default(cuid())
   name          String
   followerCount Int           @default(0)
+  shallow       Boolean       @default(false)
   albums        Album[]
   tracks        Track[]
   images        ArtistImage[]
@@ -33,6 +34,7 @@ model Album {
   artists              Artist[]
   releaseDate          String
   releaseDatePrecision String
+  shallow              Boolean      @default(false)
   images               AlbumImage[]
   tracks               Track[]
   copyrights           Copyright[]
@@ -98,6 +100,7 @@ model Track {
   name           String
   popularity     Int             @default(0)
   trackNumber    Int
+  shallow        Boolean         @default(false)
   playlistTracks PlaylistTrack[]
 }
 
