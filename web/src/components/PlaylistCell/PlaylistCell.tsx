@@ -220,7 +220,14 @@ const columns = [
     cell: (info) => {
       const album = info.getValue()
 
-      return <Link to={routes.album({ id: album.id })}>{album.name}</Link>
+      return (
+        <Link
+          className="text-muted transition-colors hover:text-primary"
+          to={routes.album({ id: album.id })}
+        >
+          {album.name}
+        </Link>
+      )
     },
   }),
   columnHelper.accessor('addedAt', {
@@ -228,7 +235,13 @@ const columns = [
     cell: (info) => {
       const date = info.getValue()
 
-      return date && <DateTime date={date} format={DateTime.FORMAT.timeAgo} />
+      return (
+        date && (
+          <span className="text-muted">
+            <DateTime date={date} format={DateTime.FORMAT.timeAgo} />
+          </span>
+        )
+      )
     },
     meta: {
       wrap: false,
