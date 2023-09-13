@@ -1,4 +1,3 @@
-import cx from 'classnames'
 import { Pin, Volume2 } from 'lucide-react'
 import type { SidebarPlaylistsQuery } from 'types/graphql'
 
@@ -7,11 +6,11 @@ import type { CellSuccessProps, CellFailureProps } from '@redwoodjs/web'
 
 import CoverPhoto from 'src/components/CoverPhoto'
 import DelimitedList from 'src/components/DelimitedList'
+import SidebarPlaylistContent from 'src/components/SidebarPlaylistContent'
+import SidebarPlaylistLink from 'src/components/SidebarPlaylistLink'
+import SidebarPlaylistName from 'src/components/SidebarPlaylistName'
 import Skeleton from 'src/components/Skeleton'
 import { randomBetween, range } from 'src/utils/common'
-
-import SidebarPlaylistContent from '../SidebarPlaylistContent/SidebarPlaylistContent'
-import SidebarPlaylistLink from '../SidebarPlaylistLink/SidebarPlaylistLink'
 
 export const QUERY = gql`
   query SidebarPlaylistsQuery {
@@ -60,7 +59,6 @@ export const Failure = ({ error }: CellFailureProps) => (
 
 export const Success = ({ me }: CellSuccessProps<SidebarPlaylistsQuery>) => {
   const isCurrentContext = false
-  const pinned = false
   const playbackState = { isPlaying: false }
 
   return me?.playlists?.edges?.map(({ node: playlist }) => {
@@ -71,22 +69,8 @@ export const Success = ({ me }: CellSuccessProps<SidebarPlaylistsQuery>) => {
       >
         <CoverPhoto image={playlist.images.at(-1)} size="48px" />
         <SidebarPlaylistContent>
-          <div
-            className={cx('overflow-hidden text-ellipsis whitespace-nowrap', {
-              'text-theme-light': isCurrentContext,
-            })}
-          >
-            {playlist.name}
-          </div>
+          <SidebarPlaylistName>{playlist.name}</SidebarPlaylistName>
           <div className="flex items-center gap-2">
-            {pinned && (
-              <Pin
-                fill="currentColor"
-                size="1rem"
-                strokeWidth={1}
-                className="rotate-45 text-theme-light"
-              />
-            )}
             <span className="text-sm text-muted">
               <DelimitedList delimiter=" · ">
                 <span>Playlist</span>
