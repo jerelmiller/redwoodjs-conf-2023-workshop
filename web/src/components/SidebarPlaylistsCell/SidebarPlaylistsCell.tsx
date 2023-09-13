@@ -65,41 +65,38 @@ export const Success = ({ me }: CellSuccessProps<SidebarPlaylistsQuery>) => {
       <li key={playlist.id}>
         <NavLink
           to={routes.playlist({ id: playlist.id })}
-          className="transition-color block justify-between rounded-md py-2 pl-2 pr-4 leading-none transition-colors duration-200 ease-out hover:bg-[#1A1A1A] hover:no-underline"
+          className="transition-color flex items-center justify-between gap-3 rounded-md py-2 pl-2 pr-4 leading-none transition-colors duration-200 ease-out hover:bg-[#1A1A1A] hover:no-underline"
           activeClassName="bg-surface text-primary hover:bg-[#393939]"
         >
-          <div className="flex items-center gap-3">
-            <CoverPhoto image={playlist.images.at(-1)} size="48px" />
-            <div className="flex flex-1 flex-col justify-around self-stretch overflow-hidden text-ellipsis whitespace-nowrap">
-              <div
-                className={cx(
-                  'overflow-hidden text-ellipsis whitespace-nowrap',
-                  { 'text-theme-light': isCurrentContext }
-                )}
-              >
-                {playlist.name}
-              </div>
-              <div className="flex items-center gap-2">
-                {pinned && (
-                  <Pin
-                    fill="currentColor"
-                    size="1rem"
-                    strokeWidth={1}
-                    className="rotate-45 text-theme-light"
-                  />
-                )}
-                <span className="text-sm text-muted">
-                  <DelimitedList delimiter=" · ">
-                    <span>Playlist</span>
-                    <span>{playlist.owner.displayName}</span>
-                  </DelimitedList>
-                </span>
-              </div>
+          <CoverPhoto image={playlist.images.at(-1)} size="48px" />
+          <div className="flex flex-1 flex-col justify-around self-stretch overflow-hidden text-ellipsis whitespace-nowrap">
+            <div
+              className={cx('overflow-hidden text-ellipsis whitespace-nowrap', {
+                'text-theme-light': isCurrentContext,
+              })}
+            >
+              {playlist.name}
             </div>
-            {isCurrentContext && playbackState?.isPlaying && (
-              <Volume2 color="var(--color--theme--light)" size="0.875rem" />
-            )}
+            <div className="flex items-center gap-2">
+              {pinned && (
+                <Pin
+                  fill="currentColor"
+                  size="1rem"
+                  strokeWidth={1}
+                  className="rotate-45 text-theme-light"
+                />
+              )}
+              <span className="text-sm text-muted">
+                <DelimitedList delimiter=" · ">
+                  <span>Playlist</span>
+                  <span>{playlist.owner.displayName}</span>
+                </DelimitedList>
+              </span>
+            </div>
           </div>
+          {isCurrentContext && playbackState?.isPlaying && (
+            <Volume2 color="var(--color--theme--light)" size="0.875rem" />
+          )}
         </NavLink>
       </li>
     )
