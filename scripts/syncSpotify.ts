@@ -5,19 +5,24 @@ import path from 'node:path'
 import toml from 'toml'
 
 import type {
-  AlbumWithRefs,
-  PlaylistWithRefs,
-  Reference,
+  // AlbumWithRefs,
+  // PlaylistWithRefs,
+  // Reference,
   Spotify,
   SpotifyRecord,
-  TrackWithRefs,
+  // TrackWithRefs,
 } from './shared/types'
 
-type SpotifyRecordWithRefs =
-  | Spotify.Object.Artist
-  | AlbumWithRefs
-  | PlaylistWithRefs
-  | TrackWithRefs
+// type SpotifyRecordWithRefs =
+//   | Spotify.Object.Artist
+//   | AlbumWithRefs
+//   | PlaylistWithRefs
+//   | TrackWithRefs
+
+interface BareRecord {
+  id: string
+  type: string
+}
 
 interface WorkshopConfig {
   user: {
@@ -38,54 +43,58 @@ interface AccessTokenResponse {
 const BASE_URI = 'https://api.spotify.com'
 let accessToken!: string
 
-const queue = new Map<string, Set<string>>()
-const refs: Record<string, SpotifyRecordWithRefs> = {}
+const queue = new Set<string>()
+const refs: Record<string, SpotifyRecord> = {}
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
 
-const deepUpdate = (
-  obj: object,
-  value: unknown,
-  path: Array<string | number>
-) => {
-  let i: number
+// const deepUpdate = (
+//   obj: object,
+//   value: unknown,
+//   path: Array<string | number>
+// ) => {
+//   let i: number
+//
+//   for (i = 0; i < path.length - 1; i++) {
+//     const segment = path[i]
+//     // eslint-disable-next-line @typescript-eslint/no-explicit-any
+//     obj = (obj as any)[segment]
+//   }
+//
+//   // eslint-disable-next-line @typescript-eslint/no-explicit-any
+//   ;(obj as any)[path[i]] = value
+// }
 
-  for (i = 0; i < path.length - 1; i++) {
-    const segment = path[i]
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    obj = (obj as any)[segment]
-  }
+// const mapUpdate = <TKey, TValue>(
+//   map: Map<TKey, TValue>,
+//   key: TKey,
+//   updater: (value: TValue) => TValue,
+//   defaultValue: TValue
+// ) => {
+//   map.set(key, map.has(key) ? updater(map.get(key)!) : defaultValue)
+//
+//   return map
+// }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  ;(obj as any)[path[i]] = value
+const addToQueue = (record: BareRecord) => {
+  queue.add(getStoreKey(record))
 }
 
-const mapUpdate = <TKey, TValue>(
-  map: Map<TKey, TValue>,
-  key: TKey,
-  updater: (value: TValue) => TValue,
-  defaultValue: TValue
-) => {
-  map.set(key, map.has(key) ? updater(map.get(key)!) : defaultValue)
-
-  return map
-}
-
-const addToQueue = (
-  record: { type: string; id: string },
-  options?: { update: SpotifyRecord; withRefAtPath: string[] }
-) => {
-  const pathString = options
-    ? [getStoreKey(options.update), ...options.withRefAtPath].join('.')
-    : null
-
-  mapUpdate(
-    queue,
-    getStoreKey(record),
-    (set) => (pathString ? set.add(pathString) : set),
-    new Set(pathString ? [pathString] : undefined)
-  )
-}
+// const addToQueue = (
+//   record: BareRecord,
+//   options?: { update: SpotifyRecord; withRefAtPath: string[] }
+// ) => {
+//   const pathString = options
+//     ? [getStoreKey(options.update), ...options.withRefAtPath].join('.')
+//     : null
+//
+//   mapUpdate(
+//     queue,
+//     getStoreKey(record),
+//     (set) => (pathString ? set.add(pathString) : set),
+//     new Set(pathString ? [pathString] : undefined)
+//   )
+// }
 
 const getWorkshopConfig = (): WorkshopConfig => {
   return toml.parse(
@@ -116,78 +125,64 @@ const authenticate = async (): Promise<AccessTokenResponse> => {
   return res.json()
 }
 
-const getStoreKey = ({ type, id }: { type: string; id: string }) => {
+const getStoreKey = ({ type, id }: BareRecord) => {
   return `${type}:${id}`
 }
 
-const toReference = (record: { type: string; id: string }): Reference => {
-  if (record.type == null) {
-    throw new Error(
-      `Record did not have type: \n ${JSON.stringify(record, null, 2)}`
-    )
-  }
+// const toReference = (record: { type: string; id: string }): Reference => {
+//   if (record.type == null) {
+//     throw new Error(
+//       `Record did not have type: \n ${JSON.stringify(record, null, 2)}`
+//     )
+//   }
+//
+//   return { __ref: getStoreKey(record) }
+// }
 
-  return { __ref: getStoreKey(record) }
-}
+// const isReference = (obj: object): obj is Reference => {
+//   return '__ref' in obj && obj.__ref === 'string'
+// }
 
 const getArtist = async (id: string) => {
   return get('/artists/:id', { params: { id } })
 }
 
 const getAlbum = async (id: string) => {
-  return tap(await get('/albums/:id', { params: { id } }), (album) => {
-    album.artists.forEach((artist, idx) => {
-      addToQueue(artist, {
-        update: album,
-        withRefAtPath: ['artists', String(idx)],
-      })
-    })
+  const album = await get('/albums/:id', { params: { id } })
+  const tracks = await getPaginated(album.tracks)
 
-    album.tracks.items.forEach((track, idx) => {
-      addToQueue(track, {
-        update: album,
-        withRefAtPath: ['tracks', 'items', String(idx)],
-      })
-    })
-  })
+  album.tracks.items.push(...tracks)
+
+  return album
 }
 
 const getTrack = async (id: string) => {
-  return tap(await get('/tracks/:id', { params: { id } }), (track) => {
-    addToQueue(track.album, { update: track, withRefAtPath: ['album'] })
-
-    track.artists.forEach((artist, idx) => {
-      addToQueue(artist, {
-        update: track,
-        withRefAtPath: ['artists', String(idx)],
-      })
-    })
-  })
+  return get('/tracks/:id', { params: { id } })
 }
 
 const getPlaylist = async (id: string) => {
   const playlist = await get('/playlists/:id', { params: { id } })
-  const tracks = playlist.tracks.items
-  let next = playlist.tracks.next
+  const tracks = await getPaginated(playlist.tracks)
 
-  while (next) {
-    const data = await fetchEndpoint<
-      Spotify.Response.GET['/playlists/:id/tracks']
-    >(next)
-
-    next = data.next
-    tracks.push(...data.items)
-  }
-
-  refs[getStoreKey(playlist)] = playlist as unknown as PlaylistWithRefs
-
-  playlist.tracks.items.forEach((item, idx) => {
-    refs[getStoreKey(item.track)] = item.track as unknown as TrackWithRefs
-
-    replaceWithRef(playlist, ['tracks', 'items', idx, 'track'])
-  })
+  playlist.tracks.items.push(...tracks)
 
   return playlist
+}
+
+const getPaginated = async <TRecord>(
+  paginated: Spotify.Object.Paginated<TRecord>
+): Promise<TRecord[]> => {
+  const records: TRecord[] = []
+  let next = paginated.next
+
+  while (next) {
+    const data = await fetchEndpoint<Spotify.Object.Paginated<TRecord>>(next)
+
+    next = data.next
+    records.push(...data.items)
+  }
+
+  return records
 }
 
 const getByStoreKey = (storeKey: string) => {
@@ -207,10 +202,10 @@ const getByStoreKey = (storeKey: string) => {
   }
 }
 
-async function tap<T>(value: T, fn: (value: T) => void) {
-  fn(value)
-  return value
-}
+// async function tap<T>(value: T, fn: (value: T) => void) {
+//   fn(value)
+//   return value
+// }
 
 function replaceUrlParams(pathname: string, params: Record<string, string>) {
   return pathname.replace(/(?<=\/):(\w+)/g, (_, name) => {
@@ -261,25 +256,26 @@ const toURLSearchParams = (queryParams: Record<string, string | number>) => {
   )
 }
 
-const replaceWithRef = (
-  record: SpotifyRecord,
-  path: Array<string | number>
-) => {
-  const relation = path.reduce<SpotifyRecord>(
-    (memo, segment) => (memo as never)[segment],
-    record
-  )
-
-  deepUpdate(record, toReference(relation), path)
-}
+// const replaceWithRef = (
+//   record: SpotifyRecord,
+//   path: Array<string | number>
+// ) => {
+//   const relation = path.reduce<SpotifyRecord>(
+//     (memo, segment) => (memo as never)[segment],
+//     record
+//   )
+//
+//   if (isReference(relation)) {
+//     return
+//   }
+//
+//   deepUpdate(record, toReference(relation), path)
+// }
 
 const processQueue = async () => {
-  for (const [key, paths] of queue) {
-    refs[key] ||= (await getByStoreKey(key)) as SpotifyRecordWithRefs
+  for (const key of queue) {
+    refs[key] ||= await getByStoreKey(key)
 
-    paths.forEach((path) =>
-      deepUpdate(refs, toReference(refs[key]), path.split('.'))
-    )
     queue.delete(key)
 
     await sleep(50)
@@ -297,9 +293,9 @@ export default async () => {
   const { spotify: config } = getWorkshopConfig()
   accessToken = (await authenticate()).access_token
 
-  // for (const id of config.albumIds) {
-  //   addToQueue({ type: 'album', id })
-  // }
+  for (const id of config.albumIds) {
+    addToQueue({ type: 'album', id })
+  }
 
   for (const id of config.playlistIds) {
     addToQueue({ type: 'playlist', id })
