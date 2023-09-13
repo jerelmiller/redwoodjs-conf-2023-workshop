@@ -29,23 +29,39 @@ interface AccessTokenResponse {
   expires_in: number
 }
 
+type QueueKey = `${string}:${string}:${number}`
+
+interface QueueItem {
+  id: string
+  key: QueueKey
+  type: string
+  refKey: string
+  depth: number
+}
+
 const BASE_URI = 'https://api.spotify.com'
 let accessToken!: string
 let maxDepth!: number
 
-const queue = new Set<string>()
+const queue = new Set<QueueKey>()
 const refs: Record<string, SpotifyRecord> = {}
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
 
-const encode = (record: BareRecord, { depth }: { depth: number }) => {
-  return [record.type, record.id, depth].join(':')
+const encode = (record: BareRecord, { depth }: { depth: number }): QueueKey => {
+  return `${record.type}:${record.id}:${depth}`
 }
 
-const decode = (key: string) => {
+const decode = (key: QueueKey): QueueItem => {
   const [type, id, depth] = key.split(':')
 
-  return { type, id, depth: parseInt(depth, 10), refKey: [type, id].join(':') }
+  return {
+    type,
+    key,
+    id,
+    depth: parseInt(depth, 10),
+    refKey: [type, id].join(':'),
+  }
 }
 
 const addToQueue = (record: BareRecord, { depth }: { depth: number }) => {
@@ -85,48 +101,69 @@ interface QueueOptions {
   depth: number
 }
 
-const getArtist = async (id: string, { depth }: QueueOptions) => {
-  const artist = await get('/artists/:id', { params: { id } })
+const getArtists = async (items: QueueItem[]) => {
+  const { artists } = await get('/artists', {
+    queryParams: { ids: items.map((item) => item.id).join(',') },
+  })
 
-  if (depth + 1 <= maxDepth) {
+  for (const [idx, item] of items.entries()) {
+    if (item.depth + 1 > maxDepth) {
+      continue
+    }
+
+    const artist = artists[idx]
+
     const albums = await get('/artists/:id/albums', {
-      params: { id },
+      params: { id: artist.id },
       queryParams: { include_groups: 'album,single,compilation' },
     })
     const allAlbums = await getPaginated(albums)
 
     albums.items
       .concat(allAlbums)
-      .forEach((album) => addToQueue(album, { depth: depth + 1 }))
+      .forEach((album) => addToQueue(album, { depth: item.depth + 1 }))
   }
 
-  return artist
+  return artists
 }
 
-const getAlbum = async (id: string, { depth }: QueueOptions) => {
-  const album = await get('/albums/:id', { params: { id } })
-  const tracks = await getPaginated(album.tracks)
-
-  album.tracks.items.push(...tracks)
-  album.tracks.items.forEach((track) => {
-    addToQueue(track, { depth: depth + 1 })
-  })
-  album.artists.forEach((artist) => {
-    addToQueue(artist, { depth: depth + 1 })
+const getAlbums = async (items: QueueItem[]) => {
+  const { albums } = await get('/albums', {
+    queryParams: { ids: items.map((item) => item.id).join(',') },
   })
 
-  return album
+  for (const [idx, item] of items.entries()) {
+    const album = albums[idx]
+
+    const tracks = await getPaginated(album.tracks)
+
+    album.tracks.items.push(...tracks)
+    album.tracks.items.forEach((track) => {
+      addToQueue(track, { depth: item.depth + 1 })
+    })
+    album.artists.forEach((artist) => {
+      addToQueue(artist, { depth: item.depth + 1 })
+    })
+  }
+
+  return albums
 }
 
-const getTrack = async (id: string, { depth }: QueueOptions) => {
-  const track = await get('/tracks/:id', { params: { id } })
-
-  addToQueue(track.album, { depth: depth + 1 })
-  track.artists.forEach((artist) => {
-    addToQueue(artist, { depth: depth + 1 })
+const getTracks = async (items: QueueItem[]) => {
+  const { tracks } = await get('/tracks', {
+    queryParams: { ids: items.map((item) => item.id).join(',') },
   })
 
-  return track
+  for (const [idx, item] of items.entries()) {
+    const track = tracks[idx]
+
+    addToQueue(track.album, { depth: item.depth + 1 })
+    track.artists.forEach((artist) => {
+      addToQueue(artist, { depth: item.depth + 1 })
+    })
+  }
+
+  return tracks
 }
 
 const getPlaylist = async (id: string, { depth }: QueueOptions) => {
@@ -162,12 +199,6 @@ const getPaginated = async <TRecord>(
 
 const getRecord = (type: string, id: string, depth: number) => {
   switch (type) {
-    case 'album':
-      return getAlbum(id, { depth })
-    case 'artist':
-      return getArtist(id, { depth })
-    case 'track':
-      return getTrack(id, { depth })
     case 'playlist':
       return getPlaylist(id, { depth })
     default:
@@ -209,13 +240,12 @@ const fetchEndpoint = async <TData>(uri: string): Promise<TData> => {
 
   console.log(`GET ${uri} ${res.status}`)
 
-  const data = await res.json()
-
   if (!res.ok) {
-    throw new Error(`${res.status} ${data.error.message}`)
+    const text = await res.text()
+    throw new Error(`${res.status}: ${text}`)
   }
 
-  return data
+  return res.json()
 }
 
 const toURLSearchParams = (queryParams: Record<string, string | number>) => {
@@ -224,7 +254,7 @@ const toURLSearchParams = (queryParams: Record<string, string | number>) => {
   )
 }
 
-const processItem = async (key: string) => {
+const processItem = async (key: QueueKey) => {
   const { type, id, depth, refKey } = decode(key)
 
   if (depth <= maxDepth) {
@@ -235,10 +265,63 @@ const processItem = async (key: string) => {
   queue.delete(key)
 }
 
+const getBatch = async (type: string, items: QueueItem[]) => {
+  switch (type) {
+    case 'album':
+      return getAlbums(items)
+    case 'artist':
+      return getArtists(items)
+    case 'track':
+      return getTracks(items)
+    default:
+      throw new Error(`Unable to batch: ${type}`)
+  }
+}
+
+const processBatch = async (type: string) => {
+  const batchSize = BATCH_SIZES[type]
+  const batch = Array.from(queue.keys())
+    .map((key) => decode(key))
+    .filter(
+      (decoded) =>
+        decoded.depth <= maxDepth &&
+        decoded.type === type &&
+        !refs[decoded.refKey]
+    )
+    .slice(0, batchSize)
+
+  if (batch.length === 0) {
+    return
+  }
+
+  await sleep(50)
+  const records = await getBatch(type, batch)
+
+  batch.forEach((item, idx) => {
+    refs[item.refKey] = records[idx]
+    queue.delete(item.key)
+  })
+}
+
+const BATCH_SIZES: Record<string, number> = {
+  album: 20,
+  artist: 50,
+  track: 50,
+}
+
+const isBatchable = (type: string) => {
+  return type in BATCH_SIZES
+}
+
 const processQueue = async () => {
   for (const key of queue) {
-    // const [type] = key.split(':')
-    await processItem(key)
+    const { type } = decode(key)
+
+    if (isBatchable(type)) {
+      await processBatch(type)
+    } else {
+      await processItem(key)
+    }
   }
 }
 
