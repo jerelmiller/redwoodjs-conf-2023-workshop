@@ -231,7 +231,13 @@ const writeStore = async () => {
   )
 }
 
-export default async () => {
+interface Program {
+  args: {
+    maxDepth?: number
+  }
+}
+
+export default async ({ args }: Program) => {
   const { spotify: config } = getWorkshopConfig()
   accessToken = (await authenticate()).access_token
 
@@ -247,6 +253,6 @@ export default async () => {
     addToQueue({ type: 'playlist', id })
   }
 
-  await processQueue(2)
+  await processQueue(args.maxDepth ?? 3)
   await writeStore()
 }
