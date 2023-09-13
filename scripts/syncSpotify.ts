@@ -74,7 +74,6 @@ interface WorkshopConfig {
   }
   spotify: {
     albumIds: string[]
-    trackIds: string[]
     playlistIds: string[]
   }
 }
@@ -260,10 +259,6 @@ export default async () => {
 
   for (const id of config.albumIds) {
     addToQueue({ type: 'album', id })
-  }
-
-  for (const id of config.trackIds) {
-    addToQueue({ type: 'track', id })
   }
 
   for (const id of config.playlistIds) {
