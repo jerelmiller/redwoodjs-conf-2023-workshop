@@ -225,8 +225,13 @@ async function get<Pathname extends keyof Spotify.Response.GET>(
     'v1',
     replaceUrlParams(pathname, params ?? {})
   )
-  const uri = queryParams ? `${base}?${toURLSearchParams(queryParams)}` : base
 
+  return fetchEndpoint(
+    queryParams ? `${base}?${toURLSearchParams(queryParams)}` : base
+  )
+}
+
+const fetchEndpoint = async (uri: string) => {
   const res = await fetch(uri, {
     headers: { Authorization: `Bearer ${accessToken}` },
   })
