@@ -39,10 +39,7 @@ const refs: Record<string, SpotifyRecord> = {}
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
 
-const addToQueue = (
-  record: BareRecord,
-  { depth = 1 }: { depth?: number } = {}
-) => {
+const addToQueue = (record: BareRecord, { depth }: { depth: number }) => {
   queue.add([record.type, record.id, depth].join(':'))
 }
 
@@ -215,7 +212,7 @@ const toURLSearchParams = (queryParams: Record<string, string | number>) => {
   )
 }
 
-const processQueue = async (maxDepth: number) => {
+const processQueue = async () => {
   for (const key of queue) {
     const [type, id, depthStr] = key.split(':')
     const storeKey = [type, id].join(':')
@@ -249,17 +246,17 @@ export default async ({ args }: Program) => {
   accessToken = (await authenticate()).access_token
 
   for (const id of config.artistIds) {
-    addToQueue({ type: 'artist', id })
+    addToQueue({ type: 'artist', id }, { depth: 1 })
   }
 
   for (const id of config.albumIds) {
-    addToQueue({ type: 'album', id })
+    addToQueue({ type: 'album', id }, { depth: 1 })
   }
 
   for (const id of [REDWOOD_CONF_PLAYLIST_ID].concat(config.playlistIds)) {
-    addToQueue({ type: 'playlist', id })
+    addToQueue({ type: 'playlist', id }, { depth: 1 })
   }
 
-  await processQueue(args.maxDepth ?? 3)
+  await processQueue()
   writeStore()
 }
