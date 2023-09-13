@@ -220,7 +220,7 @@ const processQueue = async () => {
 
     if (depth <= maxDepth) {
       // Avoid rate limiting by sleeping for a short duration
-      refs[storeKey] ||= (await sleep(50), await getRecord(type, id, depth))
+      refs[storeKey] ||= (await sleep(20), await getRecord(type, id, depth))
     }
 
     queue.delete(key)
