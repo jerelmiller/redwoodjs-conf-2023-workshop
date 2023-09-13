@@ -2,6 +2,7 @@ import { createColumnHelper } from '@tanstack/react-table'
 import { Clock } from 'lucide-react'
 import type { LikedTracksQuery } from 'types/graphql'
 
+import { Link, routes } from '@redwoodjs/router'
 import type { CellSuccessProps, CellFailureProps } from '@redwoodjs/web'
 
 import PageContainer from 'src/components/PageContainer'
@@ -9,16 +10,19 @@ import PageHeader from 'src/components/PageHeader'
 import PageHeaderContent from 'src/components/PageHeaderContent'
 import PageMediaType from 'src/components/PageMediaType'
 
+import CoverPhoto from '../CoverPhoto'
 import DateTime from '../DateTime'
+import DelimitedList from '../DelimitedList'
 import Duration from '../Duration'
-import LikeButton from '../LikeButton/LikeButton'
-import LikedTracksCoverPhoto from '../LikedTracksCoverPhoto/LikedTracksCoverPhoto'
+import ExplicitBadge from '../ExplicitBadge'
+import LikeButton from '../LikeButton'
+import LikedTracksCoverPhoto from '../LikedTracksCoverPhoto'
 import PageContent from '../PageContent'
-import PageHeaderDetails from '../PageHeaderDetails/PageHeaderDetails'
+import PageHeaderDetails from '../PageHeaderDetails'
 import PageTitle from '../PageTitle'
-import PlayButton from '../PlayButton/PlayButton'
+import PlayButton from '../PlayButton'
 import Table from '../Table'
-import TrackNumberColumn from '../TrackNumberColumn/TrackNumberColumn'
+import TrackNumberColumn from '../TrackNumberColumn'
 
 export const QUERY = gql`
   query LikedTracksQuery {
@@ -33,7 +37,19 @@ export const QUERY = gql`
           node {
             id
             durationMs
+            explicit
             name
+            album {
+              id
+              name
+              images {
+                url
+              }
+            }
+            artists {
+              id
+              name
+            }
           }
         }
       }
@@ -98,20 +114,7 @@ const columns = [
     id: 'number',
     header: '#',
     cell: (info) => {
-      const { spotifyURI } = info.table.options
-        .meta as unknown as LikedTracksTableMeta
-
       return <TrackNumberColumn trackNumber={info.row.index + 1} />
-      // return (
-      //   <TrackNumberCell
-      //     position={info.row.index}
-      //     track={info.getValue()}
-      //     context={{
-      //       __typename: 'Playlist',
-      //       uri: spotifyURI,
-      //     }}
-      //   />
-      // )
     },
     meta: {
       headerAlign: 'right',
@@ -122,19 +125,56 @@ const columns = [
     id: 'title',
     header: 'Title',
     cell: (info) => {
-      const { spotifyURI } = info.table.options
-        .meta as unknown as LikedTracksTableMeta
+      const track = info.getValue()
+      const coverPhoto = track.album.images.at(-1)
 
-      return null
-      // return (
-      //   <TrackTitleCell context={{ uri: spotifyURI }} track={info.getValue()} />
-      // )
+      return (
+        <div className="flex items-end gap-2">
+          <CoverPhoto image={coverPhoto} size="2.5rem" />
+          <div className="flex flex-col">
+            <span className="text-base text-primary">{track.name}</span>
+            <div className="flex items-center gap-2">
+              {track.explicit && <ExplicitBadge />}
+              <span className="text-muted">
+                <DelimitedList delimiter=", ">
+                  {track.artists.map((artist) => (
+                    <Link
+                      key={artist.id}
+                      className="transition-colors duration-150 hover:text-primary"
+                      to={routes.artist({ id: artist.id })}
+                    >
+                      {artist.name}
+                    </Link>
+                  ))}
+                </DelimitedList>
+              </span>
+            </div>
+          </div>
+        </div>
+      )
+    },
+  }),
+  columnHelper.accessor('node.album', {
+    header: 'Album',
+    cell: (info) => {
+      const album = info.getValue()
+
+      return (
+        <Link
+          className="text-muted transition-colors hover:text-primary"
+          to={routes.album({ id: album.id })}
+        >
+          {album.name}
+        </Link>
+      )
     },
   }),
   columnHelper.accessor('addedAt', {
     header: 'Date added',
     cell: (info) => (
-      <DateTime date={info.getValue()} format={DateTime.FORMAT.timeAgo} />
+      <span className="text-muted">
+        <DateTime date={info.getValue()} format={DateTime.FORMAT.timeAgo} />
+      </span>
     ),
   }),
   columnHelper.accessor('node', {
