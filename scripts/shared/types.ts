@@ -461,7 +461,7 @@ export namespace Spotify {
       added_by: UserSimplified
       is_local: boolean
       primary_color: string | null
-      track: PlaylistItem
+      track: PlaylistTrackItem
       video_thumbnail: {
         url: string | null
       }
