@@ -77,8 +77,11 @@ const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
 //   return map
 // }
 
-const addToQueue = (record: BareRecord) => {
-  queue.add(getStoreKey(record))
+const addToQueue = (
+  record: BareRecord,
+  { depth = 1 }: { depth?: number } = {}
+) => {
+  queue.add([record.type, record.id, depth].join(':'))
 }
 
 // const addToQueue = (
@@ -126,9 +129,9 @@ const authenticate = async (): Promise<AccessTokenResponse> => {
   return res.json()
 }
 
-const getStoreKey = ({ type, id }: BareRecord) => {
-  return `${type}:${id}`
-}
+// const getStoreKey = ({ type, id }: BareRecord) => {
+//   return `${type}:${id}`
+// }
 
 // const toReference = (record: { type: string; id: string }): Reference => {
 //   if (record.type == null) {
@@ -143,25 +146,49 @@ const getStoreKey = ({ type, id }: BareRecord) => {
 // const isReference = (obj: object): obj is Reference => {
 //   return '__ref' in obj && obj.__ref === 'string'
 // }
-
-const getArtist = async (id: string) => {
-  return get('/artists/:id', { params: { id } })
+interface QueueOptions {
+  depth: number
 }
 
-const getAlbum = async (id: string) => {
+const getArtist = async (id: string, { depth }: QueueOptions) => {
+  const artist = await get('/artists/:id', { params: { id } })
+  const albums = await get('/artists/:id/albums', { params: { id } })
+  const allAlbums = await getPaginated(albums)
+
+  albums.items
+    .concat(allAlbums)
+    .forEach((album) => [addToQueue(album, { depth: depth + 1 })])
+
+  return artist
+}
+
+const getAlbum = async (id: string, { depth }: QueueOptions) => {
   const album = await get('/albums/:id', { params: { id } })
   const tracks = await getPaginated(album.tracks)
 
   album.tracks.items.push(...tracks)
+  album.tracks.items.forEach((track) => {
+    addToQueue(track, { depth: depth + 1 })
+  })
+  album.artists.forEach((artist) => {
+    addToQueue(artist, { depth: depth + 1 })
+  })
 
   return album
 }
 
-const getTrack = async (id: string) => {
-  return get('/tracks/:id', { params: { id } })
+const getTrack = async (id: string, { depth }: QueueOptions) => {
+  const track = await get('/tracks/:id', { params: { id } })
+
+  addToQueue(track.album, { depth: depth + 1 })
+  track.artists.forEach((artist) => {
+    addToQueue(artist, { depth: depth + 1 })
+  })
+
+  return track
 }
 
-const getPlaylist = async (id: string) => {
+const getPlaylist = async (id: string, { depth }: QueueOptions) => {
   const playlist = await get('/playlists/:id', {
     params: { id },
     queryParams: { additional_types: 'track' },
@@ -169,6 +196,9 @@ const getPlaylist = async (id: string) => {
   const tracks = await getPaginated(playlist.tracks)
 
   playlist.tracks.items.push(...tracks)
+  playlist.tracks.items.forEach((item) => {
+    addToQueue(item.track, { depth: depth + 1 })
+  })
 
   return playlist
 }
@@ -189,27 +219,20 @@ const getPaginated = async <TRecord>(
   return records
 }
 
-const getByStoreKey = (storeKey: string) => {
-  const [type, id] = storeKey.split(':')
-
+const getRecord = (type: string, id: string, depth: number) => {
   switch (type) {
     case 'album':
-      return getAlbum(id)
+      return getAlbum(id, { depth })
     case 'artist':
-      return getArtist(id)
+      return getArtist(id, { depth })
     case 'track':
-      return getTrack(id)
+      return getTrack(id, { depth })
     case 'playlist':
-      return getPlaylist(id)
+      return getPlaylist(id, { depth })
     default:
       throw new Error(`Unknown type: ${type}`)
   }
 }
-
-// function tap<T>(value: T, fn: (value: T) => void) {
-//   fn(value)
-//   return value
-// }
 
 function replaceUrlParams(pathname: string, params: Record<string, string>) {
   return pathname.replace(/(?<=\/):(\w+)/g, (_, name) => {
@@ -276,9 +299,14 @@ const toURLSearchParams = (queryParams: Record<string, string | number>) => {
 //   deepUpdate(record, toReference(relation), path)
 // }
 
-const processQueue = async () => {
+const processQueue = async (maxDepth: number) => {
   for (const key of queue) {
-    refs[key] ||= await getByStoreKey(key)
+    const [type, id, depthStr] = key.split(':')
+    const depth = parseInt(depthStr, 10)
+
+    if (depth <= maxDepth) {
+      refs[key] ||= await getRecord(type, id, depth)
+    }
 
     queue.delete(key)
 
@@ -309,6 +337,6 @@ export default async () => {
     addToQueue({ type: 'playlist', id })
   }
 
-  await processQueue()
+  await processQueue(2)
   await writeStore()
 }
