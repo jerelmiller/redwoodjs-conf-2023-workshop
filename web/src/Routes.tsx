@@ -22,6 +22,7 @@ const Routes = () => {
         <Route path="/" page={HomePage} name="home" />
         <Route path="/albums/{id}" page={AlbumPage} name="album" />
         <Route path="/artists/{id}" page={ArtistPage} name="artist" />
+        <Route path="/collection/tracks" page={LikedTracksPage} name="likedTracks" />
         <Route path="/playlists/{id}" page={PlaylistPage} name="playlist" />
       </Set>
       <Route notfound page={NotFoundPage} />
