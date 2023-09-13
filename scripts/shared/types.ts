@@ -2,41 +2,11 @@
 type Prop<T, Key extends string> = Key extends keyof T ? T[Key] : never
 type WithinKey<Key extends string, T> = { [K in Key]: T }
 
-export type AlbumWithRefs = Omit<Spotify.Object.Album, 'artists' | 'tracks'> & {
-  artists: Reference[]
-  tracks: { items: Reference[] }
-}
-
-export type PlaylistWithRefs = Omit<Spotify.Object.Playlist, 'tracks'> & {
-  tracks: {
-    items: Array<
-      Omit<Spotify.Object.Playlist['tracks']['items'][0], 'track'> & {
-        track: Reference
-      }
-    >
-  }
-}
-
-export type TrackWithRefs = Omit<Spotify.Object.Track, 'album' | 'artists'> & {
-  album: Reference
-  artists: Reference[]
-}
-
 export type SpotifyRecord =
   | Spotify.Object.Artist
   | Spotify.Object.Album
   | Spotify.Object.Playlist
   | Spotify.Object.Track
-
-export type SpotifyRecordWithRefs =
-  | Spotify.Object.Artist
-  | AlbumWithRefs
-  | PlaylistWithRefs
-  | TrackWithRefs
-
-export interface Reference {
-  __ref: string
-}
 
 export namespace Spotify {
   export type HTTPMethod = 'DELETE' | 'GET' | 'POST' | 'PUT'
