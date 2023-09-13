@@ -2,8 +2,12 @@
 displayName = 'Jerel Miller'
 
 [spotify.saved]
-albumIds = []
-trackIds = []
+albumIds = [
+  '6YQu7tXYfN1r2NLx8tfEI6'
+]
+trackIds = [
+  '3VC4KHC7cRhuG6nYx4f1qj'
+]
 
 [spotify.synced]
 albumIds = []
