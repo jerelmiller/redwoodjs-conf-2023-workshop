@@ -161,7 +161,10 @@ const getTrack = async (id: string) => {
 }
 
 const getPlaylist = async (id: string) => {
-  const playlist = await get('/playlists/:id', { params: { id } })
+  const playlist = await get('/playlists/:id', {
+    params: { id },
+    queryParams: { additional_types: 'track' },
+  })
   const tracks = await getPaginated(playlist.tracks)
 
   playlist.tracks.items.push(...tracks)
