@@ -4707,6 +4707,40 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@radix-ui/react-popover@npm:^1.0.6":
+  version: 1.0.6
+  resolution: "@radix-ui/react-popover@npm:1.0.6"
+  dependencies:
+    "@babel/runtime": ^7.13.10
+    "@radix-ui/primitive": 1.0.1
+    "@radix-ui/react-compose-refs": 1.0.1
+    "@radix-ui/react-context": 1.0.1
+    "@radix-ui/react-dismissable-layer": 1.0.4
+    "@radix-ui/react-focus-guards": 1.0.1
+    "@radix-ui/react-focus-scope": 1.0.3
+    "@radix-ui/react-id": 1.0.1
+    "@radix-ui/react-popper": 1.1.2
+    "@radix-ui/react-portal": 1.0.3
+    "@radix-ui/react-presence": 1.0.1
+    "@radix-ui/react-primitive": 1.0.3
+    "@radix-ui/react-slot": 1.0.2
+    "@radix-ui/react-use-controllable-state": 1.0.1
+    aria-hidden: ^1.1.1
+    react-remove-scroll: 2.5.5
+  peerDependencies:
+    "@types/react": "*"
+    "@types/react-dom": "*"
+    react: ^16.8 || ^17.0 || ^18.0
+    react-dom: ^16.8 || ^17.0 || ^18.0
+  peerDependenciesMeta:
+    "@types/react":
+      optional: true
+    "@types/react-dom":
+      optional: true
+  checksum: 1b9fd21f6b73a74af88c5cd151f7de2a8dcc46a4d7ac7bee1104d5a45869f170bcb2490c3205b18597457b9153e71016bc1f71077938317e07eca5cf45fca7ae
+  languageName: node
+  linkType: hard
+
 "@radix-ui/react-popper@npm:1.1.2":
   version: 1.1.2
   resolution: "@radix-ui/react-popper@npm:1.1.2"
@@ -21936,6 +21970,7 @@ __metadata:
   resolution: "web@workspace:web"
   dependencies:
     "@radix-ui/react-dropdown-menu": ^2.0.5
+    "@radix-ui/react-popover": ^1.0.6
     "@radix-ui/react-progress": ^1.0.3
     "@radix-ui/react-tooltip": ^1.0.6
     "@redwoodjs/auth": 6.1.1
