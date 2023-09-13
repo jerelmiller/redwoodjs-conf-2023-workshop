@@ -250,7 +250,7 @@ const processQueue = async () => {
     paths.forEach((path) => deepUpdate(refs, toReference(refs[key]), path))
     queue.delete(key)
 
-    await sleep(100)
+    await sleep(50)
   }
 }
 
