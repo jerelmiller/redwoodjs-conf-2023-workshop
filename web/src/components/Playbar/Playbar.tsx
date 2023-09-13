@@ -122,7 +122,15 @@ const Playbar = () => {
           </div>
         </div>
         <div className="flex items-center justify-end gap-4">
-          <Link to="/queue" className="block leading-none">
+          <Link
+            to=""
+            className="block leading-none"
+            onClick={() =>
+              console.warn(
+                'Queue page is not implemented and therefore a noop.'
+              )
+            }
+          >
             <PlaybarControlButton
               active={false}
               disallowed={false}
