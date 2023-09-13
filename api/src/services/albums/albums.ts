@@ -11,6 +11,22 @@ export const album: QueryResolvers['album'] = ({ id }) => {
   return db.album.findUnique({ where: { id } })
 }
 
+export const albums: QueryResolvers['albums'] = async ({ limit, offset }) => {
+  const total = await db.album.count()
+  const albums = await db.album.findMany({ skip: offset, take: limit })
+
+  return {
+    pageInfo: {
+      total,
+      offset,
+      limit,
+      hasNextPage: offset + albums.length < total,
+      hasPreviousPage: offset > 0 && albums.length > 0,
+    },
+    edges: albums.map((album) => ({ node: album })),
+  }
+}
+
 export const Album: AlbumRelationResolvers = {
   albumType: (_, { root }) => root.albumType.toUpperCase() as AlbumType,
   artists: (_, { root }) => {
