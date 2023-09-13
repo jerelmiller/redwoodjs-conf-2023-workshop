@@ -155,7 +155,6 @@ const saveAlbum = async (album: AlbumWithRefs) => {
 }
 
 const savePlaylist = async (playlist: PlaylistWithRefs) => {
-  const tracks: Prisma.PlaylistTrackCreateOrConnectWithoutPlaylistInput[] = []
   const images =
     playlist.images.map<Prisma.PlaylistImageCreateOrConnectWithoutPlaylistInput>(
       (image) => ({
@@ -168,39 +167,13 @@ const savePlaylist = async (playlist: PlaylistWithRefs) => {
       })
     )
 
-  for (const playlistTrack of playlist.tracks.items) {
-    const track = await saveTrack(
-      getRecordFromRef<TrackWithRefs>(playlistTrack.track)
-    )
-
-    tracks.push({
-      where: {
-        playlistId_trackId: { playlistId: playlist.id, trackId: track.id },
-      },
-      create: {
-        addedAt: new Date(playlistTrack.added_at),
-        addedBy: {
-          connect: {
-            displayName: config.user.displayName,
-          },
-        },
-        track: {
-          connect: { id: track.id },
-        },
-      },
-    })
-  }
-
-  return db.playlist.upsert({
+  const createdPlaylist = await db.playlist.upsert({
     where: { id: playlist.id },
     create: {
       id: playlist.id,
       name: playlist.name,
       images: {
         connectOrCreate: images,
-      },
-      tracks: {
-        connectOrCreate: tracks,
       },
       owner: {
         connect: {
@@ -213,9 +186,6 @@ const savePlaylist = async (playlist: PlaylistWithRefs) => {
       images: {
         connectOrCreate: images,
       },
-      tracks: {
-        connectOrCreate: tracks,
-      },
       owner: {
         connect: {
           displayName: config.user.displayName,
@@ -223,6 +193,49 @@ const savePlaylist = async (playlist: PlaylistWithRefs) => {
       },
     },
   })
+
+  for (const playlistTrack of playlist.tracks.items) {
+    const track = await saveTrack(
+      getRecordFromRef<TrackWithRefs>(playlistTrack.track)
+    )
+
+    await db.playlistTrack.upsert({
+      where: {
+        playlistId_trackId: {
+          playlistId: createdPlaylist.id,
+          trackId: track.id,
+        },
+      },
+      create: {
+        addedAt: new Date(playlistTrack.added_at),
+        addedBy: {
+          connect: {
+            displayName: config.user.displayName,
+          },
+        },
+        playlist: {
+          connect: {
+            id: createdPlaylist.id,
+          },
+        },
+        track: {
+          connect: {
+            id: track.id,
+          },
+        },
+      },
+      update: {
+        addedAt: new Date(playlistTrack.added_at),
+        addedBy: {
+          connect: {
+            displayName: config.user.displayName,
+          },
+        },
+      },
+    })
+  }
+
+  return playlist
 }
 
 const saveTrack = async (track: TrackWithRefs) => {
