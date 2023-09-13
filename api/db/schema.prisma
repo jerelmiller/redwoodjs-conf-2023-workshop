@@ -38,6 +38,7 @@ model Album {
   images               AlbumImage[]
   tracks               Track[]
   copyrights           Copyright[]
+  savedAlbums          SavedAlbum[]
 }
 
 model AlbumImage {
@@ -89,6 +90,16 @@ model PlaylistTrack {
   @@id([playlistId, trackId])
 }
 
+model SavedAlbum {
+  addedAt DateTime @default(now())
+  album   Album    @relation(fields: [albumId], references: [id])
+  albumId String
+  user    User     @relation(fields: [userId], references: [id])
+  userId  String
+
+  @@id([albumId, userId])
+}
+
 model SavedTrack {
   addedAt DateTime @default(now())
   track   Track    @relation(fields: [trackId], references: [id])
@@ -121,6 +132,7 @@ model User {
   playlists      Playlist[]
   images         UserImage[]
   playlistTracks PlaylistTrack[]
+  savedAlbums    SavedAlbum[]
   savedTracks    SavedTrack[]
 }
 
