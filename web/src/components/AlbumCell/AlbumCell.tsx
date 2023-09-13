@@ -200,17 +200,19 @@ const columns = [
           <span className="text-base">{track.name}</span>
           <div className="flex items-center gap-2">
             {track.explicit && <ExplicitBadge />}
-            <DelimitedList delimiter=", ">
-              {track.artists.map((artist) => (
-                <Link
-                  key={artist.id}
-                  to={routes.artist({ id: artist.id })}
-                  className="text-muted transition-colors duration-[0.15s] hover:text-primary"
-                >
-                  {artist.name}
-                </Link>
-              ))}
-            </DelimitedList>
+            <span>
+              <DelimitedList delimiter=", ">
+                {track.artists.map((artist) => (
+                  <Link
+                    key={artist.id}
+                    to={routes.artist({ id: artist.id })}
+                    className="text-muted transition-colors duration-[0.15s] hover:text-primary"
+                  >
+                    {artist.name}
+                  </Link>
+                ))}
+              </DelimitedList>
+            </span>
           </div>
         </div>
       )
