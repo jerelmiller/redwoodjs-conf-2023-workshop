@@ -215,16 +215,15 @@ const processQueue = async (maxDepth: number) => {
     const depth = parseInt(depthStr, 10)
 
     if (depth <= maxDepth) {
-      refs[key] ||= await getRecord(type, id, depth)
+      // Avoid rate limiting by sleeping for a short duration
+      refs[key] ||= (await sleep(50), await getRecord(type, id, depth))
     }
 
     queue.delete(key)
-
-    await sleep(50)
   }
 }
 
-const writeStore = async () => {
+const writeStore = () => {
   fs.writeFileSync(
     path.resolve(__dirname, './spotify.json'),
     JSON.stringify(refs)
@@ -254,5 +253,5 @@ export default async ({ args }: Program) => {
   }
 
   await processQueue(args.maxDepth ?? 3)
-  await writeStore()
+  writeStore()
 }
