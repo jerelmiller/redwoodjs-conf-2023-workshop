@@ -37,10 +37,8 @@ const BaseLayout = ({ children }: BaseLayoutProps) => {
                 <Library /> Your Library
               </h2>
             </header>
-            <ScrollableList className="-mx-1 px-3">
-              <ul>
-                <SidebarPlaylistsCell />
-              </ul>
+            <ScrollableList as="ul" className="-mx-1 flex-1 px-3">
+              <SidebarPlaylistsCell />
             </ScrollableList>
           </SidebarSection>
         </nav>
