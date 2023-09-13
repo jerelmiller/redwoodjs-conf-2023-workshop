@@ -43,18 +43,21 @@ const refs: Record<string, SpotifyRecordWithRefs> = {}
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
 
-const deepUpdate = (obj: object, value: unknown, path: string) => {
+const deepUpdate = (
+  obj: object,
+  value: unknown,
+  path: Array<string | number>
+) => {
   let i: number
-  const segments = path.split('.')
 
-  for (i = 0; i < segments.length - 1; i++) {
-    const segment = segments[i]
+  for (i = 0; i < path.length - 1; i++) {
+    const segment = path[i]
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     obj = (obj as any)[segment]
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  ;(obj as any)[segments[i]] = value
+  ;(obj as any)[path[i]] = value
 }
 
 const mapUpdate = <TKey, TValue>(
@@ -163,23 +166,28 @@ const getTrack = async (id: string) => {
 }
 
 const getPlaylist = async (id: string) => {
-  return tap(await get('/playlists/:id', { params: { id } }), (playlist) => {
-    const hasEpisodes = playlist.tracks.items.some(
-      (item) => item.track.type === 'episode'
-    )
-    if (hasEpisodes) {
-      throw new Error(
-        'Playlists with episodes are not supported in this workshop. Please pick a playlist that only contains tracks.'
-      )
-    }
+  const playlist = await get('/playlists/:id', { params: { id } })
+  const tracks = playlist.tracks.items
+  let next = playlist.tracks.next
 
-    playlist.tracks.items.forEach((item, idx) => {
-      addToQueue(item.track, {
-        update: playlist,
-        withRefAtPath: ['tracks', 'items', String(idx), 'track'],
-      })
-    })
+  while (next) {
+    const data = await fetchEndpoint<
+      Spotify.Response.GET['/playlists/:id/tracks']
+    >(next)
+
+    next = data.next
+    tracks.push(...data.items)
+  }
+
+  refs[getStoreKey(playlist)] = playlist as unknown as PlaylistWithRefs
+
+  playlist.tracks.items.forEach((item, idx) => {
+    refs[getStoreKey(item.track)] = item.track as unknown as TrackWithRefs
+
+    replaceWithRef(playlist, ['tracks', 'items', idx, 'track'])
   })
+
+  return playlist
 }
 
 const getByStoreKey = (storeKey: string) => {
@@ -231,7 +239,7 @@ async function get<Pathname extends keyof Spotify.Response.GET>(
   )
 }
 
-const fetchEndpoint = async (uri: string) => {
+const fetchEndpoint = async <TData>(uri: string): Promise<TData> => {
   const res = await fetch(uri, {
     headers: { Authorization: `Bearer ${accessToken}` },
   })
@@ -253,11 +261,25 @@ const toURLSearchParams = (queryParams: Record<string, string | number>) => {
   )
 }
 
+const replaceWithRef = (
+  record: SpotifyRecord,
+  path: Array<string | number>
+) => {
+  const relation = path.reduce<SpotifyRecord>(
+    (memo, segment) => (memo as never)[segment],
+    record
+  )
+
+  deepUpdate(record, toReference(relation), path)
+}
+
 const processQueue = async () => {
   for (const [key, paths] of queue) {
     refs[key] ||= (await getByStoreKey(key)) as SpotifyRecordWithRefs
 
-    paths.forEach((path) => deepUpdate(refs, toReference(refs[key]), path))
+    paths.forEach((path) =>
+      deepUpdate(refs, toReference(refs[key]), path.split('.'))
+    )
     queue.delete(key)
 
     await sleep(50)
@@ -267,7 +289,7 @@ const processQueue = async () => {
 const writeStore = async () => {
   fs.writeFileSync(
     path.resolve(__dirname, './spotify.json'),
-    JSON.stringify(refs)
+    JSON.stringify(refs, null, 2)
   )
 }
 
@@ -275,9 +297,9 @@ export default async () => {
   const { spotify: config } = getWorkshopConfig()
   accessToken = (await authenticate()).access_token
 
-  for (const id of config.albumIds) {
-    addToQueue({ type: 'album', id })
-  }
+  // for (const id of config.albumIds) {
+  //   addToQueue({ type: 'album', id })
+  // }
 
   for (const id of config.playlistIds) {
     addToQueue({ type: 'playlist', id })
