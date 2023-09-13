@@ -155,7 +155,7 @@ const saveAlbum = async (
     }
   }
 
-  const savedAlbum = db.album.upsert({
+  const savedAlbum = await db.album.upsert({
     where: { id: album.id },
     create: {
       id: album.id,
