@@ -1,5 +1,6 @@
 import cx from 'classnames'
 import {
+  Laptop2,
   List,
   RepeatIcon,
   Shuffle,
@@ -11,12 +12,14 @@ import {
 
 import { Link, routes } from '@redwoodjs/router'
 
+import AnimatedSoundWave from 'src/components/AnimatedSoundWave'
 import CoverPhoto from 'src/components/CoverPhoto'
 import DelimitedList from 'src/components/DelimitedList'
 import Duration from 'src/components/Duration'
 import LikeButton from 'src/components/LikeButton'
 import PlaybarControlButton from 'src/components/PlaybarControlButton'
 import PlayButton from 'src/components/PlayButton'
+import Popover from 'src/components/Popover'
 import ProgressBar from 'src/components/ProgressBar'
 
 const TOOLTIP = {
@@ -40,12 +43,14 @@ const Playbar = () => {
   }
 
   const device = {
+    id: 'bogus',
     volumePercent: 50,
     name: 'Your device',
   }
 
   const shuffled = false
   const repeatState = 'off' as const
+  const availableDevices: Array<typeof device> = []
 
   return (
     <footer className="flex flex-col [grid-area:playbar]">
@@ -126,7 +131,48 @@ const Playbar = () => {
               <List strokeWidth={1.5} />
             </PlaybarControlButton>
           </Link>
-          <span>devices</span>
+
+          <Popover
+            content={
+              <div>
+                {device && (
+                  <div className="flex items-center gap-4 p-4">
+                    {playbackState?.isPlaying ? (
+                      <AnimatedSoundWave size="1.5rem" />
+                    ) : (
+                      <Laptop2 size="1.5rem" className="text-green" />
+                    )}
+                    <div className="flex flex-col">
+                      <h3 className="text-base font-bold">Current device</h3>
+                      <span className="text-sm text-green-light">
+                        {device.name}
+                      </span>
+                    </div>
+                  </div>
+                )}
+                {availableDevices.length > 0 && (
+                  <h4 className="my-2 px-4">Select another device</h4>
+                )}
+                <ul className="flex list-none flex-col">
+                  {availableDevices.map((device) => (
+                    <li key={device.id}>
+                      <button className="flex w-full cursor-pointer items-center gap-4 rounded p-4 text-sm hover:bg-white/10">
+                        <Laptop2 strokeWidth={1.5} />
+                        {device.name}
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            }
+          >
+            <PlaybarControlButton
+              disallowed={false}
+              tooltip="Connect to a device"
+            >
+              <Laptop2 strokeWidth={1.5} />
+            </PlaybarControlButton>
+          </Popover>
           <div className="flex items-center gap-1">
             <PlaybarControlButton
               disallowed={false}
@@ -142,17 +188,6 @@ const Playbar = () => {
             />
           </div>
         </div>
-        {/*
-          <Flex justifyContent="end" gap="1rem" alignItems="center">
-            <QueueControlButton />
-            <DevicePopover devices={devices}>
-              <PlaybarControlButton
-                disallowed={devices.length === 0}
-                icon={<DeviceIcon device={device} strokeWidth={1.5} />}
-                tooltip="Connect to a device"
-              />
-            </DevicePopover>
-          </Flex> */}
       </div>
       {device && (
         <div
