@@ -128,11 +128,11 @@ const toReference = (record: { type: string; id: string }): Reference => {
 }
 
 const getArtist = async (id: string) => {
-  return get('/artists/:id', { id })
+  return get('/artists/:id', { params: { id } })
 }
 
 const getAlbum = async (id: string) => {
-  return tap(await get('/albums/:id', { id }), (album) => {
+  return tap(await get('/albums/:id', { params: { id } }), (album) => {
     album.artists.forEach((artist, idx) => {
       addToQueue(artist, {
         update: album,
@@ -150,7 +150,7 @@ const getAlbum = async (id: string) => {
 }
 
 const getTrack = async (id: string) => {
-  return tap(await get('/tracks/:id', { id }), (track) => {
+  return tap(await get('/tracks/:id', { params: { id } }), (track) => {
     addToQueue(track.album, { update: track, withRefAtPath: ['album'] })
 
     track.artists.forEach((artist, idx) => {
@@ -163,7 +163,7 @@ const getTrack = async (id: string) => {
 }
 
 const getPlaylist = async (id: string) => {
-  return tap(await get('/playlists/:id', { id }), (playlist) => {
+  return tap(await get('/playlists/:id', { params: { id } }), (playlist) => {
     const hasEpisodes = playlist.tracks.items.some(
       (item) => item.track.type === 'episode'
     )
@@ -212,13 +212,21 @@ function replaceUrlParams(pathname: string, params: Record<string, string>) {
 
 async function get<Pathname extends keyof Spotify.Response.GET>(
   pathname: Pathname,
-  params?: Record<string, string>
+  {
+    params,
+    queryParams,
+  }: {
+    params?: Record<string, string>
+    queryParams?: Record<string, string>
+  } = {}
 ): Promise<Spotify.Response.GET[Pathname]> {
-  const uri = path.join(
+  const base = path.join(
     BASE_URI,
     'v1',
     replaceUrlParams(pathname, params ?? {})
   )
+  const query = new URLSearchParams(queryParams)
+  const uri = query.size === 0 ? base : `${base}?${query}`
 
   const res = await fetch(uri, {
     headers: { Authorization: `Bearer ${accessToken}` },
