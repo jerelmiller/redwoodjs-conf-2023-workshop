@@ -31,7 +31,11 @@ const refs = JSON.parse(readFile('./spotify.json')) as Record<
 >
 
 const isShallowRecord = (
-  simplified: Spotify.Object.AlbumSimplified | Spotify.Object.ArtistSimplified
+  simplified:
+    | Spotify.Object.AlbumSimplified
+    | Spotify.Object.ArtistSimplified
+    | Spotify.Object.Track
+    | Spotify.Object.TrackSimplified
 ) => {
   return !refs[getStoreKey(simplified)]
 }
@@ -66,7 +70,7 @@ const saveRecord = async (record: SpotifyRecord) => {
         await saveArtist(artist)
       }
       await saveAlbum(record.album)
-      return saveTrack(record)
+      return saveTrack(record, record.album.id)
   }
 }
 
@@ -151,7 +155,7 @@ const saveAlbum = async (
     }
   }
 
-  return db.album.upsert({
+  const savedAlbum = db.album.upsert({
     where: { id: album.id },
     create: {
       id: album.id,
@@ -187,6 +191,18 @@ const saveAlbum = async (
       },
     },
   })
+
+  if ('tracks' in album) {
+    for (const track of album.tracks.items) {
+      for (const artist of track.artists) {
+        await saveArtist(artist)
+      }
+
+      await saveTrack(track, album.id)
+    }
+  }
+
+  return savedAlbum
 }
 
 const savePlaylist = async (playlist: Spotify.Object.Playlist) => {
@@ -236,7 +252,10 @@ const savePlaylist = async (playlist: Spotify.Object.Playlist) => {
       await saveArtist(artist)
     }
     await saveAlbum(playlistTrack.track.album)
-    const track = await saveTrack(playlistTrack.track)
+    const track = await saveTrack(
+      playlistTrack.track,
+      playlistTrack.track.album.id
+    )
 
     await db.playlistTrack.upsert({
       where: {
@@ -277,10 +296,14 @@ const savePlaylist = async (playlist: Spotify.Object.Playlist) => {
   return playlist
 }
 
-const saveTrack = async (track: Spotify.Object.Track) => {
+const saveTrack = async (
+  track: Spotify.Object.Track | Spotify.Object.TrackSimplified,
+  albumId: string
+) => {
   const artists = track.artists.map<Prisma.ArtistWhereUniqueInput>(
     (artist) => ({ id: artist.id })
   )
+  const popularity = 'popularity' in track ? track.popularity : 0
 
   return db.track.upsert({
     where: { id: track.id },
@@ -290,11 +313,12 @@ const saveTrack = async (track: Spotify.Object.Track) => {
       durationMs: track.duration_ms,
       explicit: track.explicit,
       name: track.name,
-      popularity: track.popularity,
+      popularity: popularity,
       trackNumber: track.track_number,
+      shallow: isShallowRecord(track),
       album: {
         connect: {
-          id: track.album.id,
+          id: albumId,
         },
       },
       artists: {
@@ -305,11 +329,12 @@ const saveTrack = async (track: Spotify.Object.Track) => {
       durationMs: track.duration_ms,
       explicit: track.explicit,
       name: track.name,
-      popularity: track.popularity,
+      popularity: popularity,
       trackNumber: track.track_number,
+      shallow: isShallowRecord(track),
       album: {
         connect: {
-          id: track.album.id,
+          id: albumId,
         },
       },
       artists: {
