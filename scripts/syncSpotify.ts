@@ -29,6 +29,7 @@ interface WorkshopConfig {
     displayName: string
   }
   spotify: {
+    artistIds: string[]
     albumIds: string[]
     playlistIds: string[]
   }
@@ -295,6 +296,10 @@ const writeStore = async () => {
 export default async () => {
   const { spotify: config } = getWorkshopConfig()
   accessToken = (await authenticate()).access_token
+
+  for (const id of config.artistIds) {
+    addToQueue({ type: 'artist', id })
+  }
 
   for (const id of config.albumIds) {
     addToQueue({ type: 'album', id })
