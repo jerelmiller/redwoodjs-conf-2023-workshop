@@ -244,16 +244,27 @@ export default async ({ args }: Program) => {
   accessToken = (await authenticate()).access_token
   const { spotify: config } = getWorkshopConfig()
 
-  for (const id of DEFAULT_SYNCED_ARTISTS.concat(config.synced.artistIds)) {
+  const artistIds = DEFAULT_SYNCED_ARTISTS.concat(config.synced.artistIds)
+  const albumIds = DEFAULT_SYNCED_ALBUMS.concat(config.synced.albumIds).concat(
+    config.saved.albumIds
+  )
+  const playlistIds = DEFAULT_SYNCED_PLAYLISTS.concat(config.synced.playlistIds)
+  const trackIds = config.saved.trackIds
+
+  for (const id of artistIds) {
     addToQueue({ type: 'artist', id }, { depth: 1 })
   }
 
-  for (const id of DEFAULT_SYNCED_ALBUMS.concat(config.synced.albumIds)) {
+  for (const id of albumIds) {
     addToQueue({ type: 'album', id }, { depth: 1 })
   }
 
-  for (const id of DEFAULT_SYNCED_PLAYLISTS.concat(config.synced.playlistIds)) {
+  for (const id of playlistIds) {
     addToQueue({ type: 'playlist', id }, { depth: 1 })
+  }
+
+  for (const id of trackIds) {
+    addToQueue({ type: 'track', id }, { depth: 1 })
   }
 
   await processQueue()
