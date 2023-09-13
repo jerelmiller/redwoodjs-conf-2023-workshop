@@ -9,24 +9,42 @@ generator client {
 }
 
 model Artist {
-  id            String  @id @default(cuid())
+  id            String        @id @default(cuid())
   name          String
-  followerCount Int     @default(0)
+  followerCount Int           @default(0)
   albums        Album[]
   tracks        Track[]
-  images        Image[]
+  images        ArtistImage[]
+}
+
+model ArtistImage {
+  id       String @id @default(cuid())
+  url      String @unique
+  height   Int?
+  width    Int?
+  artist   Artist @relation(fields: [artistId], references: [id], onDelete: Cascade)
+  artistId String
 }
 
 model Album {
-  id                   String      @id @default(cuid())
+  id                   String       @id @default(cuid())
   name                 String
-  albumType            String      @default("album")
+  albumType            String       @default("album")
   artists              Artist[]
   releaseDate          String
   releaseDatePrecision String
-  images               Image[]
+  images               AlbumImage[]
   tracks               Track[]
   copyrights           Copyright[]
+}
+
+model AlbumImage {
+  id      String @id @default(cuid())
+  url     String @unique
+  height  Int?
+  width   Int?
+  album   Album  @relation(fields: [albumId], references: [id], onDelete: Cascade)
+  albumId String
 }
 
 model Copyright {
@@ -39,24 +57,22 @@ model Copyright {
   @@unique([albumId, text, type])
 }
 
-model Image {
-  id        String     @id @default(cuid())
-  url       String     @unique
-  height    Int?
-  width     Int?
-  albums    Album[]
-  artists   Artist[]
-  playlists Playlist[]
-  users     User[]
-}
-
 model Playlist {
   id     String          @id @default(cuid())
   name   String
   tracks PlaylistTrack[]
   owner  User            @relation(fields: [userId], references: [id])
-  images Image[]
+  images PlaylistImage[]
   userId String
+}
+
+model PlaylistImage {
+  id         String   @id @default(cuid())
+  url        String   @unique
+  height     Int?
+  width      Int?
+  playlist   Playlist @relation(fields: [playlistId], references: [id], onDelete: Cascade)
+  playlistId String
 }
 
 model PlaylistTrack {
@@ -89,6 +105,15 @@ model User {
   id             String          @id @default(cuid())
   displayName    String?         @unique
   playlists      Playlist[]
-  images         Image[]
+  images         UserImage[]
   playlistTracks PlaylistTrack[]
+}
+
+model UserImage {
+  id     String @id @default(cuid())
+  url    String @unique
+  height Int?
+  width  Int?
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String
 }
