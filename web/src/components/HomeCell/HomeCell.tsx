@@ -5,9 +5,32 @@ import type { CellSuccessProps, CellFailureProps } from '@redwoodjs/web'
 import AlbumTile from 'src/components/AlbumTile'
 import TileGrid from 'src/components/TileGrid'
 
+const getTileLimit = () => {
+  const width = window.innerWidth
+
+  switch (true) {
+    case width > 2500:
+      return 9
+    case width > 2100:
+      return 8
+    case width > 1990:
+      return 7
+    case width > 1750:
+      return 6
+    default:
+      return 5
+  }
+}
+
+export const beforeQuery = () => {
+  return {
+    variables: { limit: getTileLimit() },
+  }
+}
+
 export const QUERY = gql`
-  query HomeQuery {
-    albums(limit: 10) {
+  query HomeQuery($limit: Int) {
+    albums(limit: $limit) {
       edges {
         node {
           id
