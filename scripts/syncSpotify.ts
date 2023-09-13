@@ -6,6 +6,8 @@ import toml from 'toml'
 
 import type { Spotify, SpotifyRecord } from './shared/types'
 
+const REDWOOD_CONF_PLAYLIST_ID = '6dct72C91vKsJtsznrCAm3'
+
 interface BareRecord {
   id: string
   type: string
@@ -249,7 +251,7 @@ export default async ({ args }: Program) => {
     addToQueue({ type: 'album', id })
   }
 
-  for (const id of config.playlistIds) {
+  for (const id of [REDWOOD_CONF_PLAYLIST_ID].concat(config.playlistIds)) {
     addToQueue({ type: 'playlist', id })
   }
 
