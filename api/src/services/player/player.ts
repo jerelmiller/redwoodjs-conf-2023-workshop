@@ -2,7 +2,7 @@ import { PlayerRelationResolvers, MutationResolvers } from 'types/graphql'
 
 import { UserInputError } from '@redwoodjs/graphql-server'
 
-import { db } from 'src/lib/db'
+import { db, findByUri } from 'src/lib/db'
 
 export const resumePlayback: MutationResolvers['resumePlayback'] = async ({
   input,
@@ -14,7 +14,11 @@ export const resumePlayback: MutationResolvers['resumePlayback'] = async ({
   })
 
   if (!device) {
-    throw new UserInputError('No active device found.')
+    throw new UserInputError('No device found.')
+  }
+
+  if (input?.contextUri && !(await findByUri(input.contextUri))) {
+    throw new UserInputError(`Record with uri '${input.contextUri}' not found`)
   }
 
   await db.device.update({
