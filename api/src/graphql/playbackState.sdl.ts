@@ -4,7 +4,7 @@ export const schema = gql`
     isPlaying: Boolean!
 
     "off, track, context"
-    repeatMode: RepeatMode!
+    repeatState: RepeatMode!
 
     "If shuffle is on or off."
     shuffleState: Boolean!
