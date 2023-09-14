@@ -4,4 +4,7 @@ export const typePolicies: TypePolicies = {
   Image: {
     keyFields: ['url'],
   },
+  PlaybackState: {
+    keyFields: [],
+  },
 }
