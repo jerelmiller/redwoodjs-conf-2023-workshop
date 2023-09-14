@@ -1,3 +1,5 @@
+import { TimestampTypeDefinition, TimestampResolver } from 'graphql-scalars'
+
 import { createGraphQLHandler } from '@redwoodjs/graphql-server'
 
 import directives from 'src/directives/**/*.{js,ts}'
@@ -17,6 +19,10 @@ export const handler = createGraphQLHandler({
   directives,
   sdls,
   services,
+  schemaOptions: {
+    typeDefs: [TimestampTypeDefinition],
+    resolvers: { Timestamp: TimestampResolver },
+  },
   armorConfig: {
     maxDepth: { n: 7 },
   },
