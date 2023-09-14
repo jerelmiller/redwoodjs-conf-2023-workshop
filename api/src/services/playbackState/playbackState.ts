@@ -9,12 +9,30 @@ export const resumePlayback: MutationResolvers['resumePlayback'] = async ({
 }) => {
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const currentUser = context.currentUser!
+  const device = await db.device.findFirst({
+    where: { userId: currentUser.id },
+  })
+
+  if (!device) {
+    throw new UserInputError('No active device found.')
+  }
+
+  await db.device.update({
+    where: { id: device.id },
+    data: {
+      isActive: true,
+    },
+  })
+
   const playbackState = await db.playbackState.upsert({
     where: { userId: currentUser.id },
     create: {
       isPlaying: true,
       user: {
         connect: { id: currentUser.id },
+      },
+      device: {
+        connect: { id: device.id },
       },
     },
     update: {
