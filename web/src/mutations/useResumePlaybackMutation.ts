@@ -1,10 +1,12 @@
+import { useCallback } from 'react'
+
 import {
   ResumePlaybackInput,
   ResumePlaybackMutation,
   ResumePlaybackMutationVariables,
 } from 'types/graphql'
+
 import { useMutation } from '@redwoodjs/web'
-import { useCallback } from 'react'
 
 const RESUME_PLAYBACK_MUTATION = gql`
   mutation ResumePlaybackMutation($input: ResumePlaybackInput) {
