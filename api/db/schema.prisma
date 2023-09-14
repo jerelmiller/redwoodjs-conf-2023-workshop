@@ -65,9 +65,11 @@ model Device {
   name          String
   type          String
   volumePercent Int
-  user          User           @relation(fields: [userId], references: [id])
+  user          User           @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId        String
   playbackState PlaybackState?
+
+  @@unique([name, type, userId])
 }
 
 model PlaybackState {
