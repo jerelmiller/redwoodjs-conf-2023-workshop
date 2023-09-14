@@ -31,6 +31,11 @@ export const QUERY = gql`
   query PlaybarQuery {
     me {
       player {
+        devices {
+          id
+          name
+          type
+        }
         playbackState {
           isPlaying
         }
@@ -57,6 +62,7 @@ export const Success = ({
   me,
 }: CellSuccessProps<PlaybarQuery, PlaybarQueryVariables>) => {
   const playbackState = me.player.playbackState
+  const availableDevices = me.player.devices
   const resumePlayback = useResumePlaybackMutation()
   const pausePlayback = usePausePlaybackMutation()
   const isPlaying = playbackState?.isPlaying ?? false
@@ -76,7 +82,6 @@ export const Success = ({
 
   const shuffled = false
   const repeatState = 'off' as const
-  const availableDevices: Array<typeof device> = []
 
   return (
     <footer className="flex flex-col [grid-area:playbar]">
@@ -174,7 +179,7 @@ export const Success = ({
               <div>
                 {device && (
                   <div className="flex items-center gap-4 p-4">
-                    {playbackState?.isPlaying ? (
+                    {isPlaying ? (
                       <AnimatedSoundWave size="1.5rem" />
                     ) : (
                       <Laptop2 size="1.5rem" className="text-green" />
