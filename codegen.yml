@@ -8,6 +8,7 @@ config:
     Device: 'PrismaDevice'
     Player: '{}'
     PlaybackState: 'PrismaPlaybackState'
+    PlaybackStateContext: 'string'
     Playlist: 'PrismaPlaylist'
     PlaylistTrackEdge: 'PrismaPlaylistTrack'
     Track: 'PrismaTrack'
