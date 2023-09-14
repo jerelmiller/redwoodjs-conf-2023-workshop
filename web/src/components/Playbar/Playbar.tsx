@@ -11,6 +11,8 @@ import {
 } from 'lucide-react'
 
 import { Link, routes } from '@redwoodjs/router'
+import { useFragment, TypedDocumentNode } from '@apollo/client'
+import { Playbar_playbackState as PlaybackState } from 'types/graphql'
 
 import AnimatedSoundWave from 'src/components/AnimatedSoundWave'
 import CoverPhoto from 'src/components/CoverPhoto'
@@ -28,18 +30,25 @@ const TOOLTIP = {
   track: 'Disable repeat',
 } as const
 
+const PLAYBACK_STATE_FRAGMENT: TypedDocumentNode<PlaybackState> = gql`
+  fragment Playbar_playbackState on PlaybackState {
+    isPlaying
+  }
+`
+
 const Playbar = () => {
+  const { data: playbackState } = useFragment({
+    fragment: PLAYBACK_STATE_FRAGMENT,
+    from: { __typename: 'PlaybackState' },
+  })
+
+  const isPlaying = playbackState.isPlaying ?? false
+
   const playbackItem = {
     id: 'bogus',
     name: 'Track name',
     durationMs: 1000 * 60 * 4,
     artists: [{ id: '1', name: 'Bogus artist' }],
-  }
-
-  const playbackState = {
-    isPlaying: false,
-    progressMs: 1000 * 60,
-    item: playbackItem,
   }
 
   const device = {
@@ -91,7 +100,7 @@ const Playbar = () => {
             <PlayButton
               disabled={false}
               size="2.5rem"
-              playing={playbackState?.isPlaying ?? false}
+              playing={isPlaying}
               variant="secondary"
             />
             <PlaybarControlButton disallowed={false} tooltip="Next">
@@ -108,12 +117,12 @@ const Playbar = () => {
 
           <div className="flex items-center gap-2">
             <span className="text-xs tabular-nums text-muted">
-              <Duration durationMs={playbackState.progressMs} />
+              <Duration durationMs={1000 * 60} />
             </span>
             <ProgressBar
               animate={false}
               max={playbackItem.durationMs}
-              value={playbackState.progressMs}
+              value={1000 * 60}
               width="100%"
             />
             <span className="text-xs tabular-nums text-muted">
