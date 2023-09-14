@@ -1,6 +1,20 @@
 export const schema = gql`
   type CurrentUser {
     profile: CurrentUserProfile
+    albums(
+      """
+      The maximum number of items to return. Default: 20. Minimum: 1. Maximum: 50.
+      """
+      limit: Int = 20
+
+      """
+      The index of the first album to return. Default: 0 (the first object).
+
+      Use with \`limit\` to get the next set of albums.
+      """
+      offset: Int = 0
+    ): SavedAlbumConnection
+
     playlists(
       """
       The maximum number of items to return. Default: 20. Minimum: 1. Maximum: 50.
@@ -28,6 +42,23 @@ export const schema = gql`
       """
       offset: Int = 0
     ): SavedTracksConnection
+  }
+
+  type SavedAlbumConnection {
+    """
+    A list of saved albums.
+    """
+    edges: [SavedAlbumEdge!]!
+  }
+
+  type SavedAlbumEdge {
+    """
+    The date the album was saved.
+    """
+    addedAt: DateTime!
+
+    "The saved album."
+    node: Album!
   }
 
   type SavedTrackEdge {

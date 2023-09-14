@@ -9,6 +9,35 @@ export const me: QueryResolvers['me'] = () => {
 // We can safely assume we have a current user in these resolvers since the `me`
 // field returns `null` when the user is not logged in
 export const CurrentUser: CurrentUserResolvers = {
+  albums: async ({ limit, offset }) => {
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const currentUser = context.currentUser!
+    const total = await db.savedAlbum.count({
+      where: { userId: currentUser.id },
+    })
+    const savedTracks = await db.savedAlbum.findMany({
+      where: { userId: currentUser.id },
+      skip: offset,
+      take: limit,
+      include: {
+        album: true,
+      },
+    })
+
+    return {
+      pageInfo: {
+        total,
+        offset,
+        limit,
+        hasNextPage: offset + savedTracks.length < total,
+        hasPreviousPage: total > 0 && offset > 0,
+      },
+      edges: savedTracks.map((savedAlbum) => ({
+        addedAt: savedAlbum.addedAt,
+        node: savedAlbum.album,
+      })),
+    }
+  },
   playlists: async ({ limit, offset }) => {
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const currentUser = context.currentUser!
