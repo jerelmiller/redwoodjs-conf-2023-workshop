@@ -5,7 +5,7 @@ import { UserInputError } from '@redwoodjs/graphql-server'
 import { db } from 'src/lib/db'
 
 export const resumePlayback: MutationResolvers['resumePlayback'] = async ({
-  input: _input,
+  input,
 }) => {
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const currentUser = context.currentUser!
@@ -28,6 +28,7 @@ export const resumePlayback: MutationResolvers['resumePlayback'] = async ({
     where: { userId: currentUser.id },
     create: {
       isPlaying: true,
+      contextUri: input?.contextUri,
       user: {
         connect: { id: currentUser.id },
       },
@@ -37,6 +38,7 @@ export const resumePlayback: MutationResolvers['resumePlayback'] = async ({
     },
     update: {
       isPlaying: true,
+      contextUri: input?.contextUri,
     },
   })
 
