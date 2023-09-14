@@ -45,6 +45,7 @@ export const Album: AlbumRelationResolvers = {
         root.releaseDatePrecision.toUpperCase() as ReleaseDatePrecision,
     }
   },
+  uri: (_, { root }) => `album:${root.id}`,
   tracks: async ({ limit, offset }, { root }) => {
     const total = await db.track.count({ where: { albumId: root.id } })
     const tracks = await db.album

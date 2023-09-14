@@ -9,4 +9,5 @@ export const Track: TrackRelationResolvers = {
   artists: (_obj, { root }) => {
     return db.track.findUniqueOrThrow({ where: { id: root.id } }).artists()
   },
+  uri: (_, { root }) => `track:${root.id}`,
 }

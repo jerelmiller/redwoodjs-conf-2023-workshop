@@ -17,6 +17,7 @@ export const Playlist: PlaylistRelationResolvers = {
   owner: (_, { root }) => {
     return db.user.findFirstOrThrow({ where: { id: root.userId } })
   },
+  uri: (_, { root }) => `playlist:${root.id}`,
   tracks: async ({ limit, offset }, { root }) => {
     const total = await db.playlistTrack.count({
       where: { playlistId: root.id },

@@ -55,5 +55,10 @@ export const schema = gql`
     the number on the specified disc.
     """
     trackNumber: Int
+
+    """
+    The uri for the track.
+    """
+    uri: String!
   }
 `

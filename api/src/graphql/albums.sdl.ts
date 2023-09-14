@@ -36,6 +36,11 @@ export const schema = gql`
     releaseDate: ReleaseDate!
 
     """
+    The uri for the album.
+    """
+    uri: String!
+
+    """
     The tracks of the album.
     """
     tracks(

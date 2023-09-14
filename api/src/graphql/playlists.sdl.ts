@@ -25,6 +25,11 @@ export const schema = gql`
     """
     owner: User!
 
+    """
+    The uri for the playlist.
+    """
+    uri: String!
+
     "The tracks of the playlist."
     tracks(
       """
