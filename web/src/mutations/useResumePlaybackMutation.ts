@@ -11,8 +11,10 @@ import { useMutation } from '@redwoodjs/web'
 const RESUME_PLAYBACK_MUTATION = gql`
   mutation ResumePlaybackMutation($input: ResumePlaybackInput) {
     resumePlayback(input: $input) {
-      playbackState {
-        isPlaying
+      player {
+        playbackState {
+          isPlaying
+        }
       }
     }
   }

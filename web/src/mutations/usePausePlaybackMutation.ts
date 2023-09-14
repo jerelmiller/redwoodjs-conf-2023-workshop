@@ -5,8 +5,10 @@ import { useMutation } from '@redwoodjs/web'
 const PAUSE_PLAYBACK_MUTATION = gql`
   mutation PausePlaybackMutation {
     pausePlayback {
-      playbackState {
-        isPlaying
+      player {
+        playbackState {
+          isPlaying
+        }
       }
     }
   }
