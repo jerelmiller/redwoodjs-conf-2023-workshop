@@ -37,7 +37,19 @@ export const schema = gql`
     playbackState: PlaybackState
   }
 
+  type PausePlaybackResponse {
+    """
+    The updated playback state
+    """
+    playbackState: PlaybackState
+  }
+
   type Mutation {
+    """
+    Pause playback on the user's account.
+    """
+    pausePlayback: PausePlaybackResponse @requireAuth
+
     """
     Start a new context or resume current playback on the user's active device.
     """
