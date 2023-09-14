@@ -64,6 +64,7 @@ model Device {
   id            String         @id @default(cuid())
   name          String
   type          String
+  isActive      Boolean        @default(false)
   volumePercent Int
   user          User           @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId        String
