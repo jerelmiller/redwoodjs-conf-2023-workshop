@@ -77,7 +77,7 @@ model PlaybackState {
   id         String  @id @default(cuid())
   isPlaying  Boolean @default(false)
   // off, track, context
-  repeatMode String  @default("off")
+  repeatMode String  @default("OFF")
   shuffled   Boolean @default(false)
   user       User    @relation(fields: [userId], references: [id])
   userId     String  @unique
