@@ -53,13 +53,22 @@ export const Success = ({
   albums,
 }: CellSuccessProps<HomeQuery, HomeQueryVariables>) => {
   return (
-    <div className="flex-1 bg-black-base p-[var(--main-content--padding)]">
-      <h1 className="mb-8 text-5xl">Dive into something new</h1>
-      <TileGrid gap="2.5rem 1rem" minTileWidth="200px">
-        {albums.edges.map(({ node }) => (
-          <AlbumTile key={node.id} album={node} />
-        ))}
-      </TileGrid>
-    </div>
+    <>
+      <div className="flex-1 bg-black-base p-[var(--main-content--padding)]">
+        <h1 className="text-5xl">Revisit a classic</h1>
+        <TileGrid gap="1rem" minTileWidth="200px">
+          {albums.edges.map(({ node }) => (
+            <AlbumTile key={node.id} album={node} />
+          ))}
+        </TileGrid>
+
+        <h1 className="mt-10 text-5xl">Dive into something new</h1>
+        <TileGrid gap="2.5rem 1rem" minTileWidth="200px">
+          {albums.edges.map(({ node }) => (
+            <AlbumTile key={node.id} album={node} />
+          ))}
+        </TileGrid>
+      </div>
+    </>
   )
 }
