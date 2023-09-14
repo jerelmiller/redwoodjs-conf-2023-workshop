@@ -38,6 +38,7 @@ export const CurrentUser: CurrentUserResolvers = {
       })),
     }
   },
+  player: () => ({}),
   playlists: async ({ limit, offset }) => {
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const currentUser = context.currentUser!

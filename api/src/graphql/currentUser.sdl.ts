@@ -15,6 +15,11 @@ export const schema = gql`
       offset: Int = 0
     ): SavedAlbumConnection
 
+    """
+    Information about the user's current playback state
+    """
+    player: Player!
+
     playlists(
       """
       The maximum number of items to return. Default: 20. Minimum: 1. Maximum: 50.
