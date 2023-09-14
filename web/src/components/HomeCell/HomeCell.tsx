@@ -21,7 +21,7 @@ const getTileLimit = () => {
     case matchesWidth(1750):
       return 6
     default:
-      return 5
+      return 4
   }
 }
 
