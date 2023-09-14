@@ -3,6 +3,9 @@ export const schema = gql`
     "If something is currently playing, return \`true\`."
     isPlaying: Boolean!
 
+    "The device that is currently active."
+    device: Device!
+
     "off, track, context"
     repeatState: RepeatMode!
 
