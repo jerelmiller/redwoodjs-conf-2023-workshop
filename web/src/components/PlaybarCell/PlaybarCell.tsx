@@ -35,10 +35,14 @@ export const QUERY = gql`
           id
           name
           type
+          volumePercent
         }
         playbackState {
           isPlaying
           shuffleState
+          device {
+            id
+          }
         }
       }
     }
@@ -63,22 +67,22 @@ export const Success = ({
   me,
 }: CellSuccessProps<PlaybarQuery, PlaybarQueryVariables>) => {
   const playbackState = me.player.playbackState
-  const availableDevices = me.player.devices
   const resumePlayback = useResumePlaybackMutation()
   const pausePlayback = usePausePlaybackMutation()
   const isPlaying = playbackState?.isPlaying ?? false
+
+  const activeDevice = me.player.devices.find(
+    (device) => device.id === playbackState?.device.id
+  )
+  const availableDevices = me.player.devices.filter(
+    (device) => device.id !== playbackState?.device.id
+  )
 
   const playbackItem = {
     id: 'bogus',
     name: 'Track name',
     durationMs: 1000 * 60 * 4,
     artists: [{ id: '1', name: 'Bogus artist' }],
-  }
-
-  const device = {
-    id: 'bogus',
-    volumePercent: 50,
-    name: 'Your device',
   }
 
   const shuffled = playbackState?.shuffleState ?? false
@@ -178,7 +182,7 @@ export const Success = ({
           <Popover
             content={
               <div>
-                {device && (
+                {activeDevice && (
                   <div className="flex items-center gap-4 p-4">
                     {isPlaying ? (
                       <AnimatedSoundWave size="1.5rem" />
@@ -188,7 +192,7 @@ export const Success = ({
                     <div className="flex flex-col">
                       <h3 className="text-base font-bold">Current device</h3>
                       <span className="text-sm text-green-light">
-                        {device.name}
+                        {activeDevice.name}
                       </span>
                     </div>
                   </div>
@@ -219,20 +223,20 @@ export const Success = ({
           <div className="flex items-center gap-1">
             <PlaybarControlButton
               disallowed={false}
-              tooltip={device.volumePercent === 0 ? 'Unmute' : 'Mute'}
+              tooltip={activeDevice?.volumePercent === 0 ? 'Unmute' : 'Mute'}
             >
               <Volume2 />
             </PlaybarControlButton>
             <ProgressBar
               animate={false}
-              value={device.volumePercent}
+              value={activeDevice?.volumePercent ?? 0}
               max={100}
               width="100px"
             />
           </div>
         </div>
       </div>
-      {device && (
+      {activeDevice && (
         <div
           className={cx(
             'flex items-center justify-end',
@@ -242,7 +246,7 @@ export const Success = ({
             'pointer-events-none before:absolute before:right-[10.5rem] before:top-0 before:-translate-y-full'
           )}
         >
-          <Volume1 size="1.125rem" /> Listening on {device.name}
+          <Volume1 size="1.125rem" /> Listening on {activeDevice.name}
         </div>
       )}
     </footer>
