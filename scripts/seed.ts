@@ -445,15 +445,12 @@ const saveDevice = async (currentUser: { id: string }) => {
     create: {
       name,
       type,
-      isActive: true,
       volumePercent: 100,
       user: {
         connect: { id: currentUser.id },
       },
     },
-    update: {
-      isActive: true,
-    },
+    update: {},
   })
 }
 
