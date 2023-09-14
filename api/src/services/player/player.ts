@@ -3,10 +3,32 @@ import { PlayerRelationResolvers, MutationResolvers } from 'types/graphql'
 import { UserInputError } from '@redwoodjs/graphql-server'
 
 import { db, findByUri } from 'src/lib/db'
+import { z } from 'zod'
+
+const ResumePlaybackInput = z
+  .object({
+    contextUri: z
+      .string()
+      .optional()
+      .refine(
+        async (contextUri) => (contextUri ? findByUri(contextUri) : true),
+        (contextUri) => ({
+          message: `Record with uri '${contextUri}' not found`,
+        })
+      ),
+    // uris: z.array(),
+  })
+  .optional()
 
 export const resumePlayback: MutationResolvers['resumePlayback'] = async ({
   input,
 }) => {
+  const result = await ResumePlaybackInput.safeParseAsync(input)
+
+  if (!result.success) {
+    throw new UserInputError(result.error.issues[0].message)
+  }
+
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const currentUser = context.currentUser!
   const device = await db.device.findFirst({
@@ -15,10 +37,6 @@ export const resumePlayback: MutationResolvers['resumePlayback'] = async ({
 
   if (!device) {
     throw new UserInputError('No device found.')
-  }
-
-  if (input?.contextUri && !(await findByUri(input.contextUri))) {
-    throw new UserInputError(`Record with uri '${input.contextUri}' not found`)
   }
 
   await db.device.update({
