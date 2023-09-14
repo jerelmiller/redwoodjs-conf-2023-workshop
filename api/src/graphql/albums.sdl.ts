@@ -106,6 +106,6 @@ export const schema = gql`
       Use with \`limit\` to get the next set of albums.
       """
       offset: Int = 0
-    ): AlbumConnection
+    ): AlbumConnection @requireAuth
   }
 `
