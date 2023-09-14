@@ -21,12 +21,10 @@ export const useResumePlaybackMutation = () => {
     ResumePlaybackMutationVariables
   >(RESUME_PLAYBACK_MUTATION)
 
-  const resumePlayback = useCallback(
+  return useCallback(
     (input?: ResumePlaybackInput) => {
       return execute({ variables: { input } })
     },
     [execute]
   )
-
-  return [resumePlayback] as const
 }
