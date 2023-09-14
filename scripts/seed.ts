@@ -422,6 +422,38 @@ const removeOldUsers = async () => {
   })
 }
 
+const DEVICE_TYPES = ['computer', 'mobile', 'speaker']
+
+const saveDevice = async (currentUser: { id: string }) => {
+  const name = config.device.name ?? 'My Computer'
+  const type = config.device.type ?? 'computer'
+
+  if (!DEVICE_TYPES.includes(type)) {
+    throw new Error(
+      `Device type '${type}' not valid. Must be one of ${DEVICE_TYPES.join(
+        ', '
+      )}`
+    )
+  }
+
+  await db.device.deleteMany({
+    where: { NOT: { name, type, userId: currentUser.id } },
+  })
+
+  await db.device.upsert({
+    where: { name_type_userId: { name, type, userId: currentUser.id } },
+    create: {
+      name,
+      type,
+      volumePercent: 100,
+      user: {
+        connect: { id: currentUser.id },
+      },
+    },
+    update: {},
+  })
+}
+
 export default async () => {
   await resetUserImage()
   const avatarExists = fs.existsSync(
@@ -438,6 +470,8 @@ export default async () => {
       },
     ],
   })
+
+  await saveDevice(currentUser)
 
   for (const record of Object.values(refs)) {
     await saveRecord(record as SpotifyRecord)
