@@ -23,6 +23,7 @@ import PlaybarControlButton from 'src/components/PlaybarControlButton'
 import PlayButton from 'src/components/PlayButton'
 import Popover from 'src/components/Popover'
 import ProgressBar from 'src/components/ProgressBar'
+import { useResumePlaybackMutation } from 'src/mutations/useResumePlaybackMutation'
 
 const TOOLTIP = {
   off: 'Enable repeat',
@@ -42,6 +43,7 @@ const Playbar = () => {
     from: { __typename: 'PlaybackState' },
   })
 
+  const resumePlayback = useResumePlaybackMutation()
   const isPlaying = playbackState.isPlaying ?? false
 
   const playbackItem = {
@@ -102,6 +104,9 @@ const Playbar = () => {
               size="2.5rem"
               playing={isPlaying}
               variant="secondary"
+              onClick={() => {
+                resumePlayback()
+              }}
             />
             <PlaybarControlButton disallowed={false} tooltip="Next">
               <SkipForward fill="currentColor" />
