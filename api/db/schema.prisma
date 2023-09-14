@@ -61,12 +61,13 @@ model Copyright {
 }
 
 model Device {
-  id            String @id @default(cuid())
+  id            String         @id @default(cuid())
   name          String
   type          String
   volumePercent Int
-  user          User   @relation(fields: [userId], references: [id])
+  user          User           @relation(fields: [userId], references: [id])
   userId        String
+  playbackState PlaybackState?
 }
 
 model PlaybackState {
@@ -77,6 +78,8 @@ model PlaybackState {
   shuffled   Boolean @default(false)
   user       User    @relation(fields: [userId], references: [id])
   userId     String  @unique
+  device     Device  @relation(fields: [deviceId], references: [id])
+  deviceId   String  @unique
 }
 
 model Playlist {
