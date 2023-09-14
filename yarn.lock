@@ -7471,6 +7471,7 @@ __metadata:
     crypto-js: ^4.1.1
     graphql-scalars: 1.22.2
     node-vibrant: 3.1.6
+    zod: ^3.22.2
   languageName: unknown
   linkType: soft
 
@@ -22514,5 +22515,12 @@ __metadata:
     compress-commons: ^4.1.0
     readable-stream: ^3.6.0
   checksum: ed9eb9387953576c43bdf7678705e8b0ff4e9149cf92b39fa845ddd5413b08daf68655b1ee8311e2dd7c88ddeb95908a785e8e48473016b2595870b0adf588d4
+  languageName: node
+  linkType: hard
+
+"zod@npm:^3.22.2":
+  version: 3.22.2
+  resolution: "zod@npm:3.22.2"
+  checksum: 10afd994bcec3affb81776adc486871bfa6790037f57f0e45280e99baed8c3df5f46c5ab65a6d7921a00dffd9fab299e4492519dd6bb5d2eb3de9a67d3eb8051
   languageName: node
   linkType: hard
