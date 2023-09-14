@@ -1,3 +1,4 @@
+import cx from 'classnames'
 import {
   Shuffle,
   SkipBack,
@@ -8,7 +9,6 @@ import {
   Volume2,
   Volume1,
 } from 'lucide-react'
-import cx from 'classnames'
 import type { PlaybarQuery, PlaybarQueryVariables } from 'types/graphql'
 
 import { Link, routes } from '@redwoodjs/router'
@@ -38,6 +38,7 @@ export const QUERY = gql`
         }
         playbackState {
           isPlaying
+          shuffleState
         }
       }
     }
@@ -80,7 +81,7 @@ export const Success = ({
     name: 'Your device',
   }
 
-  const shuffled = false
+  const shuffled = playbackState?.shuffleState ?? false
   const repeatState = 'off' as const
 
   return (
@@ -111,7 +112,7 @@ export const Success = ({
           <div className="flex items-center justify-center gap-5">
             <PlaybarControlButton
               active={shuffled}
-              disallowed={false}
+              disallowed={!playbackState}
               tooltip={shuffled ? 'Disable shuffle' : 'Enable shuffle'}
             >
               <Shuffle size="1.25rem" />
@@ -128,7 +129,7 @@ export const Success = ({
                 isPlaying ? pausePlayback() : resumePlayback()
               }}
             />
-            <PlaybarControlButton disallowed={false} tooltip="Next">
+            <PlaybarControlButton disallowed={!playbackState} tooltip="Next">
               <SkipForward fill="currentColor" />
             </PlaybarControlButton>
             <PlaybarControlButton
