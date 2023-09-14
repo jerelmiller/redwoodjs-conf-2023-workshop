@@ -76,6 +76,7 @@ model Device {
 model PlaybackState {
   id         String  @id @default(cuid())
   isPlaying  Boolean @default(false)
+  contextUri String?
   // off, track, context
   repeatMode String  @default("OFF")
   shuffled   Boolean @default(false)
