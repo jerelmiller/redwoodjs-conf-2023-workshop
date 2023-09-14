@@ -42,5 +42,6 @@ export const schema = gql`
     Start a new context or resume current playback on the user's active device.
     """
     resumePlayback(input: ResumePlaybackInput): ResumePlaybackPayload
+      @requireAuth
   }
 `
