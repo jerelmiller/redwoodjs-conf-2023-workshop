@@ -5,6 +5,7 @@ config:
     CurrentUser: 'PrismaUser'
     CurrentUserProfile: 'PrismaUser'
     Copyright: 'PrismaCopyright'
+    Player: '{}'
     Playlist: 'PrismaPlaylist'
     PlaylistTrackEdge: 'PrismaPlaylistTrack'
     Track: 'PrismaTrack'
