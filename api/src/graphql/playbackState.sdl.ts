@@ -3,6 +3,8 @@ export const schema = gql`
     "If something is currently playing, return \`true\`."
     isPlaying: Boolean!
 
+    context: PlaybackStateContext
+
     "The device that is currently active."
     device: Device!
 
@@ -20,5 +22,22 @@ export const schema = gql`
     CONTEXT
     OFF
     TRACK
+  }
+
+  type PlaybackStateContext {
+    """
+    The object type, e.g. "playlist", "album".
+    """
+    type: PlaybackStateContextType!
+
+    """
+    The uri for the context.
+    """
+    uri: String!
+  }
+
+  enum PlaybackStateContextType {
+    ALBUM
+    PLAYLIST
   }
 `
