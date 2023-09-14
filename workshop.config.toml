@@ -2,6 +2,13 @@
 # Add the name you want displayed in various areas of the Spotify app
 displayName = 'Jerel Miller'
 
+# Customize the device shown in the UI
+[device]
+name = "Jerel's MacBook Pro"
+
+# valid types: 'computer', 'mobile', 'speaker'
+type = 'computer'
+
 # Include any albums or tracks that you want to show up as "saved" when running
 # the app
 [spotify.saved]

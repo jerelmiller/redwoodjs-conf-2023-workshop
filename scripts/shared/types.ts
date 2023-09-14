@@ -12,6 +12,10 @@ export type WorkshopConfig = {
   user: {
     displayName: string
   }
+  device: {
+    name?: string
+    type?: string
+  }
   spotify: {
     saved: {
       albumIds: string[]
