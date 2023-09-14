@@ -61,12 +61,13 @@ model Copyright {
 }
 
 model PlaybackState {
-  id          String  @id @default(cuid())
-  isPlaying   Boolean @default(false)
-  repeatState String
-  shuffled    Boolean @default(false)
-  user        User    @relation(fields: [userId], references: [id])
-  userId      String  @unique
+  id         String  @id @default(cuid())
+  isPlaying  Boolean @default(false)
+  // off, track, context
+  repeatMode String  @default("off")
+  shuffled   Boolean @default(false)
+  user       User    @relation(fields: [userId], references: [id])
+  userId     String  @unique
 }
 
 model Playlist {
