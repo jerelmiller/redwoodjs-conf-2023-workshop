@@ -1,30 +1,43 @@
-import cx from 'classnames'
 import {
-  Laptop2,
-  List,
-  RepeatIcon,
   Shuffle,
   SkipBack,
   SkipForward,
-  Volume1,
+  RepeatIcon,
+  List,
+  Laptop2,
   Volume2,
+  Volume1,
 } from 'lucide-react'
+import cx from 'classnames'
+import type { PlaybarQuery, PlaybarQueryVariables } from 'types/graphql'
 
 import { Link, routes } from '@redwoodjs/router'
-import { useFragment, TypedDocumentNode } from '@apollo/client'
-import { Playbar_playbackState as PlaybackState } from 'types/graphql'
+import type { CellSuccessProps, CellFailureProps } from '@redwoodjs/web'
 
-import AnimatedSoundWave from 'src/components/AnimatedSoundWave'
-import CoverPhoto from 'src/components/CoverPhoto'
-import DelimitedList from 'src/components/DelimitedList'
-import Duration from 'src/components/Duration'
-import LikeButton from 'src/components/LikeButton'
-import PlaybarControlButton from 'src/components/PlaybarControlButton'
-import PlayButton from 'src/components/PlayButton'
-import Popover from 'src/components/Popover'
-import ProgressBar from 'src/components/ProgressBar'
-import { useResumePlaybackMutation } from 'src/mutations/useResumePlaybackMutation'
 import { usePausePlaybackMutation } from 'src/mutations/usePausePlaybackMutation'
+import { useResumePlaybackMutation } from 'src/mutations/useResumePlaybackMutation'
+
+import AnimatedSoundWave from '../AnimatedSoundWave'
+import CoverPhoto from '../CoverPhoto'
+import DelimitedList from '../DelimitedList'
+import Duration from '../Duration'
+import LikeButton from '../LikeButton'
+import PlaybarControlButton from '../PlaybarControlButton'
+import PlayButton from '../PlayButton'
+import Popover from '../Popover'
+import ProgressBar from '../ProgressBar'
+
+export const QUERY = gql`
+  query PlaybarQuery {
+    me {
+      player {
+        playbackState {
+          isPlaying
+        }
+      }
+    }
+  }
+`
 
 const TOOLTIP = {
   off: 'Enable repeat',
@@ -32,21 +45,21 @@ const TOOLTIP = {
   track: 'Disable repeat',
 } as const
 
-const PLAYBACK_STATE_FRAGMENT: TypedDocumentNode<PlaybackState> = gql`
-  fragment Playbar_playbackState on PlaybackState {
-    isPlaying
-  }
-`
+export const Loading = () => <div>Loading...</div>
 
-const Playbar = () => {
-  const { data: playbackState } = useFragment({
-    fragment: PLAYBACK_STATE_FRAGMENT,
-    from: { __typename: 'PlaybackState' },
-  })
+export const Empty = () => <div>Empty</div>
 
+export const Failure = ({ error }: CellFailureProps<PlaybarQueryVariables>) => (
+  <div style={{ color: 'red' }}>Error: {error?.message}</div>
+)
+
+export const Success = ({
+  me,
+}: CellSuccessProps<PlaybarQuery, PlaybarQueryVariables>) => {
+  const playbackState = me.player.playbackState
   const resumePlayback = useResumePlaybackMutation()
   const pausePlayback = usePausePlaybackMutation()
-  const isPlaying = playbackState.isPlaying ?? false
+  const isPlaying = playbackState?.isPlaying ?? false
 
   const playbackItem = {
     id: 'bogus',
@@ -229,5 +242,3 @@ const Playbar = () => {
     </footer>
   )
 }
-
-export default Playbar

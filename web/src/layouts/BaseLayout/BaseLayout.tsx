@@ -6,7 +6,7 @@ import ApolloLogo from 'src/components/ApolloLogo'
 import CurrentUserMenuCell from 'src/components/CurrentUserMenuCell'
 import DelimitedList from 'src/components/DelimitedList'
 import LikedTracksCoverPhoto from 'src/components/LikedTracksCoverPhoto/LikedTracksCoverPhoto'
-import Playbar from 'src/components/Playbar'
+import PlaybarCell from 'src/components/PlaybarCell'
 import ScrollableList from 'src/components/ScrollableList'
 import SidebarNavLink from 'src/components/SidebarNavLink'
 import SidebarPlaylistContent from 'src/components/SidebarPlaylistContent/SidebarPlaylistContent'
@@ -84,7 +84,7 @@ const BaseLayout = ({ children }: BaseLayoutProps) => {
         </ScrollableList>
       </main>
 
-      <Playbar />
+      <PlaybarCell />
     </div>
   )
 }
