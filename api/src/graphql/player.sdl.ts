@@ -18,9 +18,9 @@ export const schema = gql`
     contextUri: String
 
     """
-    An array of the Spotify track URIs to play.
+    The track URI to play.
     """
-    uris: [String!]
+    uri: String
   }
 
   type ResumePlaybackPayload {
