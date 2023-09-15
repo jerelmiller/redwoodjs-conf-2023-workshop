@@ -40,6 +40,7 @@ export const QUERY = gql`
         playbackState {
           isPlaying
           shuffleState
+          progressMs
           device {
             id
           }
@@ -164,12 +165,12 @@ export const Success = ({
 
           <div className="flex items-center gap-2">
             <span className="text-xs tabular-nums text-muted">
-              <Duration durationMs={1000 * 60} />
+              <Duration durationMs={playbackState?.progressMs ?? 0} />
             </span>
             <ProgressBar
               animate={false}
               max={currentTrack?.durationMs ?? 0}
-              value={1000 * 60}
+              value={playbackState?.progressMs ?? 0}
               width="100%"
             />
             <span className="text-xs tabular-nums text-muted">
