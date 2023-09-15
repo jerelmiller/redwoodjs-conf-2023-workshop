@@ -1,4 +1,3 @@
-import { createColumnHelper } from '@tanstack/react-table'
 import { Clock } from 'lucide-react'
 import type { LikedTracksQuery } from 'types/graphql'
 
@@ -22,6 +21,10 @@ import PageHeaderDetails from '../PageHeaderDetails'
 import PageTitle from '../PageTitle'
 import PlayButton from '../PlayButton'
 import Table from '../Table'
+import TableBody from '../TableBody'
+import TableCell from '../TableCell'
+import TableHeader from '../TableHeader'
+import TableRow from '../TableRow'
 import TrackNumberColumn from '../TrackNumberColumn'
 
 export const QUERY = gql`
@@ -66,8 +69,6 @@ export const Failure = ({ error }: CellFailureProps) => (
 )
 
 export const Success = ({ me }: CellSuccessProps<LikedTracksQuery>) => {
-  const spotifyURI = `spotify:user:${me.profile?.id}:collection`
-
   return (
     <PageContainer bgColor="#1F3363">
       <PageHeader>
@@ -89,114 +90,87 @@ export const Success = ({ me }: CellSuccessProps<LikedTracksQuery>) => {
         <div>
           <PlayButton playing={false} size="3.5rem" variant="primary" />
         </div>
-        <Table
-          data={me.tracks?.edges ?? []}
-          columns={columns}
-          meta={{ spotifyURI } satisfies LikedTracksTableMeta}
-        />
+        <Table>
+          <thead>
+            <TableHeader alignText="right">#</TableHeader>
+            <TableHeader>Title</TableHeader>
+            <TableHeader>Album</TableHeader>
+            <TableHeader>Date added</TableHeader>
+            <TableHeader />
+            <TableHeader alignText="right">
+              <Clock size="1rem" />
+            </TableHeader>
+          </thead>
+          <TableBody>
+            {me.tracks?.edges.map(({ addedAt, node: track }, index) => {
+              return (
+                <TableRow key={track.id}>
+                  <TableCell shrink>
+                    <TrackNumberColumn trackNumber={index + 1} />
+                  </TableCell>
+                  <TableCell>
+                    <div className="flex items-end gap-2">
+                      <CoverPhoto
+                        image={track.album.images.at(-1)}
+                        size="2.5rem"
+                      />
+                      <div className="flex flex-col">
+                        <span className="text-base text-primary">
+                          {track.name}
+                        </span>
+                        <div className="flex items-center gap-2">
+                          {track.explicit && <ExplicitBadge />}
+                          <span className="text-muted">
+                            <DelimitedList delimiter=", ">
+                              {track.artists.map((artist) => (
+                                <Link
+                                  key={artist.id}
+                                  className="transition-colors duration-150 hover:text-primary"
+                                  to={routes.artist({ id: artist.id })}
+                                >
+                                  {artist.name}
+                                </Link>
+                              ))}
+                            </DelimitedList>
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </TableCell>
+                  <TableCell>
+                    <Link
+                      className="text-muted transition-colors hover:text-primary"
+                      to={routes.album({ id: track.album.id })}
+                    >
+                      {track.album.name}
+                    </Link>
+                  </TableCell>
+                  <TableCell>
+                    <span className="text-muted">
+                      <DateTime
+                        date={addedAt}
+                        format={DateTime.FORMAT.timeAgo}
+                      />
+                    </span>
+                  </TableCell>
+                  <TableCell shrink>
+                    <div className="px-2">
+                      <LikeButton
+                        liked
+                        size="1rem"
+                        className="relative top-[2px]"
+                      />
+                    </div>
+                  </TableCell>
+                  <TableCell shrink>
+                    <Duration durationMs={track.durationMs} />
+                  </TableCell>
+                </TableRow>
+              )
+            })}
+          </TableBody>
+        </Table>
       </PageContent>
     </PageContainer>
   )
 }
-
-type SavedTrackEdge = NonNullable<
-  NonNullable<LikedTracksQuery['me']>['tracks']
->['edges'][0]
-
-interface LikedTracksTableMeta {
-  spotifyURI: string
-}
-
-const columnHelper = createColumnHelper<SavedTrackEdge>()
-
-const columns = [
-  columnHelper.accessor('node', {
-    id: 'number',
-    header: '#',
-    cell: (info) => {
-      return <TrackNumberColumn trackNumber={info.row.index + 1} />
-    },
-    meta: {
-      headerAlign: 'right',
-      shrink: true,
-    },
-  }),
-  columnHelper.accessor('node', {
-    id: 'title',
-    header: 'Title',
-    cell: (info) => {
-      const track = info.getValue()
-      const coverPhoto = track.album.images.at(-1)
-
-      return (
-        <div className="flex items-end gap-2">
-          <CoverPhoto image={coverPhoto} size="2.5rem" />
-          <div className="flex flex-col">
-            <span className="text-base text-primary">{track.name}</span>
-            <div className="flex items-center gap-2">
-              {track.explicit && <ExplicitBadge />}
-              <span className="text-muted">
-                <DelimitedList delimiter=", ">
-                  {track.artists.map((artist) => (
-                    <Link
-                      key={artist.id}
-                      className="transition-colors duration-150 hover:text-primary"
-                      to={routes.artist({ id: artist.id })}
-                    >
-                      {artist.name}
-                    </Link>
-                  ))}
-                </DelimitedList>
-              </span>
-            </div>
-          </div>
-        </div>
-      )
-    },
-  }),
-  columnHelper.accessor('node.album', {
-    header: 'Album',
-    cell: (info) => {
-      const album = info.getValue()
-
-      return (
-        <Link
-          className="text-muted transition-colors hover:text-primary"
-          to={routes.album({ id: album.id })}
-        >
-          {album.name}
-        </Link>
-      )
-    },
-  }),
-  columnHelper.accessor('addedAt', {
-    header: 'Date added',
-    cell: (info) => (
-      <span className="text-muted">
-        <DateTime date={info.getValue()} format={DateTime.FORMAT.timeAgo} />
-      </span>
-    ),
-  }),
-  columnHelper.accessor('node', {
-    id: 'likeButton',
-    header: '',
-    cell: () => {
-      return (
-        <div className="px-2">
-          <LikeButton liked size="1rem" className="relative top-[2px]" />
-        </div>
-      )
-    },
-    meta: {
-      shrink: true,
-    },
-  }),
-  columnHelper.accessor('node.durationMs', {
-    header: () => <Clock size="1rem" />,
-    cell: (info) => <Duration durationMs={info.getValue()} />,
-    meta: {
-      headerAlign: 'right',
-      shrink: true,
-    },
-  }),
-]
