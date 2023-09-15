@@ -31,7 +31,7 @@ import TableCell from 'src/components/TableCell'
 import TableHead from 'src/components/TableHead'
 import TableHeader from 'src/components/TableHeader'
 import TableRow from 'src/components/TableRow'
-import TrackNumberColumn from 'src/components/TrackNumberColumn'
+import TrackNumberCell from 'src/components/TrackNumberCell'
 import { usePausePlaybackMutation } from 'src/mutations/usePausePlaybackMutation'
 import { useResumePlaybackMutation } from 'src/mutations/useResumePlaybackMutation'
 
@@ -72,6 +72,7 @@ export const QUERY = gql`
               id
               name
             }
+            ...TrackNumberCell_track
           }
         }
       }
@@ -212,7 +213,7 @@ export const Success = ({
                   }}
                 >
                   <TableCell shrink>
-                    <TrackNumberColumn trackNumber={index + 1} />
+                    <TrackNumberCell track={track} position={index + 1} />
                   </TableCell>
                   <TableCell>
                     <div className="flex items-end gap-2">

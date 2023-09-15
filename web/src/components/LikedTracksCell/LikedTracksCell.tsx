@@ -32,7 +32,7 @@ import TableCell from '../TableCell'
 import TableHead from '../TableHead'
 import TableHeader from '../TableHeader'
 import TableRow from '../TableRow'
-import TrackNumberColumn from '../TrackNumberColumn'
+import TrackNumberCell from '../TrackNumberCell/TrackNumberCell'
 
 export const QUERY = gql`
   query LikedTracksQuery {
@@ -61,6 +61,7 @@ export const QUERY = gql`
               id
               name
             }
+            ...TrackNumberCell_track
           }
         }
       }
@@ -158,7 +159,7 @@ export const Success = ({ me }: CellSuccessProps<LikedTracksQuery>) => {
                   }}
                 >
                   <TableCell shrink>
-                    <TrackNumberColumn trackNumber={index + 1} />
+                    <TrackNumberCell track={track} position={index + 1} />
                   </TableCell>
                   <TableCell>
                     <div className="flex items-end gap-2">

@@ -32,7 +32,7 @@ import TableCell from '../TableCell'
 import TableHead from '../TableHead'
 import TableHeader from '../TableHeader'
 import TableRow from '../TableRow'
-import TrackNumberColumn from '../TrackNumberColumn'
+import TrackNumberCell from '../TrackNumberCell'
 
 export const QUERY = gql`
   query FindAlbumQuery($id: ID!) {
@@ -72,6 +72,7 @@ export const QUERY = gql`
               id
               name
             }
+            ...TrackNumberCell_track
           }
         }
       }
@@ -213,7 +214,7 @@ export const Success = ({
                   }}
                 >
                   <TableCell shrink>
-                    <TrackNumberColumn trackNumber={index + 1} />
+                    <TrackNumberCell track={track} position={index + 1} />
                   </TableCell>
                   <TableCell>
                     <div className="flex flex-col gap-2">
