@@ -43,6 +43,21 @@ export const QUERY = gql`
           device {
             id
           }
+          track {
+            id
+            name
+            durationMs
+            album {
+              id
+              images {
+                url
+              }
+            }
+            artists {
+              id
+              name
+            }
+          }
         }
       }
     }
@@ -70,6 +85,8 @@ export const Success = ({
   const resumePlayback = useResumePlaybackMutation()
   const pausePlayback = usePausePlaybackMutation()
   const isPlaying = playbackState?.isPlaying ?? false
+  const currentTrack = playbackState?.track
+  const coverPhoto = currentTrack?.album.images[0]
 
   const activeDevice = me.player.devices.find(
     (device) => device.id === playbackState?.device.id
@@ -78,13 +95,6 @@ export const Success = ({
     (device) => device.id !== playbackState?.device.id
   )
 
-  const playbackItem = {
-    id: 'bogus',
-    name: 'Track name',
-    durationMs: 1000 * 60 * 4,
-    artists: [{ id: '1', name: 'Bogus artist' }],
-  }
-
   const shuffled = playbackState?.shuffleState ?? false
   const repeatState = 'off' as const
 
@@ -92,25 +102,32 @@ export const Success = ({
     <footer className="flex flex-col [grid-area:playbar]">
       <div className="grid grid-cols-[30%_1fr_30%] items-center px-6 py-4 text-primary">
         <div className="flex items-center gap-4">
-          <CoverPhoto size="4rem" image={undefined} />
-          <div className="flex flex-col gap-1">
-            <Link
-              className="text-sm"
-              to={routes.album({ id: playbackItem.id })}
-            >
-              Track name
-            </Link>
-            <span className="text-xs text-muted">
-              <DelimitedList className="text-xs text-muted" delimiter=", ">
-                {playbackItem.artists.map((artist) => (
-                  <Link key={artist.id} to={routes.artist({ id: artist.id })}>
-                    {artist.name}
-                  </Link>
-                ))}
-              </DelimitedList>
-            </span>
-          </div>
-          <LikeButton liked={false} size="1.25rem" />
+          <CoverPhoto size="4rem" image={coverPhoto} />
+          {currentTrack && (
+            <>
+              <div className="flex flex-col gap-1">
+                <Link
+                  className="text-sm"
+                  to={routes.album({ id: currentTrack.album.id })}
+                >
+                  {currentTrack.name}
+                </Link>
+                <span className="text-xs text-muted">
+                  <DelimitedList className="text-xs text-muted" delimiter=", ">
+                    {currentTrack.artists.map((artist) => (
+                      <Link
+                        key={artist.id}
+                        to={routes.artist({ id: artist.id })}
+                      >
+                        {artist.name}
+                      </Link>
+                    ))}
+                  </DelimitedList>
+                </span>
+              </div>
+              <LikeButton liked={false} size="1.25rem" />
+            </>
+          )}
         </div>
         <div className="flex flex-col gap-2">
           <div className="flex items-center justify-center gap-5">
@@ -151,12 +168,12 @@ export const Success = ({
             </span>
             <ProgressBar
               animate={false}
-              max={playbackItem.durationMs}
+              max={currentTrack?.durationMs ?? 0}
               value={1000 * 60}
               width="100%"
             />
             <span className="text-xs tabular-nums text-muted">
-              <Duration durationMs={playbackItem.durationMs} />
+              <Duration durationMs={currentTrack?.durationMs ?? 0} />
             </span>
           </div>
         </div>
