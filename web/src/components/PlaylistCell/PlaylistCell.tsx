@@ -25,6 +25,7 @@ import PageHeaderDetails from 'src/components/PageHeaderDetails'
 import PageMediaType from 'src/components/PageMediaType'
 import PageTitle from 'src/components/PageTitle'
 import PlayButton from 'src/components/PlayButton'
+import ScrollableListObserver from 'src/components/ScrollableListObserver'
 import Skeleton from 'src/components/Skeleton'
 import Table from 'src/components/Table'
 import TableBody from 'src/components/TableBody'
@@ -37,7 +38,7 @@ import { usePausePlaybackMutation } from 'src/mutations/usePausePlaybackMutation
 import { useResumePlaybackMutation } from 'src/mutations/useResumePlaybackMutation'
 
 export const QUERY = gql`
-  query FindPlaylistQuery($id: ID!) {
+  query FindPlaylistQuery($id: ID!, $offset: Int = 0) {
     playlist(id: $id) {
       id
       name
@@ -50,9 +51,12 @@ export const QUERY = gql`
         url
         vibrantColor(alpha: 0.9)
       }
-      tracks {
+      tracks(offset: $offset) {
         pageInfo {
           total
+          offset
+          limit
+          hasNextPage
         }
         edges {
           addedAt
@@ -144,6 +148,7 @@ export const Failure = ({
 
 export const Success = ({
   playlist,
+  queryResult,
 }: CellSuccessProps<FindPlaylistQuery, FindPlaylistQueryVariables>) => {
   const { data: playbackState } = useFragment<PlaylistCell_playbackState>({
     fragment: PLAYBACK_STATE_FRAGMENT,
@@ -156,6 +161,7 @@ export const Success = ({
   const isPlaying = playbackState?.isPlaying ?? false
   const isCurrentContext = playbackState?.context?.uri === playlist.uri
   const isPlayingPlaylist = isCurrentContext && isPlaying
+  const { pageInfo } = playlist.tracks
 
   const tracksContains = new Map()
 
@@ -290,6 +296,16 @@ export const Success = ({
             })}
           </TableBody>
         </Table>
+        <ScrollableListObserver
+          threshold="500px"
+          onIntersect={() => {
+            const { offset, limit, hasNextPage } = pageInfo
+
+            if (hasNextPage && queryResult?.fetchMore) {
+              queryResult.fetchMore({ variables: { offset: offset + limit } })
+            }
+          }}
+        />
       </PageContent>
     </PageContainer>
   )
