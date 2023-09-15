@@ -76,6 +76,15 @@ export const QUERY = gql`
   }
 `
 
+const PLAYBACK_STATE_FRAGMENT = gql`
+  fragment PlaylistCell_playbackState on PlaybackState {
+    isPlaying
+    context {
+      uri
+    }
+  }
+`
+
 export const Loading = () => {
   return (
     <PageContainer>
@@ -125,15 +134,6 @@ export const Failure = ({
   <div style={{ color: 'red' }}>Error: {error?.message}</div>
 )
 
-const PLAYBACK_STATE_FRAGMENT = gql`
-  fragment PlaylistCell_playbackState on PlaybackState {
-    isPlaying
-    context {
-      uri
-    }
-  }
-`
-
 export const Success = ({
   playlist,
 }: CellSuccessProps<FindPlaylistQuery, FindPlaylistQueryVariables>) => {
@@ -173,6 +173,8 @@ export const Success = ({
             onClick={() => {
               if (isPlayingPlaylist) {
                 pausePlayback()
+              } else if (isCurrentContext) {
+                resumePlayback()
               } else {
                 resumePlayback({
                   contextUri: playlist.uri,
