@@ -1,5 +1,9 @@
+import { useFragment } from '@apollo/client'
 import { Clock } from 'lucide-react'
-import type { LikedTracksQuery } from 'types/graphql'
+import type {
+  LikedTracksCellPlaybackStateFragment,
+  LikedTracksQuery,
+} from 'types/graphql'
 
 import { Link, routes } from '@redwoodjs/router'
 import type { CellSuccessProps, CellFailureProps } from '@redwoodjs/web'
@@ -8,6 +12,8 @@ import PageContainer from 'src/components/PageContainer'
 import PageHeader from 'src/components/PageHeader'
 import PageHeaderContent from 'src/components/PageHeaderContent'
 import PageMediaType from 'src/components/PageMediaType'
+import { usePausePlaybackMutation } from 'src/mutations/usePausePlaybackMutation'
+import { useResumePlaybackMutation } from 'src/mutations/useResumePlaybackMutation'
 
 import CoverPhoto from '../CoverPhoto'
 import DateTime from '../DateTime'
@@ -42,6 +48,7 @@ export const QUERY = gql`
             durationMs
             explicit
             name
+            uri
             album {
               id
               name
@@ -60,6 +67,17 @@ export const QUERY = gql`
   }
 `
 
+const PLAYBACK_STATE_FRAGMENT = gql`
+  fragment LikedTracksCellPlaybackStateFragment on PlaybackState {
+    isPlaying
+    context {
+      uri
+    }
+  }
+`
+
+const CONTEXT_URI = 'collection:tracks'
+
 export const Loading = () => <div>Loading...</div>
 
 export const Empty = () => <div>Empty</div>
@@ -69,6 +87,18 @@ export const Failure = ({ error }: CellFailureProps) => (
 )
 
 export const Success = ({ me }: CellSuccessProps<LikedTracksQuery>) => {
+  const { data: playbackState } =
+    useFragment<LikedTracksCellPlaybackStateFragment>({
+      fragment: PLAYBACK_STATE_FRAGMENT,
+      from: { __typename: 'PlaybackState' },
+    })
+  const resumePlayback = useResumePlaybackMutation()
+  const pausePlayback = usePausePlaybackMutation()
+
+  const isPlaying = playbackState.isPlaying ?? false
+  const isCurrentContext = playbackState.context?.uri === CONTEXT_URI
+  const isPlayingLikedTracks = isCurrentContext && isPlaying
+
   return (
     <PageContainer bgColor="#1F3363">
       <PageHeader>
@@ -88,7 +118,23 @@ export const Success = ({ me }: CellSuccessProps<LikedTracksQuery>) => {
       </PageHeader>
       <PageContent>
         <div>
-          <PlayButton playing={false} size="3.5rem" variant="primary" />
+          <PlayButton
+            playing={false}
+            size="3.5rem"
+            variant="primary"
+            onClick={() => {
+              if (isPlayingLikedTracks) {
+                pausePlayback()
+              } else if (isCurrentContext) {
+                resumePlayback()
+              } else {
+                resumePlayback({
+                  contextUri: CONTEXT_URI,
+                  uri: me.tracks?.edges[0].node.uri,
+                })
+              }
+            }}
+          />
         </div>
         <Table>
           <thead>
@@ -104,7 +150,12 @@ export const Success = ({ me }: CellSuccessProps<LikedTracksQuery>) => {
           <TableBody>
             {me.tracks?.edges.map(({ addedAt, node: track }, index) => {
               return (
-                <TableRow key={track.id}>
+                <TableRow
+                  key={track.id}
+                  onDoubleClick={() => {
+                    resumePlayback({ contextUri: CONTEXT_URI, uri: track.uri })
+                  }}
+                >
                   <TableCell shrink>
                     <TrackNumberColumn trackNumber={index + 1} />
                   </TableCell>
