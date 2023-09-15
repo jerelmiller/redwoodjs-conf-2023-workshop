@@ -8,6 +8,8 @@ const PAUSE_PLAYBACK_MUTATION = gql`
       player {
         playbackState {
           isPlaying
+          progressMs
+          timestamp
         }
       }
     }
