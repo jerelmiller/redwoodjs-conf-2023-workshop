@@ -187,6 +187,11 @@ export const Success = ({
         <Table
           data={playlist.tracks.edges}
           columns={columns}
+          onDoubleClickRow={(row) => {
+            const { track } = row.original
+
+            resumePlayback({ contextUri: playlist.uri, uri: track.uri })
+          }}
           meta={
             {
               tracksContains: new Map(),
