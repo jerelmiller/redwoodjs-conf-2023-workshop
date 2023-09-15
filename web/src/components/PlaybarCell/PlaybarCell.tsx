@@ -26,6 +26,7 @@ import PlaybarControlButton from '../PlaybarControlButton'
 import PlayButton from '../PlayButton'
 import Popover from '../Popover'
 import ProgressBar from '../ProgressBar'
+import PlaybackProgressBar from '../PlaybackProgressBar'
 
 export const QUERY = gql`
   query PlaybarQuery {
@@ -163,20 +164,11 @@ export const Success = ({
             </PlaybarControlButton>
           </div>
 
-          <div className="flex items-center gap-2">
-            <span className="text-xs tabular-nums text-muted">
-              <Duration durationMs={playbackState?.progressMs ?? 0} />
-            </span>
-            <ProgressBar
-              animate={false}
-              max={currentTrack?.durationMs ?? 0}
-              value={playbackState?.progressMs ?? 0}
-              width="100%"
-            />
-            <span className="text-xs tabular-nums text-muted">
-              <Duration durationMs={currentTrack?.durationMs ?? 0} />
-            </span>
-          </div>
+          <PlaybackProgressBar
+            isPlaying={isPlaying}
+            durationMs={currentTrack?.durationMs ?? 0}
+            progressMs={playbackState?.progressMs ?? 0}
+          />
         </div>
         <div className="flex items-center justify-end gap-4">
           <Link
