@@ -28,9 +28,13 @@ import PageTitle from 'src/components/PageTitle'
 import PlayButton from 'src/components/PlayButton'
 import Skeleton from 'src/components/Skeleton'
 import Table from 'src/components/Table'
+import TableBody from 'src/components/TableBody'
+import TableHeader from 'src/components/TableHeader'
+import TableRow from 'src/components/TableRow'
 import TrackNumberColumn from 'src/components/TrackNumberColumn'
 import { useResumePlaybackMutation } from 'src/mutations/useResumePlaybackMutation'
 import { usePausePlaybackMutation } from 'src/mutations/usePausePlaybackMutation'
+import TableCell from '../TableCell/TableCell'
 
 export const QUERY = gql`
   query FindPlaylistQuery($id: ID!) {
@@ -149,6 +153,8 @@ export const Success = ({
   const isCurrentContext = playbackState?.context?.uri === playlist.uri
   const isPlayingPlaylist = isCurrentContext && isPlaying
 
+  const tracksContains = new Map()
+
   return (
     <PageContainer bgColor={coverPhoto.vibrantColor}>
       <PageHeader>
@@ -184,146 +190,98 @@ export const Success = ({
             }}
           />
         </div>
-        <Table
-          data={playlist.tracks.edges}
-          columns={columns}
-          onDoubleClickRow={(row) => {
-            const { track } = row.original
+        <Table>
+          <thead>
+            <TableHeader alignText="right">#</TableHeader>
+            <TableHeader>Title</TableHeader>
+            <TableHeader>Album</TableHeader>
+            <TableHeader>Date added</TableHeader>
+            <TableHeader />
+            <TableHeader alignText="right">
+              <Clock size="1rem" />
+            </TableHeader>
+          </thead>
+          <TableBody>
+            {playlist.tracks.edges.map(({ addedAt, track }, index) => {
+              const liked = tracksContains.get(track.id) ?? false
 
-            resumePlayback({ contextUri: playlist.uri, uri: track.uri })
-          }}
-          meta={
-            {
-              tracksContains: new Map(),
-            } satisfies PlaylistTableMeta
-          }
-        />
+              return (
+                <TableRow
+                  onDoubleClick={() => {
+                    resumePlayback({ contextUri: playlist.uri, uri: track.uri })
+                  }}
+                >
+                  <TableCell shrink>
+                    <TrackNumberColumn trackNumber={index + 1} />
+                  </TableCell>
+                  <TableCell>
+                    <div className="flex items-end gap-2">
+                      <CoverPhoto
+                        image={track.album.images.at(-1)}
+                        size="2.5rem"
+                      />
+                      <div className="flex flex-col">
+                        <span className="text-base text-primary">
+                          {track.name}
+                        </span>
+                        <div className="flex items-center gap-2">
+                          {track.explicit && <ExplicitBadge />}
+                          <span className="text-muted">
+                            <DelimitedList delimiter=", ">
+                              {track.artists.map((artist) => (
+                                <Link
+                                  key={artist.id}
+                                  className="transition-colors duration-150 hover:text-primary"
+                                  to={routes.artist({ id: artist.id })}
+                                >
+                                  {artist.name}
+                                </Link>
+                              ))}
+                            </DelimitedList>
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </TableCell>
+                  <TableCell>
+                    <Link
+                      className="text-muted transition-colors hover:text-primary"
+                      to={routes.album({ id: track.album.id })}
+                    >
+                      {track.album.name}
+                    </Link>
+                  </TableCell>
+                  <TableCell wrap={false}>
+                    {addedAt && (
+                      <span className="text-muted">
+                        <DateTime
+                          date={addedAt}
+                          format={DateTime.FORMAT.timeAgo}
+                        />
+                      </span>
+                    )}
+                  </TableCell>
+                  <TableCell shrink>
+                    <div className="px-2">
+                      <LikeButton
+                        liked={liked}
+                        size="1rem"
+                        className={cx(
+                          'relative top-[2px] group-hover:visible',
+                          { invisible: !liked }
+                        )}
+                      />
+                    </div>
+                  </TableCell>
+                  <TableCell shrink>
+                    <Duration durationMs={track.durationMs} />
+                  </TableCell>
+                </TableRow>
+              )
+            })}
+          </TableBody>
+        </Table>
       </PageContent>
     </PageContainer>
   )
 }
-
-type Playlist = NonNullable<FindPlaylistQuery['playlist']>
-type PlaylistTrackEdge = Playlist['tracks']['edges'][number]
-
-const columnHelper = createColumnHelper<PlaylistTrackEdge>()
-
-interface PlaylistTableMeta {
-  tracksContains: Map<string, boolean>
-}
-
-const columns = [
-  columnHelper.accessor('track', {
-    id: 'trackNumber',
-    header: '#',
-    cell: (info) => {
-      const { index } = info.row
-
-      return <TrackNumberColumn trackNumber={index + 1} />
-    },
-    meta: {
-      headerAlign: 'right',
-      shrink: true,
-    },
-  }),
-  columnHelper.accessor('track', {
-    id: 'title',
-    header: 'Title',
-    cell: (info) => {
-      const track = info.getValue()
-      const coverPhoto = track.album.images.at(-1)
-
-      return (
-        <div className="flex items-end gap-2">
-          <CoverPhoto image={coverPhoto} size="2.5rem" />
-          <div className="flex flex-col">
-            <span className="text-base text-primary">{track.name}</span>
-            <div className="flex items-center gap-2">
-              {track.explicit && <ExplicitBadge />}
-              <span className="text-muted">
-                <DelimitedList delimiter=", ">
-                  {track.artists.map((artist) => (
-                    <Link
-                      key={artist.id}
-                      className="transition-colors duration-150 hover:text-primary"
-                      to={routes.artist({ id: artist.id })}
-                    >
-                      {artist.name}
-                    </Link>
-                  ))}
-                </DelimitedList>
-              </span>
-            </div>
-          </div>
-        </div>
-      )
-    },
-  }),
-  columnHelper.accessor(({ track }) => track.album, {
-    id: 'album',
-    header: 'Album',
-    cell: (info) => {
-      const album = info.getValue()
-
-      return (
-        <Link
-          className="text-muted transition-colors hover:text-primary"
-          to={routes.album({ id: album.id })}
-        >
-          {album.name}
-        </Link>
-      )
-    },
-  }),
-  columnHelper.accessor('addedAt', {
-    header: 'Date added',
-    cell: (info) => {
-      const date = info.getValue()
-
-      return (
-        date && (
-          <span className="text-muted">
-            <DateTime date={date} format={DateTime.FORMAT.timeAgo} />
-          </span>
-        )
-      )
-    },
-    meta: {
-      wrap: false,
-    },
-  }),
-  columnHelper.accessor('track', {
-    id: 'liked',
-    header: '',
-    cell: (info) => {
-      const track = info.getValue()
-      const { tracksContains } = info.table.options
-        .meta as unknown as PlaylistTableMeta
-
-      const liked = tracksContains?.get(track.id) ?? false
-
-      return (
-        <div className="px-2">
-          <LikeButton
-            liked={liked}
-            size="1rem"
-            className={cx('relative top-[2px] group-hover:visible', {
-              invisible: !liked,
-            })}
-          />
-        </div>
-      )
-    },
-    meta: {
-      shrink: true,
-    },
-  }),
-  columnHelper.accessor('track.durationMs', {
-    header: () => <Clock size="1rem" />,
-    cell: (info) => <Duration durationMs={info.getValue()} />,
-    meta: {
-      shrink: true,
-      headerAlign: 'right',
-    },
-  }),
-]
