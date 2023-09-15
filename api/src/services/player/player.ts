@@ -78,6 +78,7 @@ export const resumePlayback: MutationResolvers['resumePlayback'] = async ({
     create: {
       isPlaying: true,
       contextUri: input?.contextUri,
+      currentTrackUri: input?.uri,
       user: {
         connect: { id: currentUser.id },
       },
@@ -88,6 +89,7 @@ export const resumePlayback: MutationResolvers['resumePlayback'] = async ({
     update: {
       isPlaying: true,
       contextUri: input?.contextUri,
+      currentTrackUri: input?.uri,
     },
   })
 
