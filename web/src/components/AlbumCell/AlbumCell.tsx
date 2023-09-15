@@ -1,5 +1,4 @@
 import { useFragment } from '@apollo/client'
-import { createColumnHelper } from '@tanstack/react-table'
 import cx from 'classnames'
 import { Clock } from 'lucide-react'
 import type { FindAlbumQuery, FindAlbumQueryVariables } from 'types/graphql'
@@ -28,6 +27,10 @@ import Duration from '../Duration'
 import ExplicitBadge from '../ExplicitBadge'
 import LikeButton from '../LikeButton'
 import Table from '../Table'
+import TableBody from '../TableBody/TableBody'
+import TableCell from '../TableCell/TableCell'
+import TableHeader from '../TableHeader/TableHeader'
+import TableRow from '../TableRow/TableRow'
 import TrackNumberColumn from '../TrackNumberColumn/TrackNumberColumn'
 
 export const QUERY = gql`
@@ -146,6 +149,8 @@ export const Success = ({
   const isCurrentContext = playbackState?.context?.uri === album.uri
   const isPlayingAlbum = isCurrentContext && isPlaying
 
+  const tracksContains = new Map()
+
   return (
     <PageContainer bgColor={coverPhoto.vibrantColor}>
       <PageHeader>
@@ -186,18 +191,72 @@ export const Success = ({
             }}
           />
         </div>
-        <Table
-          columns={columns}
-          data={album.tracks?.edges.map((edge) => edge.node) ?? []}
-          onDoubleClickRow={(row) => {
-            const track = row.original
+        <Table>
+          <thead>
+            <TableHeader alignText="right">#</TableHeader>
+            <TableHeader>Title</TableHeader>
+            <TableHeader />
+            <TableHeader alignText="right">
+              <Clock size="1rem" />
+            </TableHeader>
+          </thead>
+          <TableBody>
+            {album.tracks?.edges.map(({ node: track }, index) => {
+              const liked = tracksContains.get(track.id) ?? false
 
-            resumePlayback({ contextUri: album.uri, uri: track.uri })
-          }}
-          meta={
-            { album, tracksContains: new Map() } satisfies AlbumTracksTableMeta
-          }
-        />
+              return (
+                <TableRow
+                  key={track.id}
+                  onDoubleClick={() => {
+                    resumePlayback({ contextUri: album.uri, uri: track.uri })
+                  }}
+                >
+                  <TableCell shrink>
+                    <TrackNumberColumn trackNumber={index + 1} />
+                  </TableCell>
+                  <TableCell>
+                    <div className="flex flex-col gap-2">
+                      <span className="text-base">{track.name}</span>
+                      <div className="flex items-center gap-2">
+                        {track.explicit && <ExplicitBadge />}
+                        <span className="text-muted">
+                          <DelimitedList delimiter=", ">
+                            {track.artists.map((artist) => (
+                              <Link
+                                key={artist.id}
+                                to={routes.artist({ id: artist.id })}
+                                className="transition-colors duration-[0.15s] hover:text-primary"
+                              >
+                                {artist.name}
+                              </Link>
+                            ))}
+                          </DelimitedList>
+                        </span>
+                      </div>
+                    </div>
+                  </TableCell>
+                  <TableCell shrink>
+                    <div className="px-2">
+                      <LikeButton
+                        liked={liked}
+                        size="1rem"
+                        className={cx(
+                          'relative top-[2px] group-hover:visible',
+                          {
+                            invisible: !liked,
+                          }
+                        )}
+                      />
+                    </div>
+                  </TableCell>
+                  <TableCell shrink>
+                    <Duration durationMs={track.durationMs} />
+                  </TableCell>
+                </TableRow>
+              )
+            })}
+          </TableBody>
+        </Table>
         <div className="flex flex-col">
           <div className="text-sm text-muted">
             <ReleaseDate releaseDate={album.releaseDate} />
@@ -215,86 +274,3 @@ export const Success = ({
     </PageContainer>
   )
 }
-
-type Album = NonNullable<FindAlbumQuery['album']>
-type Track = NonNullable<Album['tracks']>['edges'][0]['node']
-
-interface AlbumTracksTableMeta {
-  album: Album
-  tracksContains: Map<string, boolean>
-}
-
-const columnHelper = createColumnHelper<Track>()
-
-const columns = [
-  columnHelper.accessor((track) => track, {
-    header: '#',
-    meta: { headerAlign: 'right', shrink: true },
-    cell: (info) => {
-      return <TrackNumberColumn trackNumber={info.row.index + 1} />
-    },
-  }),
-  columnHelper.display({
-    id: 'title',
-    header: 'Title',
-    cell: (info) => {
-      const track = info.row.original
-
-      return (
-        <div className="flex flex-col gap-2">
-          <span className="text-base">{track.name}</span>
-          <div className="flex items-center gap-2">
-            {track.explicit && <ExplicitBadge />}
-            <span className="text-muted">
-              <DelimitedList delimiter=", ">
-                {track.artists.map((artist) => (
-                  <Link
-                    key={artist.id}
-                    to={routes.artist({ id: artist.id })}
-                    className="transition-colors duration-[0.15s] hover:text-primary"
-                  >
-                    {artist.name}
-                  </Link>
-                ))}
-              </DelimitedList>
-            </span>
-          </div>
-        </div>
-      )
-    },
-  }),
-  columnHelper.display({
-    id: 'liked',
-    header: '',
-    cell: (info) => {
-      const { tracksContains } = info.table.options
-        .meta as unknown as AlbumTracksTableMeta
-
-      const track = info.row.original
-      const liked = tracksContains.get(track.id) ?? false
-
-      return (
-        <div className="px-2">
-          <LikeButton
-            liked={liked}
-            size="1rem"
-            className={cx('relative top-[2px] group-hover:visible', {
-              invisible: !liked,
-            })}
-          />
-        </div>
-      )
-    },
-    meta: {
-      shrink: true,
-    },
-  }),
-  columnHelper.accessor('durationMs', {
-    header: () => <Clock size="1rem" />,
-    cell: (info) => <Duration durationMs={info.getValue()} />,
-    meta: {
-      headerAlign: 'right',
-      shrink: true,
-    },
-  }),
-]
