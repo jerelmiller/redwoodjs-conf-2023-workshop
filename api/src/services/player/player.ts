@@ -5,6 +5,8 @@ import { UserInputError } from '@redwoodjs/graphql-server'
 
 import { db, findByUri } from 'src/lib/db'
 
+const LIKED_TRACKS_CONTEXT_URI = 'collection:tracks'
+
 const ResumePlaybackInput = z
   .object({
     contextUri: z
@@ -12,7 +14,13 @@ const ResumePlaybackInput = z
       .optional()
       .nullable()
       .refine(
-        async (contextUri) => (contextUri ? findByUri(contextUri) : true),
+        async (contextUri) => {
+          if (contextUri === LIKED_TRACKS_CONTEXT_URI) {
+            return true
+          }
+
+          return contextUri ? findByUri(contextUri) : true
+        },
         (contextUri) => ({
           message: `Record with uri '${contextUri}' not found`,
         })
