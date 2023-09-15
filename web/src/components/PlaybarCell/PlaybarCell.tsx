@@ -27,6 +27,7 @@ import PlayButton from '../PlayButton'
 import Popover from '../Popover'
 import ProgressBar from '../ProgressBar'
 import PlaybackProgressBar from '../PlaybackProgressBar'
+import Skeleton from '../Skeleton'
 
 export const QUERY = gql`
   query PlaybarQuery {
@@ -75,7 +76,61 @@ const TOOLTIP = {
   track: 'Disable repeat',
 } as const
 
-export const Loading = () => <div>Loading...</div>
+export const Loading = () => (
+  <footer className="flex flex-col [grid-area:playbar]">
+    <div className="grid grid-cols-[30%_1fr_30%] items-center px-6 py-5 text-primary">
+      <div className="flex items-center gap-4">
+        <Skeleton.CoverPhoto size="4rem" />
+        <div className="flex flex-col gap-2">
+          <Skeleton.Text width="4rem" />
+          <Skeleton.Text width="8rem" />
+        </div>
+        <LikeButton disabled liked={false} />
+      </div>
+      <div className="flex flex-col gap-2">
+        <div className="flex items-center justify-center gap-5">
+          <PlaybarControlButton
+            active={false}
+            disallowed={true}
+            tooltip="Enable shuffle"
+          >
+            <Shuffle size="1.25rem" />
+          </PlaybarControlButton>
+          <PlaybarControlButton disallowed tooltip="Previous">
+            <SkipBack fill="currentColor" />
+          </PlaybarControlButton>
+          <PlayButton
+            disabled
+            playing={false}
+            size="2.5rem"
+            variant="secondary"
+          />
+          <PlaybarControlButton disallowed tooltip="Next">
+            <SkipForward fill="currentColor" />
+          </PlaybarControlButton>
+          <PlaybarControlButton active={false} disallowed tooltip="">
+            <RepeatIcon />
+          </PlaybarControlButton>
+        </div>
+        <PlaybackProgressBar durationMs={0} progressMs={0} isPlaying={false} />
+      </div>
+      <div className="flex items-center justify-end gap-4">
+        <PlaybarControlButton active={false} disallowed tooltip="Queue">
+          <List strokeWidth={1.5} />
+        </PlaybarControlButton>
+        <PlaybarControlButton disallowed tooltip="Connect to a device">
+          <Laptop2 strokeWidth={1.5} />
+        </PlaybarControlButton>
+        <div className="flex items-center gap-2">
+          <PlaybarControlButton disallowed tooltip="Mute">
+            <Volume2 />
+          </PlaybarControlButton>
+          <ProgressBar animate={false} value={100} max={100} width="100px" />
+        </div>
+      </div>
+    </div>
+  </footer>
+)
 
 export const Empty = () => <div>Empty</div>
 
