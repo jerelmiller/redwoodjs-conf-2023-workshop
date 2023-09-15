@@ -1,7 +1,9 @@
 import { useEffect } from 'react'
+
+import { useApolloClient } from '@apollo/client'
+
 import Duration from '../Duration'
 import ProgressBar from '../ProgressBar'
-import { useApolloClient } from '@apollo/client'
 
 interface PlaybackProgressBarProps {
   isPlaying: boolean

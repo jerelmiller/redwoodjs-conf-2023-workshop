@@ -1,3 +1,4 @@
+import { useFragment } from '@apollo/client'
 import { createColumnHelper } from '@tanstack/react-table'
 import cx from 'classnames'
 import { Clock } from 'lucide-react'
@@ -17,6 +18,8 @@ import PageTitle from 'src/components/PageTitle'
 import PlayButton from 'src/components/PlayButton'
 import ReleaseDate from 'src/components/ReleaseDate'
 import Skeleton from 'src/components/Skeleton'
+import { usePausePlaybackMutation } from 'src/mutations/usePausePlaybackMutation'
+import { useResumePlaybackMutation } from 'src/mutations/useResumePlaybackMutation'
 import { yearOfRelease } from 'src/utils/releaseDate'
 import { pluralize } from 'src/utils/string'
 
@@ -26,9 +29,6 @@ import ExplicitBadge from '../ExplicitBadge'
 import LikeButton from '../LikeButton'
 import Table from '../Table'
 import TrackNumberColumn from '../TrackNumberColumn/TrackNumberColumn'
-import { useFragment } from '@apollo/client'
-import { useResumePlaybackMutation } from 'src/mutations/useResumePlaybackMutation'
-import { usePausePlaybackMutation } from 'src/mutations/usePausePlaybackMutation'
 
 export const QUERY = gql`
   query FindAlbumQuery($id: ID!) {

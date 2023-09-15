@@ -7,8 +7,8 @@ import AlbumTile from 'src/components/AlbumTile'
 import PageContainer from 'src/components/PageContainer'
 import PageContent from 'src/components/PageContent'
 import PageTitle from 'src/components/PageTitle'
-import TileGrid from 'src/components/TileGrid'
 import Skeleton from 'src/components/Skeleton'
+import TileGrid from 'src/components/TileGrid'
 
 export const QUERY = gql`
   query FindArtistQuery($id: ID!) {

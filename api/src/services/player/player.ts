@@ -1,9 +1,9 @@
 import { PlayerRelationResolvers, MutationResolvers } from 'types/graphql'
+import { z } from 'zod'
 
 import { UserInputError } from '@redwoodjs/graphql-server'
 
 import { db, findByUri } from 'src/lib/db'
-import { z } from 'zod'
 
 const ResumePlaybackInput = z
   .object({

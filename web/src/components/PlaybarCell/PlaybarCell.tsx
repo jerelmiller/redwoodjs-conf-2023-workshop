@@ -22,11 +22,11 @@ import CoverPhoto from '../CoverPhoto'
 import DelimitedList from '../DelimitedList'
 import Duration from '../Duration'
 import LikeButton from '../LikeButton'
+import PlaybackProgressBar from '../PlaybackProgressBar'
 import PlaybarControlButton from '../PlaybarControlButton'
 import PlayButton from '../PlayButton'
 import Popover from '../Popover'
 import ProgressBar from '../ProgressBar'
-import PlaybackProgressBar from '../PlaybackProgressBar'
 import Skeleton from '../Skeleton'
 
 export const QUERY = gql`

@@ -4,9 +4,9 @@
 import { PrismaClient } from '@prisma/client'
 
 import { emitLogLevels, handlePrismaLogging } from '@redwoodjs/api/logger'
+import { UserInputError } from '@redwoodjs/graphql-server'
 
 import { logger } from './logger'
-import { UserInputError } from '@redwoodjs/graphql-server'
 
 /*
  * Instance of the Prisma Client
