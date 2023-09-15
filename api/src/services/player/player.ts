@@ -16,7 +16,34 @@ const ResumePlaybackInput = z
           message: `Record with uri '${contextUri}' not found`,
         })
       ),
-    // uris: z.array(),
+    uri: z
+      .string()
+      .optional()
+      .superRefine(async (uri, ctx) => {
+        if (!uri) {
+          return z.NEVER
+        }
+
+        const [type] = uri.split(':')
+
+        if (type !== 'track') {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: 'Cannot play a uri that is not a track',
+          })
+        }
+
+        const track = await findByUri(uri)
+
+        if (!track) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: `Cannot play track with uri '${uri}' because it does not exist.'`,
+          })
+        }
+
+        return z.NEVER
+      }),
   })
   .optional()
 
