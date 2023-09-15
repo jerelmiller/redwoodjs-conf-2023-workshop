@@ -14,6 +14,9 @@ const RESUME_PLAYBACK_MUTATION = gql`
       player {
         playbackState {
           isPlaying
+          context {
+            uri
+          }
         }
       }
     }

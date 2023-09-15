@@ -42,6 +42,9 @@ export const QUERY = gql`
           isPlaying
           shuffleState
           progressMs
+          context {
+            uri
+          }
           device {
             id
           }

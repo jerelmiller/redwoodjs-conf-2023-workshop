@@ -128,6 +128,9 @@ export const Failure = ({
 const PLAYBACK_STATE_FRAGMENT = gql`
   fragment PlaylistCell_playbackState on PlaybackState {
     isPlaying
+    context {
+      uri
+    }
   }
 `
 
@@ -142,7 +145,9 @@ export const Success = ({
   const pausePlayback = usePausePlaybackMutation()
   const totalTracks = playlist.tracks.pageInfo.total
   const coverPhoto = playlist.images[0]
-  const isPlaying = playbackState.isPlaying ?? false
+  const isPlaying = playbackState?.isPlaying ?? false
+  const isCurrentContext = playbackState?.context?.uri === playlist.uri
+  const isPlayingPlaylist = isCurrentContext && isPlaying
 
   return (
     <PageContainer bgColor={coverPhoto.vibrantColor}>
@@ -162,11 +167,11 @@ export const Success = ({
       <PageContent>
         <div>
           <PlayButton
-            playing={isPlaying}
+            playing={isPlayingPlaylist}
             size="3.5rem"
             variant="primary"
             onClick={() => {
-              if (isPlaying) {
+              if (isPlayingPlaylist) {
                 pausePlayback()
               } else {
                 resumePlayback({
