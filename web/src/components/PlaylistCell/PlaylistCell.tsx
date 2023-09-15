@@ -1,9 +1,10 @@
 import { useFragment } from '@apollo/client'
 import cx from 'classnames'
 import { Clock } from 'lucide-react'
-import type {
-  FindPlaylistQuery,
-  FindPlaylistQueryVariables,
+import {
+  PlaylistCell_playbackState,
+  type FindPlaylistQuery,
+  type FindPlaylistQueryVariables,
 } from 'types/graphql'
 
 import { Link, routes } from '@redwoodjs/router'
@@ -86,6 +87,9 @@ const PLAYBACK_STATE_FRAGMENT = gql`
     context {
       uri
     }
+    track {
+      id
+    }
   }
 `
 
@@ -141,7 +145,7 @@ export const Failure = ({
 export const Success = ({
   playlist,
 }: CellSuccessProps<FindPlaylistQuery, FindPlaylistQueryVariables>) => {
-  const { data: playbackState } = useFragment({
+  const { data: playbackState } = useFragment<PlaylistCell_playbackState>({
     fragment: PLAYBACK_STATE_FRAGMENT,
     from: { __typename: 'PlaybackState' },
   })
@@ -222,7 +226,11 @@ export const Success = ({
                         size="2.5rem"
                       />
                       <div className="flex flex-col">
-                        <span className="text-base text-primary">
+                        <span
+                          className={cx('text-base text-primary', {
+                            'text-theme': playbackState.track?.id === track.id,
+                          })}
+                        >
                           {track.name}
                         </span>
                         <div className="flex items-center gap-2">

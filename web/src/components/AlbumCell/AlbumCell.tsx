@@ -1,7 +1,12 @@
 import { useFragment } from '@apollo/client'
 import cx from 'classnames'
 import { Clock } from 'lucide-react'
-import type { FindAlbumQuery, FindAlbumQueryVariables } from 'types/graphql'
+import type {
+  AlbumCell_playbackState,
+  FindAlbumQuery,
+  FindAlbumQueryVariables,
+  PlaylistCell_playbackState,
+} from 'types/graphql'
 
 import { Link, routes } from '@redwoodjs/router'
 import type { CellSuccessProps, CellFailureProps } from '@redwoodjs/web'
@@ -81,10 +86,13 @@ export const QUERY = gql`
 `
 
 const PLAYBACK_STATE_FRAGMENT = gql`
-  fragment PlaylistCell_playbackState on PlaybackState {
+  fragment AlbumCell_playbackState on PlaybackState {
     isPlaying
     context {
       uri
+    }
+    track {
+      id
     }
   }
 `
@@ -139,7 +147,7 @@ export const Failure = ({
 export const Success = ({
   album,
 }: CellSuccessProps<FindAlbumQuery, FindAlbumQueryVariables>) => {
-  const { data: playbackState } = useFragment({
+  const { data: playbackState } = useFragment<AlbumCell_playbackState>({
     fragment: PLAYBACK_STATE_FRAGMENT,
     from: { __typename: 'PlaybackState' },
   })
@@ -218,7 +226,13 @@ export const Success = ({
                   </TableCell>
                   <TableCell>
                     <div className="flex flex-col gap-2">
-                      <span className="text-base">{track.name}</span>
+                      <span
+                        className={cx('text-base', {
+                          'text-theme': playbackState.track?.id === track.id,
+                        })}
+                      >
+                        {track.name}
+                      </span>
                       <div className="flex items-center gap-2">
                         {track.explicit && <ExplicitBadge />}
                         <span className="text-muted">

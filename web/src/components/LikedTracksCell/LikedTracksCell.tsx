@@ -1,4 +1,5 @@
 import { useFragment } from '@apollo/client'
+import cx from 'classnames'
 import { Clock } from 'lucide-react'
 import type {
   LikedTracksCellPlaybackStateFragment,
@@ -74,6 +75,9 @@ const PLAYBACK_STATE_FRAGMENT = gql`
     isPlaying
     context {
       uri
+    }
+    track {
+      id
     }
   }
 `
@@ -168,7 +172,11 @@ export const Success = ({ me }: CellSuccessProps<LikedTracksQuery>) => {
                         size="2.5rem"
                       />
                       <div className="flex flex-col">
-                        <span className="text-base text-primary">
+                        <span
+                          className={cx('text-base text-primary', {
+                            'text-theme': playbackState.track?.id === track.id,
+                          })}
+                        >
                           {track.name}
                         </span>
                         <div className="flex items-center gap-2">
