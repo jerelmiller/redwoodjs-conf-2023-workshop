@@ -14,6 +14,17 @@ export const PlaybackState: PlaybackStateRelationResolvers = {
       .findUniqueOrThrow({ where: { id: root.id } })
       .device()
   },
+  progressMs: (_, { root }) => {
+    if (!root.lastPlayedAt) {
+      return null
+    }
+
+    if (!root.isPlaying) {
+      return root.progressMs
+    }
+
+    return new Date().getTime() - root.lastPlayedAt.getTime() + root.progressMs
+  },
   repeatState: (_, { root }) => root.repeatMode as RepeatMode,
   shuffleState: (_, { root }) => root.shuffled,
   timestamp: () => new Date(),
