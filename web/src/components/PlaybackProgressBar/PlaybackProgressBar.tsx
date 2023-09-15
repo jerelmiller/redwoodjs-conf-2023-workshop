@@ -53,12 +53,12 @@ const PlaybackProgressBar = ({
   return (
     <div className="flex items-center gap-2">
       <span className="text-xs tabular-nums text-muted">
-        <Duration durationMs={progressMs} />
+        <Duration durationMs={Math.min(progressMs, durationMs)} />
       </span>
       <ProgressBar
         animate={false}
         max={durationMs}
-        value={progressMs}
+        value={Math.min(progressMs, durationMs)}
         width="100%"
       />
       <span className="text-xs tabular-nums text-muted">
