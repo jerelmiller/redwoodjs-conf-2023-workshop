@@ -9,6 +9,8 @@ import type {
 import { Link, routes } from '@redwoodjs/router'
 import type { CellSuccessProps, CellFailureProps } from '@redwoodjs/web'
 
+import { useFragment } from '@apollo/client'
+
 import CoverPhoto from 'src/components/CoverPhoto'
 import DateTime from 'src/components/DateTime'
 import DelimitedList from 'src/components/DelimitedList'
@@ -28,6 +30,7 @@ import Skeleton from 'src/components/Skeleton'
 import Table from 'src/components/Table'
 import TrackNumberColumn from 'src/components/TrackNumberColumn'
 import { useResumePlaybackMutation } from 'src/mutations/useResumePlaybackMutation'
+import { usePausePlaybackMutation } from 'src/mutations/usePausePlaybackMutation'
 
 export const QUERY = gql`
   query FindPlaylistQuery($id: ID!) {
@@ -122,12 +125,24 @@ export const Failure = ({
   <div style={{ color: 'red' }}>Error: {error?.message}</div>
 )
 
+const PLAYBACK_STATE_FRAGMENT = gql`
+  fragment PlaylistCell_playbackState on PlaybackState {
+    isPlaying
+  }
+`
+
 export const Success = ({
   playlist,
 }: CellSuccessProps<FindPlaylistQuery, FindPlaylistQueryVariables>) => {
+  const { data: playbackState } = useFragment({
+    fragment: PLAYBACK_STATE_FRAGMENT,
+    from: { __typename: 'PlaybackState' },
+  })
   const resumePlayback = useResumePlaybackMutation()
+  const pausePlayback = usePausePlaybackMutation()
   const totalTracks = playlist.tracks.pageInfo.total
   const coverPhoto = playlist.images[0]
+  const isPlaying = playbackState.isPlaying ?? false
 
   return (
     <PageContainer bgColor={coverPhoto.vibrantColor}>
@@ -147,14 +162,18 @@ export const Success = ({
       <PageContent>
         <div>
           <PlayButton
-            playing={false}
+            playing={isPlaying}
             size="3.5rem"
             variant="primary"
             onClick={() => {
-              resumePlayback({
-                contextUri: playlist.uri,
-                uri: playlist.tracks.edges[0].track.uri,
-              })
+              if (isPlaying) {
+                pausePlayback()
+              } else {
+                resumePlayback({
+                  contextUri: playlist.uri,
+                  uri: playlist.tracks.edges[0].track.uri,
+                })
+              }
             }}
           />
         </div>
