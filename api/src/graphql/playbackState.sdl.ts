@@ -16,6 +16,9 @@ export const schema = gql`
 
     "Unix Millisecond Timestamp when data was fetched."
     timestamp: Timestamp!
+
+    "The currently playing track."
+    track: Track
   }
 
   enum RepeatMode {

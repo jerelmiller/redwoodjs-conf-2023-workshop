@@ -17,6 +17,15 @@ export const PlaybackState: PlaybackStateRelationResolvers = {
   repeatState: (_, { root }) => root.repeatMode as RepeatMode,
   shuffleState: (_, { root }) => root.shuffled,
   timestamp: () => new Date(),
+  track: (_, { root }) => {
+    if (!root.currentTrackUri) {
+      return null
+    }
+
+    const [, id] = root.currentTrackUri.split(':')
+
+    return db.track.findUnique({ where: { id } })
+  },
 }
 
 export const PlaybackStateContext: PlaybackStateContextRelationResolvers = {
