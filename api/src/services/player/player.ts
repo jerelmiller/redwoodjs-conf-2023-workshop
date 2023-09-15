@@ -10,6 +10,7 @@ const ResumePlaybackInput = z
     contextUri: z
       .string()
       .optional()
+      .nullable()
       .refine(
         async (contextUri) => (contextUri ? findByUri(contextUri) : true),
         (contextUri) => ({
