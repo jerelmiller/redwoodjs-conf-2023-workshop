@@ -21748,6 +21748,7 @@ __metadata:
     "@redwoodjs/router": 6.2.1
     "@redwoodjs/vite": 6.2.1
     "@redwoodjs/web": 6.2.1
+    "@wry/equality": ^0.5.6
     autoprefixer: ^10.4.15
     classnames: ^2.3.2
     date-fns: ^2.30.0
