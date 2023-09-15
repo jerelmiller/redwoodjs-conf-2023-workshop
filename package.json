@@ -12,10 +12,6 @@
     "prettier-plugin-tailwindcss": "0.4.1",
     "toml": "^3.0.0"
   },
-  "eslintConfig": {
-    "extends": "@redwoodjs/eslint-config",
-    "root": true
-  },
   "engines": {
     "node": "=18.x",
     "yarn": ">=1.15"
