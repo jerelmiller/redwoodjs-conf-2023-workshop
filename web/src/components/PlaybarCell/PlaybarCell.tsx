@@ -43,6 +43,7 @@ export const QUERY = gql`
           isPlaying
           shuffleState
           progressMs
+          timestamp
           context {
             uri
           }
