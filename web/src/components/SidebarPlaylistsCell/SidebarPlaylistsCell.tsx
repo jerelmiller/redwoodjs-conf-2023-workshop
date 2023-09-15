@@ -1,5 +1,9 @@
+import { useFragment } from '@apollo/client'
 import { Volume2 } from 'lucide-react'
-import type { SidebarPlaylistsQuery } from 'types/graphql'
+import {
+  SidebarPlaylistsCell_playbackState,
+  type SidebarPlaylistsQuery,
+} from 'types/graphql'
 
 import { routes } from '@redwoodjs/router'
 import type { CellSuccessProps, CellFailureProps } from '@redwoodjs/web'
@@ -20,6 +24,7 @@ export const QUERY = gql`
           node {
             id
             name
+            uri
             images {
               url
             }
@@ -30,6 +35,15 @@ export const QUERY = gql`
           }
         }
       }
+    }
+  }
+`
+
+const PLAYBACK_STATE_FRAGMENT = gql`
+  fragment SidebarPlaylistsCell_playbackState on PlaybackState {
+    isPlaying
+    context {
+      uri
     }
   }
 `
@@ -58,10 +72,15 @@ export const Failure = ({ error }: CellFailureProps) => (
 )
 
 export const Success = ({ me }: CellSuccessProps<SidebarPlaylistsQuery>) => {
-  const isCurrentContext = false
-  const playbackState = { isPlaying: false }
+  const { data: playbackState } =
+    useFragment<SidebarPlaylistsCell_playbackState>({
+      fragment: PLAYBACK_STATE_FRAGMENT,
+      from: { __typename: 'PlaybackState' },
+    })
 
   return me?.playlists?.edges?.map(({ node: playlist }) => {
+    const isCurrentContext = playlist.uri === playbackState.context?.uri
+
     return (
       <SidebarPlaylistLink
         key={playlist.id}
@@ -69,7 +88,9 @@ export const Success = ({ me }: CellSuccessProps<SidebarPlaylistsQuery>) => {
       >
         <CoverPhoto image={playlist.images.at(-1)} size="48px" />
         <SidebarPlaylistContent>
-          <SidebarPlaylistName>{playlist.name}</SidebarPlaylistName>
+          <SidebarPlaylistName isCurrentContext={isCurrentContext}>
+            {playlist.name}
+          </SidebarPlaylistName>
           <div className="flex items-center gap-2">
             <span className="text-sm text-muted">
               <DelimitedList delimiter=" · ">
@@ -79,7 +100,7 @@ export const Success = ({ me }: CellSuccessProps<SidebarPlaylistsQuery>) => {
             </span>
           </div>
         </SidebarPlaylistContent>
-        {isCurrentContext && playbackState?.isPlaying && (
+        {isCurrentContext && playbackState.isPlaying && (
           <Volume2 color="var(--color--theme--light)" size="0.875rem" />
         )}
       </SidebarPlaylistLink>
