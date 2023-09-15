@@ -1,4 +1,4 @@
-import { Pin, Volume2 } from 'lucide-react'
+import { Volume2 } from 'lucide-react'
 import type { SidebarPlaylistsQuery } from 'types/graphql'
 
 import { routes } from '@redwoodjs/router'

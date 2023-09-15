@@ -97,7 +97,7 @@ const handlers = {
 
 const getMethod = (
   event: APIGatewayEvent,
-  body: Record<string, any>
+  body: Record<string, unknown>
 ): string | undefined => {
   const method = event.queryStringParameters?.method
 
@@ -105,7 +105,7 @@ const getMethod = (
     return method
   }
 
-  return body.method
+  return body.method as string
 }
 
 const parseBody = (event: APIGatewayEvent): Record<string, unknown> => {

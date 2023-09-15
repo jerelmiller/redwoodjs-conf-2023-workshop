@@ -206,6 +206,7 @@ export const Success = ({
 
               return (
                 <TableRow
+                  key={track.id}
                   onDoubleClick={() => {
                     resumePlayback({ contextUri: playlist.uri, uri: track.uri })
                   }}

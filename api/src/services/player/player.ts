@@ -119,6 +119,7 @@ export const pausePlayback: MutationResolvers['pausePlayback'] = async () => {
       isPlaying: false,
       progressMs: playbackState.isPlaying
         ? new Date().getTime() -
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
           playbackState.lastPlayedAt!.getTime() +
           playbackState.progressMs
         : undefined,

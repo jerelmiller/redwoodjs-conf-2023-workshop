@@ -1,10 +1,4 @@
-import {
-  Children,
-  ElementType,
-  Fragment,
-  ReactNode,
-  isValidElement,
-} from 'react'
+import { Children, Fragment, ReactNode, isValidElement } from 'react'
 
 export interface DelimitedListProps {
   children: ReactNode

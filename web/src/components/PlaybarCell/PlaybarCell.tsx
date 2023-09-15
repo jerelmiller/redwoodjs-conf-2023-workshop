@@ -20,7 +20,6 @@ import { useResumePlaybackMutation } from 'src/mutations/useResumePlaybackMutati
 import AnimatedSoundWave from '../AnimatedSoundWave'
 import CoverPhoto from '../CoverPhoto'
 import DelimitedList from '../DelimitedList'
-import Duration from '../Duration'
 import LikeButton from '../LikeButton'
 import PlaybackProgressBar from '../PlaybackProgressBar'
 import PlaybarControlButton from '../PlaybarControlButton'

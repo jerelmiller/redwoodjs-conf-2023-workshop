@@ -7,6 +7,7 @@ export interface SessionData {
 }
 
 export const encrypt = (data: SessionData) => {
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   return CryptoJS.AES.encrypt(JSON.stringify(data), process.env.SESSION_SECRET!)
 }
 
@@ -14,6 +15,7 @@ export const decrypt = (text: string): SessionData => {
   try {
     const data = CryptoJS.AES.decrypt(
       text,
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       process.env.SESSION_SECRET!
     ).toString(CryptoJS.enc.Utf8)
 

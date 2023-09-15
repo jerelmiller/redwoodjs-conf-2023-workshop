@@ -48,7 +48,7 @@ const PlaybackProgressBar = ({
     }, 1000)
 
     return () => clearInterval(id)
-  }, [isPlaying])
+  }, [client, isPlaying])
 
   return (
     <div className="flex items-center gap-2">
