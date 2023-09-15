@@ -2,6 +2,8 @@ import { ComponentPropsWithoutRef, ElementType, ReactNode, useRef } from 'react'
 
 import cx from 'classnames'
 
+import ScrollableListContext from '../ScrollableListContext/ScrollableListContext'
+
 interface ScrollableListProps<T extends ElementType> {
   as?: T
   children?: ReactNode
@@ -27,7 +29,9 @@ const ScrollableList = <TElement extends ElementType = 'div'>({
       ref={ref}
       className={cx('overflow-y-auto', className)}
     >
-      {children}
+      <ScrollableListContext.Provider value={ref}>
+        {children}
+      </ScrollableListContext.Provider>
     </Component>
   )
 }
