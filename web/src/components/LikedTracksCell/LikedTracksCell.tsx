@@ -120,7 +120,7 @@ export const Success = ({ me }: CellSuccessProps<LikedTracksQuery>) => {
       <PageContent>
         <div>
           <PlayButton
-            playing={false}
+            playing={isPlayingLikedTracks}
             size="3.5rem"
             variant="primary"
             onClick={() => {
