@@ -74,17 +74,19 @@ model Device {
 }
 
 model PlaybackState {
-  id              String  @id @default(cuid())
-  isPlaying       Boolean @default(false)
+  id              String    @id @default(cuid())
+  isPlaying       Boolean   @default(false)
   contextUri      String?
   currentTrackUri String?
+  lastPlayedAt    DateTime?
+  progressMs      Int       @default(0)
   // off, track, context
-  repeatMode      String  @default("OFF")
-  shuffled        Boolean @default(false)
-  user            User    @relation(fields: [userId], references: [id])
-  userId          String  @unique
-  device          Device  @relation(fields: [deviceId], references: [id])
-  deviceId        String  @unique
+  repeatMode      String    @default("OFF")
+  shuffled        Boolean   @default(false)
+  user            User      @relation(fields: [userId], references: [id])
+  userId          String    @unique
+  device          Device    @relation(fields: [deviceId], references: [id])
+  deviceId        String    @unique
 }
 
 model Playlist {
