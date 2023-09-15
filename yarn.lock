@@ -5640,25 +5640,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@tanstack/react-table@npm:^8.9.8":
-  version: 8.9.8
-  resolution: "@tanstack/react-table@npm:8.9.8"
-  dependencies:
-    "@tanstack/table-core": 8.9.8
-  peerDependencies:
-    react: ">=16"
-    react-dom: ">=16"
-  checksum: f59f128c5e9af7fa1f5d15ebffc7c0809961bdf06a60dda4064a8e493ecc1997e046713d5a98f475986c7d2fde813cc4aa71d8b66780f44ac6232f5f26f94212
-  languageName: node
-  linkType: hard
-
-"@tanstack/table-core@npm:8.9.8":
-  version: 8.9.8
-  resolution: "@tanstack/table-core@npm:8.9.8"
-  checksum: b6740f93cfaf97c495dfa504146cf9a366971ae65a41607033a1b695dd1f8e91db61c192561e8434a035a1eac97c6d53af39ed66d91ba7345ef4ac6b39070456
-  languageName: node
-  linkType: hard
-
 "@testing-library/dom@npm:^8.11.1":
   version: 8.20.1
   resolution: "@testing-library/dom@npm:8.20.1"
@@ -21767,7 +21748,6 @@ __metadata:
     "@redwoodjs/router": 6.2.1
     "@redwoodjs/vite": 6.2.1
     "@redwoodjs/web": 6.2.1
-    "@tanstack/react-table": ^8.9.8
     autoprefixer: ^10.4.15
     classnames: ^2.3.2
     date-fns: ^2.30.0
