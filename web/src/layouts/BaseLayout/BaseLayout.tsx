@@ -49,7 +49,9 @@ const BaseLayout = ({ children }: BaseLayoutProps) => {
               <SidebarPlaylistLink to={routes.likedTracks()}>
                 <LikedTracksCoverPhoto iconSize="1rem" size="48px" />
                 <SidebarPlaylistContent>
-                  <SidebarPlaylistName>Liked Songs</SidebarPlaylistName>
+                  <SidebarPlaylistName isCurrentContext={false}>
+                    Liked Songs
+                  </SidebarPlaylistName>
                   <div className="flex items-center gap-2">
                     <Pin
                       fill="currentColor"
