@@ -27,13 +27,13 @@ import PlayButton from 'src/components/PlayButton'
 import Skeleton from 'src/components/Skeleton'
 import Table from 'src/components/Table'
 import TableBody from 'src/components/TableBody'
+import TableCell from 'src/components/TableCell'
+import TableHead from 'src/components/TableHead'
 import TableHeader from 'src/components/TableHeader'
 import TableRow from 'src/components/TableRow'
 import TrackNumberColumn from 'src/components/TrackNumberColumn'
 import { usePausePlaybackMutation } from 'src/mutations/usePausePlaybackMutation'
 import { useResumePlaybackMutation } from 'src/mutations/useResumePlaybackMutation'
-
-import TableCell from '../TableCell/TableCell'
 
 export const QUERY = gql`
   query FindPlaylistQuery($id: ID!) {
@@ -190,7 +190,7 @@ export const Success = ({
           />
         </div>
         <Table>
-          <thead>
+          <TableHead>
             <TableHeader alignText="right">#</TableHeader>
             <TableHeader>Title</TableHeader>
             <TableHeader>Album</TableHeader>
@@ -199,7 +199,7 @@ export const Success = ({
             <TableHeader alignText="right">
               <Clock size="1rem" />
             </TableHeader>
-          </thead>
+          </TableHead>
           <TableBody>
             {playlist.tracks.edges.map(({ addedAt, track }, index) => {
               const liked = tracksContains.get(track.id) ?? false

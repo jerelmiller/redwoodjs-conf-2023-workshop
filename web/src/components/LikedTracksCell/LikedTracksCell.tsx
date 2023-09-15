@@ -29,6 +29,7 @@ import PlayButton from '../PlayButton'
 import Table from '../Table'
 import TableBody from '../TableBody'
 import TableCell from '../TableCell'
+import TableHead from '../TableHead'
 import TableHeader from '../TableHeader'
 import TableRow from '../TableRow'
 import TrackNumberColumn from '../TrackNumberColumn'
@@ -137,7 +138,7 @@ export const Success = ({ me }: CellSuccessProps<LikedTracksQuery>) => {
           />
         </div>
         <Table>
-          <thead>
+          <TableHead>
             <TableHeader alignText="right">#</TableHeader>
             <TableHeader>Title</TableHeader>
             <TableHeader>Album</TableHeader>
@@ -146,7 +147,7 @@ export const Success = ({ me }: CellSuccessProps<LikedTracksQuery>) => {
             <TableHeader alignText="right">
               <Clock size="1rem" />
             </TableHeader>
-          </thead>
+          </TableHead>
           <TableBody>
             {me.tracks?.edges.map(({ addedAt, node: track }, index) => {
               return (

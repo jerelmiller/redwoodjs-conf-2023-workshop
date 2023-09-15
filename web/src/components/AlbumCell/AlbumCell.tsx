@@ -27,11 +27,12 @@ import Duration from '../Duration'
 import ExplicitBadge from '../ExplicitBadge'
 import LikeButton from '../LikeButton'
 import Table from '../Table'
-import TableBody from '../TableBody/TableBody'
-import TableCell from '../TableCell/TableCell'
-import TableHeader from '../TableHeader/TableHeader'
-import TableRow from '../TableRow/TableRow'
-import TrackNumberColumn from '../TrackNumberColumn/TrackNumberColumn'
+import TableBody from '../TableBody'
+import TableCell from '../TableCell'
+import TableHead from '../TableHead'
+import TableHeader from '../TableHeader'
+import TableRow from '../TableRow'
+import TrackNumberColumn from '../TrackNumberColumn'
 
 export const QUERY = gql`
   query FindAlbumQuery($id: ID!) {
@@ -192,14 +193,14 @@ export const Success = ({
           />
         </div>
         <Table>
-          <thead>
+          <TableHead>
             <TableHeader alignText="right">#</TableHeader>
             <TableHeader>Title</TableHeader>
             <TableHeader />
             <TableHeader alignText="right">
               <Clock size="1rem" />
             </TableHeader>
-          </thead>
+          </TableHead>
           <TableBody>
             {album.tracks?.edges.map(({ node: track }, index) => {
               const liked = tracksContains.get(track.id) ?? false
