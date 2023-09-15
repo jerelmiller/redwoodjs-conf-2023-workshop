@@ -1,7 +1,7 @@
-import { useCallback, useEffect, useState, useSyncExternalStore } from 'react'
+import { useEffect } from 'react'
 import Duration from '../Duration'
 import ProgressBar from '../ProgressBar'
-import { isPast } from 'date-fns'
+import { useApolloClient } from '@apollo/client'
 
 interface PlaybackProgressBarProps {
   isPlaying: boolean
@@ -9,12 +9,19 @@ interface PlaybackProgressBarProps {
   progressMs: number
 }
 
+const PLAYBACK_PROGRESS_FRAGMENT = gql`
+  fragment PlaybackProgress on PlaybackState {
+    timestamp
+    progressMs
+  }
+`
+
 const PlaybackProgressBar = ({
   isPlaying,
   durationMs,
   progressMs,
 }: PlaybackProgressBarProps) => {
-  const [adjustedProgressMs, setAdjustedProgressMs] = useState(progressMs)
+  const client = useApolloClient()
 
   useEffect(() => {
     if (!isPlaying) {
@@ -22,7 +29,20 @@ const PlaybackProgressBar = ({
     }
 
     const id = setInterval(() => {
-      setAdjustedProgressMs((progressMs) => progressMs + 1000)
+      const playbackState = client.readFragment({
+        fragment: PLAYBACK_PROGRESS_FRAGMENT,
+        id: client.cache.identify({ __typename: 'PlaybackState' }),
+      })
+
+      client.writeFragment({
+        fragment: PLAYBACK_PROGRESS_FRAGMENT,
+        id: client.cache.identify({ __typename: 'PlaybackState' }),
+        data: {
+          timestamp: Date.now(),
+          progressMs:
+            Date.now() - playbackState.timestamp + playbackState.progressMs,
+        },
+      })
     }, 1000)
 
     return () => clearInterval(id)
@@ -31,12 +51,12 @@ const PlaybackProgressBar = ({
   return (
     <div className="flex items-center gap-2">
       <span className="text-xs tabular-nums text-muted">
-        <Duration durationMs={adjustedProgressMs} />
+        <Duration durationMs={progressMs} />
       </span>
       <ProgressBar
         animate={false}
         max={durationMs}
-        value={adjustedProgressMs}
+        value={progressMs}
         width="100%"
       />
       <span className="text-xs tabular-nums text-muted">
