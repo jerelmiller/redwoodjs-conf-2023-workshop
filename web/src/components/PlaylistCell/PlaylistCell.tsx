@@ -27,12 +27,14 @@ import PlayButton from 'src/components/PlayButton'
 import Skeleton from 'src/components/Skeleton'
 import Table from 'src/components/Table'
 import TrackNumberColumn from 'src/components/TrackNumberColumn'
+import { useResumePlaybackMutation } from 'src/mutations/useResumePlaybackMutation'
 
 export const QUERY = gql`
   query FindPlaylistQuery($id: ID!) {
     playlist(id: $id) {
       id
       name
+      uri
       owner {
         id
         displayName
@@ -52,6 +54,7 @@ export const QUERY = gql`
             durationMs
             explicit
             name
+            uri
             album {
               id
               name
@@ -122,6 +125,7 @@ export const Failure = ({
 export const Success = ({
   playlist,
 }: CellSuccessProps<FindPlaylistQuery, FindPlaylistQueryVariables>) => {
+  const resumePlayback = useResumePlaybackMutation()
   const totalTracks = playlist.tracks.pageInfo.total
   const coverPhoto = playlist.images[0]
 
@@ -142,7 +146,17 @@ export const Success = ({
       </PageHeader>
       <PageContent>
         <div>
-          <PlayButton playing={false} size="3.5rem" variant="primary" />
+          <PlayButton
+            playing={false}
+            size="3.5rem"
+            variant="primary"
+            onClick={() => {
+              resumePlayback({
+                contextUri: playlist.uri,
+                uri: playlist.tracks.edges[0].track.uri,
+              })
+            }}
+          />
         </div>
         <Table
           data={playlist.tracks.edges}
