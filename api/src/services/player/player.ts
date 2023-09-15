@@ -81,7 +81,6 @@ export const resumePlayback: MutationResolvers['resumePlayback'] = async ({
       contextUri: input?.contextUri,
       currentTrackUri: input?.uri,
       lastPlayedAt: new Date(),
-      progressMs: input?.uri || input?.contextUri ? 0 : undefined,
       user: {
         connect: { id: currentUser.id },
       },
@@ -94,6 +93,7 @@ export const resumePlayback: MutationResolvers['resumePlayback'] = async ({
       contextUri: input?.contextUri,
       currentTrackUri: input?.uri,
       lastPlayedAt: new Date(),
+      progressMs: input?.uri || input?.contextUri ? 0 : undefined,
     },
   })
 
