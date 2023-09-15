@@ -26,6 +26,9 @@ import ExplicitBadge from '../ExplicitBadge'
 import LikeButton from '../LikeButton'
 import Table from '../Table'
 import TrackNumberColumn from '../TrackNumberColumn/TrackNumberColumn'
+import { useFragment } from '@apollo/client'
+import { useResumePlaybackMutation } from 'src/mutations/useResumePlaybackMutation'
+import { usePausePlaybackMutation } from 'src/mutations/usePausePlaybackMutation'
 
 export const QUERY = gql`
   query FindAlbumQuery($id: ID!) {
@@ -33,6 +36,7 @@ export const QUERY = gql`
       id
       albumType
       name
+      uri
       releaseDate {
         date
         precision
@@ -59,6 +63,7 @@ export const QUERY = gql`
             durationMs
             explicit
             name
+            uri
             artists {
               id
               name
@@ -66,6 +71,15 @@ export const QUERY = gql`
           }
         }
       }
+    }
+  }
+`
+
+const PLAYBACK_STATE_FRAGMENT = gql`
+  fragment PlaylistCell_playbackState on PlaybackState {
+    isPlaying
+    context {
+      uri
     }
   }
 `
@@ -120,8 +134,17 @@ export const Failure = ({
 export const Success = ({
   album,
 }: CellSuccessProps<FindAlbumQuery, FindAlbumQueryVariables>) => {
+  const { data: playbackState } = useFragment({
+    fragment: PLAYBACK_STATE_FRAGMENT,
+    from: { __typename: 'PlaybackState' },
+  })
+  const resumePlayback = useResumePlaybackMutation()
+  const pausePlayback = usePausePlaybackMutation()
   const coverPhoto = album.images[0]
   const totalTracks = album.tracks?.pageInfo.total ?? 0
+  const isPlaying = playbackState?.isPlaying ?? false
+  const isCurrentContext = playbackState?.context?.uri === album.uri
+  const isPlayingAlbum = isCurrentContext && isPlaying
 
   return (
     <PageContainer bgColor={coverPhoto.vibrantColor}>
@@ -145,7 +168,23 @@ export const Success = ({
       </PageHeader>
       <PageContent>
         <div className="flex gap-4">
-          <PlayButton variant="primary" size="3.5rem" playing={false} />
+          <PlayButton
+            variant="primary"
+            size="3.5rem"
+            playing={isPlayingAlbum}
+            onClick={() => {
+              if (isPlayingAlbum) {
+                pausePlayback()
+              } else if (isCurrentContext) {
+                resumePlayback()
+              } else {
+                resumePlayback({
+                  contextUri: album.uri,
+                  uri: album.tracks?.edges[0].node.uri,
+                })
+              }
+            }}
+          />
         </div>
         <Table
           columns={columns}
