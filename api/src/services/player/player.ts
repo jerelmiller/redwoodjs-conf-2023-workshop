@@ -80,6 +80,8 @@ export const resumePlayback: MutationResolvers['resumePlayback'] = async ({
       isPlaying: true,
       contextUri: input?.contextUri,
       currentTrackUri: input?.uri,
+      lastPlayedAt: new Date(),
+      progressMs: input?.uri || input?.contextUri ? 0 : undefined,
       user: {
         connect: { id: currentUser.id },
       },
@@ -91,6 +93,7 @@ export const resumePlayback: MutationResolvers['resumePlayback'] = async ({
       isPlaying: true,
       contextUri: input?.contextUri,
       currentTrackUri: input?.uri,
+      lastPlayedAt: new Date(),
     },
   })
 
@@ -102,11 +105,11 @@ export const resumePlayback: MutationResolvers['resumePlayback'] = async ({
 export const pausePlayback: MutationResolvers['pausePlayback'] = async () => {
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const currentUser = context.currentUser!
-  const exists = await db.playbackState
-    .findFirst({ where: { userId: currentUser.id } })
-    .then(Boolean)
+  const playbackState = await db.playbackState.findFirst({
+    where: { userId: currentUser.id },
+  })
 
-  if (!exists) {
+  if (!playbackState) {
     throw new UserInputError('You are not playing anything')
   }
 
@@ -114,6 +117,11 @@ export const pausePlayback: MutationResolvers['pausePlayback'] = async () => {
     where: { userId: currentUser.id },
     data: {
       isPlaying: false,
+      progressMs: playbackState.isPlaying
+        ? new Date().getTime() -
+          playbackState.lastPlayedAt!.getTime() +
+          playbackState.progressMs
+        : undefined,
     },
   })
 
