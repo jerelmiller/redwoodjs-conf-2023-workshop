@@ -8,6 +8,7 @@ import PageContainer from 'src/components/PageContainer'
 import PageContent from 'src/components/PageContent'
 import PageTitle from 'src/components/PageTitle'
 import TileGrid from 'src/components/TileGrid'
+import Skeleton from 'src/components/Skeleton'
 
 export const QUERY = gql`
   query FindArtistQuery($id: ID!) {
@@ -44,7 +45,19 @@ export const QUERY = gql`
   }
 `
 
-export const Loading = () => <div>Loading...</div>
+export const Loading = () => (
+  <PageContainer>
+    <header
+      className={cx(
+        'relative mt-[calc(-1*var(--main-header--height))] flex h-[40vh] flex-col items-start justify-end gap-4 bg-cover bg-no-repeat p-[var(--main-content--padding)] pt-[var(--main-header--height)] [background-position:50%_15%] [&>*]:z-[1]',
+        'before:absolute before:inset-0 before:[background:linear-gradient(rgba(0,0,0,0)_-30%,#181818)]'
+      )}
+    >
+      <Skeleton.Heading level={1} width="65%" />
+      <Skeleton.Text width="45%" />
+    </header>
+  </PageContainer>
+)
 
 export const Empty = () => <div>Empty</div>
 
