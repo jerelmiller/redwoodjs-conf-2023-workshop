@@ -10,6 +10,22 @@ export const typePolicies: TypePolicies = {
   Player: {
     keyFields: [],
   },
+  Playlist: {
+    fields: {
+      tracks: {
+        keyArgs: false,
+      },
+    },
+  },
+  PlaylistTrackConnection: {
+    fields: {
+      edges: {
+        merge(existing = [], incoming = []) {
+          return [...existing, ...incoming]
+        },
+      },
+    },
+  },
   PlaybackState: {
     keyFields: [],
   },
