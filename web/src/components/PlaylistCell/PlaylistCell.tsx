@@ -228,12 +228,13 @@ export const Success = ({
                   <TableCell>
                     <div className="flex items-end gap-2">
                       <CoverPhoto
+                        className="flex-shrink-0"
                         image={track.album.images.at(-1)}
                         size="2.5rem"
                       />
                       <div className="flex flex-col">
                         <span
-                          className={cx('text-base text-primary', {
+                          className={cx('line-clamp-1 text-base text-primary', {
                             'text-theme': playbackState.track?.id === track.id,
                           })}
                         >
