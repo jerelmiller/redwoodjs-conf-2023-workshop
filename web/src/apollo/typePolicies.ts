@@ -14,26 +14,24 @@ export const typePolicies: TypePolicies = {
     fields: {
       tracks: {
         keyArgs: false,
-      },
-    },
-  },
-  PlaylistTrackConnection: {
-    fields: {
-      edges: {
-        merge(existing = [], incoming = [], { args }) {
-          const edges = existing.slice(0)
+        merge(existing, incoming, { args, mergeObjects }) {
+          const result = {
+            __typename: 'PlaylistTrackConnection',
+            pageInfo: mergeObjects(existing?.pageInfo ?? {}, incoming.pageInfo),
+            edges: existing?.edges.slice(0) ?? [],
+          }
 
           if (args) {
             const { offset = 0 } = args
 
-            for (let i = 0; i < incoming.length; i++) {
-              edges[offset + i] = incoming[i]
+            for (let i = 0; i < incoming.edges.length; i++) {
+              result.edges[offset + i] = incoming.edges[i]
             }
           } else {
-            edges.push(...incoming)
+            result.edges.push(...incoming.edges)
           }
 
-          return edges
+          return result
         },
       },
     },
