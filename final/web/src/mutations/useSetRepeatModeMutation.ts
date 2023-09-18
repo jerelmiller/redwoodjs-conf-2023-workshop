@@ -2,7 +2,7 @@ import { useCallback } from 'react'
 
 import { TypedDocumentNode } from '@apollo/client'
 import {
-  RepeatMode,
+  SetRepeatModeInput,
   SetRepeatModeMutation,
   SetRepeatModeMutationVariables,
 } from 'types/graphql'
@@ -13,8 +13,8 @@ const SET_REPEAT_MODE_MUTATION: TypedDocumentNode<
   SetRepeatModeMutation,
   SetRepeatModeMutationVariables
 > = gql`
-  mutation SetRepeatModeMutation($state: RepeatMode!) {
-    setRepeatMode(state: $state) {
+  mutation SetRepeatModeMutation($input: SetRepeatModeInput!) {
+    setRepeatMode(input: $input) {
       playbackState {
         repeatState
       }
@@ -26,8 +26,8 @@ export const useSetRepeatModeMutation = () => {
   const [execute] = useMutation(SET_REPEAT_MODE_MUTATION)
 
   return useCallback(
-    (state: RepeatMode) => {
-      return execute({ variables: { state } })
+    (input: SetRepeatModeInput) => {
+      return execute({ variables: { input } })
     },
     [execute]
   )

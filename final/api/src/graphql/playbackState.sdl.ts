@@ -71,9 +71,27 @@ export const schema = gql`
     playbackState: PlaybackState
   }
 
+  input SetRepeatModeInput {
+    """
+    \`TRACK\`, \`CONTEXT\` or \`OFF\`.
+    \`TRACK\` will repeat the current track.
+    \`CONTEXT\` will repeat the current context.
+    \`OFF\` will turn repeat off.
+    """
+    state: RepeatMode!
+  }
+
   type SetRepeatModePayload {
     "The updated playback state after setting repeat mode."
     playbackState: PlaybackState
+  }
+
+  input ShufflePlaybackInput {
+    """
+    \`true\`: Shuffle user's playback.
+    \`false\`: Do not shuffle user's playback.
+    """
+    state: Boolean!
   }
 
   type ShufflePlaybackPayload {
@@ -96,25 +114,12 @@ export const schema = gql`
     """
     Set the repeat mode for the user's playback.
     """
-    setRepeatMode(
-      """
-      \`TRACK\`, \`CONTEXT\` or \`OFF\`.
-      \`TRACK\` will repeat the current track.
-      \`CONTEXT\` will repeat the current context.
-      \`OFF\` will turn repeat off.
-      """
-      state: RepeatMode!
-    ): SetRepeatModePayload @requireAuth
+    setRepeatMode(input: SetRepeatModeInput!): SetRepeatModePayload @requireAuth
 
     """
     Toggle shuffle on or off for user’s playback.
     """
-    shufflePlayback(
-      """
-      \`true\`: Shuffle user's playback.
-      \`false\`: Do not shuffle user's playback.
-      """
-      state: Boolean!
-    ): ShufflePlaybackPayload @requireAuth
+    shufflePlayback(input: ShufflePlaybackInput!): ShufflePlaybackPayload
+      @requireAuth
   }
 `

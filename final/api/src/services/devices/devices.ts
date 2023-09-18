@@ -4,9 +4,7 @@ import { UserInputError } from '@redwoodjs/graphql-server'
 
 import { db } from 'src/lib/db'
 
-export const setVolume: MutationResolvers['setVolume'] = async ({
-  volumePercent,
-}) => {
+export const setVolume: MutationResolvers['setVolume'] = async ({ input }) => {
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const currentUser = context.currentUser!
   const device = await db.device.findFirst({
@@ -19,7 +17,7 @@ export const setVolume: MutationResolvers['setVolume'] = async ({
 
   const updatedDevice = await db.device.update({
     where: { id: device.id },
-    data: { volumePercent },
+    data: { volumePercent: input.volumePercent },
   })
 
   return { device: updatedDevice }

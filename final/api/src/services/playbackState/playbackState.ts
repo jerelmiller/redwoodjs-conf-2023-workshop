@@ -144,7 +144,7 @@ export const pausePlayback: MutationResolvers['pausePlayback'] = async () => {
 }
 
 export const setRepeatMode: MutationResolvers['setRepeatMode'] = async ({
-  state,
+  input,
 }) => {
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const currentUser = context.currentUser!
@@ -159,7 +159,7 @@ export const setRepeatMode: MutationResolvers['setRepeatMode'] = async ({
   const playbackState = await db.playbackState.upsert({
     where: { userId: currentUser.id },
     create: {
-      repeatMode: state,
+      repeatMode: input.state,
       user: {
         connect: { id: currentUser.id },
       },
@@ -168,7 +168,7 @@ export const setRepeatMode: MutationResolvers['setRepeatMode'] = async ({
       },
     },
     update: {
-      repeatMode: state,
+      repeatMode: input.state,
     },
   })
 
@@ -178,7 +178,7 @@ export const setRepeatMode: MutationResolvers['setRepeatMode'] = async ({
 }
 
 export const shufflePlayback: MutationResolvers['shufflePlayback'] = async ({
-  state,
+  input,
 }) => {
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const currentUser = context.currentUser!
@@ -193,7 +193,7 @@ export const shufflePlayback: MutationResolvers['shufflePlayback'] = async ({
   const playbackState = await db.playbackState.upsert({
     where: { userId: currentUser.id },
     create: {
-      shuffled: state,
+      shuffled: input.state,
       user: {
         connect: { id: currentUser.id },
       },
@@ -202,7 +202,7 @@ export const shufflePlayback: MutationResolvers['shufflePlayback'] = async ({
       },
     },
     update: {
-      shuffled: state,
+      shuffled: input.state,
     },
   })
 

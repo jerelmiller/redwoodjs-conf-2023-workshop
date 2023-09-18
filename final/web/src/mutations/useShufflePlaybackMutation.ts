@@ -2,6 +2,7 @@ import { useCallback } from 'react'
 
 import { TypedDocumentNode } from '@apollo/client'
 import {
+  ShufflePlaybackInput,
   ShufflePlaybackMutation,
   ShufflePlaybackMutationVariables,
 } from 'types/graphql'
@@ -12,8 +13,8 @@ const SHUFFLE_PLAYBACK_MUTATION: TypedDocumentNode<
   ShufflePlaybackMutation,
   ShufflePlaybackMutationVariables
 > = gql`
-  mutation ShufflePlaybackMutation($state: Boolean!) {
-    shufflePlayback(state: $state) {
+  mutation ShufflePlaybackMutation($input: ShufflePlaybackInput!) {
+    shufflePlayback(input: $input) {
       playbackState {
         shuffleState
       }
@@ -25,8 +26,8 @@ export const useShufflePlaybackMutation = () => {
   const [execute] = useMutation(SHUFFLE_PLAYBACK_MUTATION)
 
   return useCallback(
-    (shuffled: boolean) => {
-      return execute({ variables: { state: shuffled } })
+    (input: ShufflePlaybackInput) => {
+      return execute({ variables: { input } })
     },
     [execute]
   )

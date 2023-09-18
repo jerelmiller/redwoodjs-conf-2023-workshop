@@ -17,7 +17,7 @@ const ShuffleControl = ({ disabled, shuffled }: ShuffleControlProps) => {
       active={shuffled}
       disabled={disabled}
       tooltip="Enable shuffle"
-      onClick={() => shufflePlayback(!shuffled)}
+      onClick={() => shufflePlayback({ state: !shuffled })}
     >
       <Shuffle size="1.25rem" />
     </PlaybarControlButton>
