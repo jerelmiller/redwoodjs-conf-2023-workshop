@@ -5,6 +5,7 @@ import cx from 'classnames'
 
 interface ProgressBarProps {
   animate?: boolean
+  disabled?: boolean
   className?: string
   max: number
   value: number
@@ -18,6 +19,7 @@ interface StyleProps extends CSSProperties {
 
 const ProgressBar = ({
   animate = true,
+  disabled,
   className,
   max,
   onChange,
@@ -31,13 +33,13 @@ const ProgressBar = ({
       className={cx(
         'relative block h-[0.375rem] w-[var(--progress-bar--width,100%)] overflow-hidden rounded-2xl border border-solid border-transparent bg-surface-active',
         className,
-        { 'cursor-pointer': onChange }
+        { 'cursor-pointer': onChange, 'cursor-not-allowed': disabled }
       )}
       max={max}
       value={value}
       style={{ '--progress-bar--width': width } as StyleProps}
       onClick={(event) => {
-        if (!onChange || max === 0) {
+        if (!onChange || max === 0 || disabled) {
           return
         }
 
