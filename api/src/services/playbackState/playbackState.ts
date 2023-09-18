@@ -3,9 +3,46 @@ import {
   PlaybackStateContextType,
   PlaybackStateRelationResolvers,
   RepeatMode,
+  MutationResolvers,
 } from 'types/graphql'
 
+import { UserInputError } from '@redwoodjs/graphql-server'
+
 import { db } from 'src/lib/db'
+
+export const setRepeatMode: MutationResolvers['setRepeatMode'] = async ({
+  mode,
+}) => {
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  const currentUser = context.currentUser!
+  const device = await db.device.findFirst({
+    where: { userId: currentUser.id },
+  })
+
+  if (!device) {
+    throw new UserInputError('No device found.')
+  }
+
+  const playbackState = await db.playbackState.upsert({
+    where: { id: currentUser.id },
+    create: {
+      repeatMode: mode,
+      user: {
+        connect: { id: currentUser.id },
+      },
+      device: {
+        connect: { id: device.id },
+      },
+    },
+    update: {
+      repeatMode: mode,
+    },
+  })
+
+  return {
+    playbackState,
+  }
+}
 
 export const PlaybackState: PlaybackStateRelationResolvers = {
   context: (_, { root }) => root.contextUri,

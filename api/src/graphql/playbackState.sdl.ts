@@ -47,4 +47,24 @@ export const schema = gql`
     ALBUM
     PLAYLIST
   }
+
+  type SetRepeatModePayload {
+    "The updated playback state"
+    playbackState: PlaybackState
+  }
+
+  type Mutation {
+    """
+    Set the repeat mode for the user's playback.
+    """
+    setRepeatMode(
+      """
+      \`TRACK\`, \`CONTEXT\` or \`OFF\`.
+      \`TRACK\` will repeat the current track.
+      \`CONTEXT\` will repeat the current context.
+      \`OFF\` will turn repeat off.
+      """
+      mode: RepeatMode!
+    ): SetRepeatModePayload @requireAuth
+  }
 `
