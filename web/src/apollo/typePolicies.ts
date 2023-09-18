@@ -14,6 +14,8 @@ export const typePolicies: TypePolicies = {
     fields: {
       tracks: {
         keyArgs: false,
+        // Define this on the `tracks` field instead of the `PlaylistTrackConnection`
+        // type because we need access to `args`
         merge(existing, incoming, { args, mergeObjects }) {
           const result = {
             __typename: 'PlaylistTrackConnection',
@@ -21,6 +23,8 @@ export const typePolicies: TypePolicies = {
             edges: existing?.edges.slice(0) ?? [],
           }
 
+          // Allows for loading data on an offset that might not be the end of
+          // the list
           if (args) {
             const { offset = 0 } = args
 
