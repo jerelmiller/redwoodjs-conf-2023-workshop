@@ -39,6 +39,7 @@ export const Success = ({
   return (
     <ProgressBar
       animate={false}
+      disabled={!activeDevice}
       value={activeDevice?.volumePercent ?? 0}
       max={100}
       width="100px"

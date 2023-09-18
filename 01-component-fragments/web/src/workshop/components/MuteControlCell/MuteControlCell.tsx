@@ -36,10 +36,12 @@ export const Success = ({
   me,
 }: CellSuccessProps<MuteControlCellQuery, MuteControlCellQueryVariables>) => {
   const setVolume = useSetVolumeMutation()
-  const volumePercent = me.player.playbackState?.device.volumePercent ?? 0
+  const activeDevice = me.player.playbackState?.device
+  const volumePercent = activeDevice?.volumePercent ?? 0
 
   return (
     <PlaybarControlButton
+      disabled={!activeDevice}
       tooltip={volumePercent === 0 ? 'Unmute' : 'Mute'}
       onClick={() =>
         setVolume({ volumePercent: volumePercent === 0 ? 100 : 0 })
