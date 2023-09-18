@@ -8,7 +8,6 @@ import type { CellSuccessProps, CellFailureProps } from '@redwoodjs/web'
 import CoverPhoto from 'src/components/CoverPhoto'
 import DelimitedList from 'src/components/DelimitedList'
 import LikeButton from 'src/components/LikeButton'
-import ProgressBar from 'src/components/ProgressBar'
 import QueueControl from 'src/components/QueueControl'
 import Skeleton from 'src/components/Skeleton'
 import SkipToNextControl from 'src/components/SkipToNextControl'
@@ -19,6 +18,7 @@ import PlaybackProgressBarCell from 'src/workshop/components/PlaybackProgressBar
 import PlayControlCell from 'src/workshop/components/PlayControlCell'
 import RepeatControlCell from 'src/workshop/components/RepeatControlCell'
 import ShuffleControlCell from 'src/workshop/components/ShuffleControlCell'
+import VolumeBarControlCell from 'src/workshop/components/VolumeBarControlCell'
 
 export const QUERY = gql`
   query PlaybarQuery {
@@ -139,12 +139,7 @@ export const Success = ({
 
           <div className="flex items-center gap-1">
             <MuteControlCell />
-            <ProgressBar
-              animate={false}
-              value={activeDevice?.volumePercent ?? 0}
-              max={100}
-              width="100px"
-            />
+            <VolumeBarControlCell />
           </div>
         </div>
       </div>
