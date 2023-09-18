@@ -24,6 +24,7 @@ import ProgressBar from 'src/components/ProgressBar'
 import Skeleton from 'src/components/Skeleton'
 import SkipToNextControl from 'src/components/SkipToNextControl'
 import SkipToPreviousControl from 'src/components/SkipToPreviousControl'
+import PlaybackProgressBarCell from 'src/workshop/components/PlaybackProgressBarCell'
 import PlayControlCell from 'src/workshop/components/PlayControlCell'
 import RepeatControlCell from 'src/workshop/components/RepeatControlCell'
 import ShuffleControlCell from 'src/workshop/components/ShuffleControlCell'
@@ -51,7 +52,6 @@ export const QUERY = gql`
           track {
             id
             name
-            durationMs
             album {
               id
               images {
@@ -178,11 +178,7 @@ export const Success = ({
             <RepeatControlCell />
           </div>
 
-          <PlaybackProgressBar
-            isPlaying={isPlaying}
-            durationMs={currentTrack?.durationMs ?? 0}
-            progressMs={playbackState?.progressMs ?? 0}
-          />
+          <PlaybackProgressBarCell />
         </div>
         <div className="flex items-center justify-end gap-4">
           <Link
