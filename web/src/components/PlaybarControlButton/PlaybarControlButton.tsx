@@ -7,7 +7,7 @@ import Tooltip from 'src/components/Tooltip'
 interface PlaybarControlButtonProps {
   active?: boolean
   children?: ReactNode
-  disallowed: boolean
+  disabled?: boolean
   tooltip: string
   onClick?: () => void
 }
@@ -15,7 +15,7 @@ interface PlaybarControlButtonProps {
 const PlaybarControlButton = forwardRef<
   HTMLButtonElement,
   PlaybarControlButtonProps
->(({ active, children, disallowed, onClick, tooltip }, ref) => {
+>(({ active, children, disabled, onClick, tooltip }, ref) => {
   return (
     <Tooltip content={tooltip}>
       <button
@@ -27,7 +27,7 @@ const PlaybarControlButton = forwardRef<
               active,
           }
         )}
-        disabled={disallowed}
+        disabled={disabled}
         onClick={onClick}
       >
         {children}

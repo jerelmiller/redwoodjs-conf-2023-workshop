@@ -36,7 +36,7 @@ const RepeatControl = ({ repeatState }: RepeatControlProps) => {
   return (
     <PlaybarControlButton
       active={repeatState !== 'OFF'}
-      disallowed={false}
+      disabled={false}
       tooltip={TOOLTIP[repeatState]}
       onClick={() => setRepeatMode(NEXT_REPEAT_MODE[repeatState])}
     >

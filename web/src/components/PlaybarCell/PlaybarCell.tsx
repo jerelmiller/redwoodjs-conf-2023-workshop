@@ -87,12 +87,12 @@ export const Loading = () => (
         <div className="flex items-center justify-center gap-5">
           <PlaybarControlButton
             active={false}
-            disallowed={true}
+            disabled={true}
             tooltip="Enable shuffle"
           >
             <Shuffle size="1.25rem" />
           </PlaybarControlButton>
-          <PlaybarControlButton disallowed tooltip="Previous">
+          <PlaybarControlButton disabled tooltip="Previous">
             <SkipBack fill="currentColor" />
           </PlaybarControlButton>
           <PlayButton
@@ -101,24 +101,24 @@ export const Loading = () => (
             size="2.5rem"
             variant="secondary"
           />
-          <PlaybarControlButton disallowed tooltip="Next">
+          <PlaybarControlButton disabled tooltip="Next">
             <SkipForward fill="currentColor" />
           </PlaybarControlButton>
-          <PlaybarControlButton active={false} disallowed tooltip="">
+          <PlaybarControlButton active={false} disabled tooltip="">
             <RepeatIcon />
           </PlaybarControlButton>
         </div>
         <PlaybackProgressBar durationMs={0} progressMs={0} isPlaying={false} />
       </div>
       <div className="flex items-center justify-end gap-4">
-        <PlaybarControlButton active={false} disallowed tooltip="Queue">
+        <PlaybarControlButton active={false} disabled tooltip="Queue">
           <List strokeWidth={1.5} />
         </PlaybarControlButton>
-        <PlaybarControlButton disallowed tooltip="Connect to a device">
+        <PlaybarControlButton disabled tooltip="Connect to a device">
           <Laptop2 strokeWidth={1.5} />
         </PlaybarControlButton>
         <div className="flex items-center gap-2">
-          <PlaybarControlButton disallowed tooltip="Mute">
+          <PlaybarControlButton disabled tooltip="Mute">
             <Volume2 />
           </PlaybarControlButton>
           <ProgressBar animate={false} value={100} max={100} width="100px" />
@@ -189,12 +189,12 @@ export const Success = ({
           <div className="flex items-center justify-center gap-5">
             <PlaybarControlButton
               active={shuffled}
-              disallowed={!playbackState}
+              disabled={!playbackState}
               tooltip={shuffled ? 'Disable shuffle' : 'Enable shuffle'}
             >
               <Shuffle size="1.25rem" />
             </PlaybarControlButton>
-            <PlaybarControlButton disallowed tooltip="Previous">
+            <PlaybarControlButton disabled tooltip="Previous">
               <SkipBack fill="currentColor" />
             </PlaybarControlButton>
             <PlayButton
@@ -206,7 +206,7 @@ export const Success = ({
                 isPlaying ? pausePlayback() : resumePlayback()
               }}
             />
-            <PlaybarControlButton disallowed tooltip="Next">
+            <PlaybarControlButton disabled tooltip="Next">
               <SkipForward fill="currentColor" />
             </PlaybarControlButton>
             <RepeatControl repeatState={repeatState} />
@@ -230,7 +230,7 @@ export const Success = ({
           >
             <PlaybarControlButton
               active={false}
-              disallowed={false}
+              disabled={false}
               tooltip="Queue"
             >
               <List strokeWidth={1.5} />
@@ -272,7 +272,7 @@ export const Success = ({
             }
           >
             <PlaybarControlButton
-              disallowed={false}
+              disabled={false}
               tooltip="Connect to a device"
             >
               <Laptop2 strokeWidth={1.5} />
@@ -280,7 +280,7 @@ export const Success = ({
           </Popover>
           <div className="flex items-center gap-1">
             <PlaybarControlButton
-              disallowed={false}
+              disabled={false}
               tooltip={activeDevice?.volumePercent === 0 ? 'Unmute' : 'Mute'}
             >
               <Volume2 />
