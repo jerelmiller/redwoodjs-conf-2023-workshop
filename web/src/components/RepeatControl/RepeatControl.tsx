@@ -8,6 +8,7 @@ import { useSetRepeatModeMutation } from 'src/mutations/useSetRepeatModeMutation
 import PlaybarControlButton from '../PlaybarControlButton'
 
 interface RepeatControlProps {
+  disabled?: boolean
   repeatState: RepeatMode
 }
 
@@ -29,14 +30,14 @@ const REPEAT_ICON: Record<RepeatMode, ElementType> = {
   TRACK: Repeat1,
 }
 
-const RepeatControl = ({ repeatState }: RepeatControlProps) => {
+const RepeatControl = ({ disabled, repeatState }: RepeatControlProps) => {
   const setRepeatMode = useSetRepeatModeMutation()
   const RepeatIcon = REPEAT_ICON[repeatState]
 
   return (
     <PlaybarControlButton
       active={repeatState !== 'OFF'}
-      disabled={false}
+      disabled={disabled}
       tooltip={TOOLTIP[repeatState]}
       onClick={() => setRepeatMode(NEXT_REPEAT_MODE[repeatState])}
     >

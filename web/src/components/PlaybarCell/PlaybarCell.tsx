@@ -86,13 +86,7 @@ export const Loading = () => (
       </div>
       <div className="flex flex-col gap-2">
         <div className="flex items-center justify-center gap-5">
-          <PlaybarControlButton
-            active={false}
-            disabled={true}
-            tooltip="Enable shuffle"
-          >
-            <Shuffle size="1.25rem" />
-          </PlaybarControlButton>
+          <ShuffleControl disabled shuffled={false} />
           <PlaybarControlButton disabled tooltip="Previous">
             <SkipBack fill="currentColor" />
           </PlaybarControlButton>
@@ -105,9 +99,7 @@ export const Loading = () => (
           <PlaybarControlButton disabled tooltip="Next">
             <SkipForward fill="currentColor" />
           </PlaybarControlButton>
-          <PlaybarControlButton active={false} disabled tooltip="">
-            <RepeatIcon />
-          </PlaybarControlButton>
+          <RepeatControl disabled repeatState="OFF" />
         </div>
         <PlaybackProgressBar durationMs={0} progressMs={0} isPlaying={false} />
       </div>
