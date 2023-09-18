@@ -1,9 +1,7 @@
 import cx from 'classnames'
 import {
-  Shuffle,
   SkipBack,
   SkipForward,
-  RepeatIcon,
   List,
   Laptop2,
   Volume2,
