@@ -22,6 +22,8 @@ import PlayButton from 'src/components/PlayButton'
 import Popover from 'src/components/Popover'
 import ProgressBar from 'src/components/ProgressBar'
 import Skeleton from 'src/components/Skeleton'
+import SkipToNextControl from 'src/components/SkipToNextControl'
+import SkipToPreviousControl from 'src/components/SkipToPreviousControl'
 import { usePausePlaybackMutation } from 'src/mutations/usePausePlaybackMutation'
 import { useResumePlaybackMutation } from 'src/mutations/useResumePlaybackMutation'
 import RepeatControlCell from 'src/workshop/components/RepeatControlCell'
@@ -173,9 +175,7 @@ export const Success = ({
         <div className="flex flex-col gap-2">
           <div className="flex items-center justify-center gap-5">
             <ShuffleControlCell />
-            <PlaybarControlButton disabled tooltip="Previous">
-              <SkipBack fill="currentColor" />
-            </PlaybarControlButton>
+            <SkipToPreviousControl />
             <PlayButton
               disabled={false}
               size="2.5rem"
@@ -185,9 +185,7 @@ export const Success = ({
                 isPlaying ? pausePlayback() : resumePlayback()
               }}
             />
-            <PlaybarControlButton disabled tooltip="Next">
-              <SkipForward fill="currentColor" />
-            </PlaybarControlButton>
+            <SkipToNextControl />
             <RepeatControlCell />
           </div>
 
