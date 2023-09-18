@@ -7,7 +7,8 @@ import App from './App'
  * rather than replacing it.
  * https://reactjs.org/docs/react-dom-client.html#hydrateroot
  */
-const redwoodAppElement = document.getElementById('redwood-app')
+// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+const redwoodAppElement = document.getElementById('redwood-app')!
 
 if (redwoodAppElement.children?.length > 0) {
   hydrateRoot(redwoodAppElement, <App />)
