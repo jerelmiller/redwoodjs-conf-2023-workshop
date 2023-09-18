@@ -16,6 +16,7 @@ export const QUERY = gql`
       player {
         playbackState {
           device {
+            id
             type
           }
         }
