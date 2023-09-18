@@ -14,6 +14,7 @@ export const QUERY = gql`
         playbackState {
           isPlaying
           progressMs
+          timestamp
           track {
             id
             durationMs
@@ -25,7 +26,14 @@ export const QUERY = gql`
 `
 
 export const Loading = () => {
-  return <PlaybackProgressBar isPlaying={false} durationMs={0} progressMs={0} />
+  return (
+    <PlaybackProgressBar
+      isPlaying={false}
+      durationMs={0}
+      progressMs={0}
+      timestamp={Date.now()}
+    />
+  )
 }
 
 export const Success = ({
@@ -41,6 +49,7 @@ export const Success = ({
       isPlaying={playbackState?.isPlaying ?? false}
       durationMs={playbackState?.track?.durationMs ?? 0}
       progressMs={playbackState?.progressMs ?? 0}
+      timestamp={playbackState?.timestamp}
     />
   )
 }

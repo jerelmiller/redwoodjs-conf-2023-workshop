@@ -9,6 +9,7 @@ interface PlaybackProgressBarProps {
   isPlaying: boolean
   durationMs: number
   progressMs: number
+  timestamp: number
 }
 
 const PLAYBACK_PROGRESS_FRAGMENT = gql`
@@ -22,6 +23,9 @@ const PlaybackProgressBar = ({
   isPlaying,
   durationMs,
   progressMs,
+  // Not actually consumed in this component, but needed for the workshop to
+  // ensure we can read the fragment from the cache and simulate time passing
+  timestamp: _timestamp,
 }: PlaybackProgressBarProps) => {
   const client = useApolloClient()
 
