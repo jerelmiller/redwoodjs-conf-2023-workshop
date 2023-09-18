@@ -64,7 +64,7 @@ export const Success = ({
     <PlaybarControlButton
       active={repeatState !== 'OFF'}
       tooltip={TOOLTIP[repeatState]}
-      onClick={() => setRepeatMode(NEXT_REPEAT_MODE[repeatState])}
+      onClick={() => setRepeatMode({ state: NEXT_REPEAT_MODE[repeatState] })}
     >
       <RepeatIcon />
     </PlaybarControlButton>

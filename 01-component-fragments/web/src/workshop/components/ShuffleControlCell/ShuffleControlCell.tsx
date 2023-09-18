@@ -42,7 +42,7 @@ export const Success = ({
     <PlaybarControlButton
       active={shuffled}
       tooltip="Enable shuffle"
-      onClick={() => shufflePlayback(!shuffled)}
+      onClick={() => shufflePlayback({ state: !shuffled })}
     >
       <Shuffle size="1.25rem" />
     </PlaybarControlButton>
