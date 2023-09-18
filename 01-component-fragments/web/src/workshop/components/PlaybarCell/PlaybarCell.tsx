@@ -2,16 +2,14 @@ import cx from 'classnames'
 import { Volume1 } from 'lucide-react'
 import type { PlaybarQuery, PlaybarQueryVariables } from 'types/graphql'
 
-import { Link, routes } from '@redwoodjs/router'
 import type { CellSuccessProps, CellFailureProps } from '@redwoodjs/web'
 
-import CoverPhoto from 'src/components/CoverPhoto'
-import DelimitedList from 'src/components/DelimitedList'
 import LikeButton from 'src/components/LikeButton'
 import QueueControl from 'src/components/QueueControl'
 import Skeleton from 'src/components/Skeleton'
 import SkipToNextControl from 'src/components/SkipToNextControl'
 import SkipToPreviousControl from 'src/components/SkipToPreviousControl'
+import CurrentTrackDetailsCell from 'src/workshop/components/CurrentTrackDetailsCell'
 import DeviceControlCell from 'src/workshop/components/DeviceControlCell'
 import MuteControlCell from 'src/workshop/components/MuteControlCell'
 import PlaybackProgressBarCell from 'src/workshop/components/PlaybackProgressBarCell'
@@ -27,31 +25,10 @@ export const QUERY = gql`
         devices {
           id
           name
-          type
-          volumePercent
         }
         playbackState {
-          progressMs
-          timestamp
-          context {
-            uri
-          }
           device {
             id
-          }
-          track {
-            id
-            name
-            album {
-              id
-              images {
-                url
-              }
-            }
-            artists {
-              id
-              name
-            }
           }
         }
       }
@@ -84,8 +61,6 @@ export const Success = ({
   me,
 }: CellSuccessProps<PlaybarQuery, PlaybarQueryVariables>) => {
   const playbackState = me.player.playbackState
-  const currentTrack = playbackState?.track
-  const coverPhoto = currentTrack?.album.images[0]
 
   const activeDevice = me.player.devices.find(
     (device) => device.id === playbackState?.device.id
@@ -94,34 +69,7 @@ export const Success = ({
   return (
     <footer className="flex flex-col [grid-area:playbar]">
       <div className="grid grid-cols-[30%_1fr_30%] items-center px-6 py-4 text-primary">
-        <div className="flex items-center gap-4">
-          <CoverPhoto size="4rem" image={coverPhoto} />
-          {currentTrack && (
-            <>
-              <div className="flex flex-col gap-1">
-                <Link
-                  className="text-sm"
-                  to={routes.album({ id: currentTrack.album.id })}
-                >
-                  {currentTrack.name}
-                </Link>
-                <span className="text-xs text-muted">
-                  <DelimitedList className="text-xs text-muted" delimiter=", ">
-                    {currentTrack.artists.map((artist) => (
-                      <Link
-                        key={artist.id}
-                        to={routes.artist({ id: artist.id })}
-                      >
-                        {artist.name}
-                      </Link>
-                    ))}
-                  </DelimitedList>
-                </span>
-              </div>
-              <LikeButton liked={false} size="1.25rem" />
-            </>
-          )}
-        </div>
+        <CurrentTrackDetailsCell />
         <div className="flex flex-col gap-2">
           <div className="flex items-center justify-center gap-5">
             <ShuffleControlCell />
