@@ -24,8 +24,7 @@ import ProgressBar from 'src/components/ProgressBar'
 import Skeleton from 'src/components/Skeleton'
 import SkipToNextControl from 'src/components/SkipToNextControl'
 import SkipToPreviousControl from 'src/components/SkipToPreviousControl'
-import { usePausePlaybackMutation } from 'src/mutations/usePausePlaybackMutation'
-import { useResumePlaybackMutation } from 'src/mutations/useResumePlaybackMutation'
+import PlayControlCell from 'src/workshop/components/PlayControlCell'
 import RepeatControlCell from 'src/workshop/components/RepeatControlCell'
 import ShuffleControlCell from 'src/workshop/components/ShuffleControlCell'
 
@@ -118,7 +117,7 @@ export const Loading = () => (
   </footer>
 )
 
-export const Empty = () => <div>Empty</div>
+export const Empty = () => null
 
 export const Failure = ({ error }: CellFailureProps<PlaybarQueryVariables>) => (
   <div style={{ color: 'red' }}>Error: {error?.message}</div>
@@ -128,8 +127,6 @@ export const Success = ({
   me,
 }: CellSuccessProps<PlaybarQuery, PlaybarQueryVariables>) => {
   const playbackState = me.player.playbackState
-  const resumePlayback = useResumePlaybackMutation()
-  const pausePlayback = usePausePlaybackMutation()
   const isPlaying = playbackState?.isPlaying ?? false
   const currentTrack = playbackState?.track
   const coverPhoto = currentTrack?.album.images[0]
@@ -176,15 +173,7 @@ export const Success = ({
           <div className="flex items-center justify-center gap-5">
             <ShuffleControlCell />
             <SkipToPreviousControl />
-            <PlayButton
-              disabled={false}
-              size="2.5rem"
-              playing={isPlaying}
-              variant="secondary"
-              onClick={() => {
-                isPlaying ? pausePlayback() : resumePlayback()
-              }}
-            />
+            <PlayControlCell />
             <SkipToNextControl />
             <RepeatControlCell />
           </div>
