@@ -23,8 +23,8 @@ export const useSetVolumeMutation = () => {
   const [execute] = useMutation(SET_VOLUME_MUTATION)
 
   return useCallback(
-    (volumePercent: number) => {
-      return execute({ variables: { volumePercent } })
+    (variables: SetVolumeMutationVariables) => {
+      return execute({ variables })
     },
     [execute]
   )

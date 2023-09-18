@@ -271,7 +271,9 @@ export const Success = ({
               tooltip={activeDevice?.volumePercent === 0 ? 'Unmute' : 'Mute'}
               onClick={() => {
                 if (activeDevice) {
-                  setVolume(activeDevice.volumePercent === 0 ? 100 : 0)
+                  setVolume({
+                    volumePercent: activeDevice.volumePercent === 0 ? 100 : 0,
+                  })
                 }
               }}
             >
@@ -282,6 +284,11 @@ export const Success = ({
               value={activeDevice?.volumePercent ?? 0}
               max={100}
               width="100px"
+              onChange={(volumePercent) => {
+                if (activeDevice) {
+                  setVolume({ volumePercent })
+                }
+              }}
             />
           </div>
         </div>
