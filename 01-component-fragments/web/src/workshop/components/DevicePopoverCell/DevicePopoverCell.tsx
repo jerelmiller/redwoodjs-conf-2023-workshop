@@ -1,6 +1,5 @@
 import { ReactNode } from 'react'
 
-import { Laptop2 } from 'lucide-react'
 import {
   DevicePopoverCellQuery,
   DevicePopoverCellQueryVariables,
@@ -9,6 +8,7 @@ import {
 import { CellSuccessProps } from '@redwoodjs/web'
 
 import AnimatedSoundWave from 'src/components/AnimatedSoundWave'
+import DeviceIcon from 'src/components/DeviceIcon'
 import PlaybarControlButton from 'src/components/PlaybarControlButton'
 import Popover from 'src/components/Popover'
 
@@ -20,7 +20,6 @@ export const QUERY = gql`
           id
           name
           type
-          volumePercent
         }
         playbackState {
           isPlaying
@@ -36,7 +35,7 @@ export const QUERY = gql`
 export const Loading = () => {
   return (
     <PlaybarControlButton disabled tooltip="Connect to a device">
-      <Laptop2 strokeWidth={1.5} />
+      <DeviceIcon deviceType="computer" strokeWidth={1.5} />
     </PlaybarControlButton>
   )
 }
@@ -64,7 +63,11 @@ export const Success = ({
               {playbackState?.isPlaying ? (
                 <AnimatedSoundWave size="1.5rem" />
               ) : (
-                <Laptop2 size="1.5rem" className="text-green" />
+                <DeviceIcon
+                  deviceType={activeDevice.type}
+                  className="text-green"
+                  size="1.5rem"
+                />
               )}
               <div className="flex flex-col">
                 <h3 className="text-base font-bold">Current device</h3>
@@ -81,7 +84,7 @@ export const Success = ({
             {availableDevices.map((device) => (
               <li key={device.id}>
                 <button className="flex w-full cursor-pointer items-center gap-4 rounded p-4 text-sm hover:bg-white/10">
-                  <Laptop2 strokeWidth={1.5} />
+                  <DeviceIcon deviceType={device.type} strokeWidth={1.5} />
                   {device.name}
                 </button>
               </li>
