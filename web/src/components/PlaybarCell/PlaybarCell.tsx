@@ -198,7 +198,7 @@ export const Success = ({
             >
               <Shuffle size="1.25rem" />
             </PlaybarControlButton>
-            <PlaybarControlButton disallowed={false} tooltip="Previous">
+            <PlaybarControlButton disallowed tooltip="Previous">
               <SkipBack fill="currentColor" />
             </PlaybarControlButton>
             <PlayButton
@@ -210,7 +210,7 @@ export const Success = ({
                 isPlaying ? pausePlayback() : resumePlayback()
               }}
             />
-            <PlaybarControlButton disallowed={!playbackState} tooltip="Next">
+            <PlaybarControlButton disallowed tooltip="Next">
               <SkipForward fill="currentColor" />
             </PlaybarControlButton>
             <PlaybarControlButton
