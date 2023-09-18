@@ -27,6 +27,7 @@ import PlayButton from '../PlayButton'
 import Popover from '../Popover'
 import ProgressBar from '../ProgressBar'
 import RepeatControl from '../RepeatControl/RepeatControl'
+import ShuffleControl from '../ShuffleControl/ShuffleControl'
 import Skeleton from '../Skeleton'
 
 export const QUERY = gql`
@@ -187,13 +188,7 @@ export const Success = ({
         </div>
         <div className="flex flex-col gap-2">
           <div className="flex items-center justify-center gap-5">
-            <PlaybarControlButton
-              active={shuffled}
-              disabled={!playbackState}
-              tooltip={shuffled ? 'Disable shuffle' : 'Enable shuffle'}
-            >
-              <Shuffle size="1.25rem" />
-            </PlaybarControlButton>
+            <ShuffleControl shuffled={shuffled} />
             <PlaybarControlButton disabled tooltip="Previous">
               <SkipBack fill="currentColor" />
             </PlaybarControlButton>
