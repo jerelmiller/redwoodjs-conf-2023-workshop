@@ -24,8 +24,8 @@ import ProgressBar from 'src/components/ProgressBar'
 import Skeleton from 'src/components/Skeleton'
 import { usePausePlaybackMutation } from 'src/mutations/usePausePlaybackMutation'
 import { useResumePlaybackMutation } from 'src/mutations/useResumePlaybackMutation'
-import RepeatControl from 'src/workshop/RepeatControl'
-import ShuffleControl from 'src/workshop/ShuffleControl'
+import RepeatControlCell from 'src/workshop/RepeatControlCell'
+import ShuffleControlCell from 'src/workshop/ShuffleControlCell'
 
 export const QUERY = gql`
   query PlaybarQuery {
@@ -39,8 +39,6 @@ export const QUERY = gql`
         }
         playbackState {
           isPlaying
-          shuffleState
-          repeatState
           progressMs
           timestamp
           context {
@@ -83,7 +81,7 @@ export const Loading = () => (
       </div>
       <div className="flex flex-col gap-2">
         <div className="flex items-center justify-center gap-5">
-          <ShuffleControl disabled shuffled={false} />
+          {/* <ShuffleControl disabled shuffled={false} /> */}
           <PlaybarControlButton disabled tooltip="Previous">
             <SkipBack fill="currentColor" />
           </PlaybarControlButton>
@@ -96,7 +94,7 @@ export const Loading = () => (
           <PlaybarControlButton disabled tooltip="Next">
             <SkipForward fill="currentColor" />
           </PlaybarControlButton>
-          <RepeatControl disabled repeatState="OFF" />
+          {/*<RepeatControl disabled repeatState="OFF" /> */}
         </div>
         <PlaybackProgressBar durationMs={0} progressMs={0} isPlaying={false} />
       </div>
@@ -141,9 +139,6 @@ export const Success = ({
     (device) => device.id !== playbackState?.device.id
   )
 
-  const shuffled = playbackState?.shuffleState ?? false
-  const repeatState = playbackState?.repeatState ?? 'OFF'
-
   return (
     <footer className="flex flex-col [grid-area:playbar]">
       <div className="grid grid-cols-[30%_1fr_30%] items-center px-6 py-4 text-primary">
@@ -177,7 +172,7 @@ export const Success = ({
         </div>
         <div className="flex flex-col gap-2">
           <div className="flex items-center justify-center gap-5">
-            <ShuffleControl shuffled={shuffled} />
+            <ShuffleControlCell />
             <PlaybarControlButton disabled tooltip="Previous">
               <SkipBack fill="currentColor" />
             </PlaybarControlButton>
@@ -193,7 +188,7 @@ export const Success = ({
             <PlaybarControlButton disabled tooltip="Next">
               <SkipForward fill="currentColor" />
             </PlaybarControlButton>
-            <RepeatControl repeatState={repeatState} />
+            <RepeatControlCell />
           </div>
 
           <PlaybackProgressBar

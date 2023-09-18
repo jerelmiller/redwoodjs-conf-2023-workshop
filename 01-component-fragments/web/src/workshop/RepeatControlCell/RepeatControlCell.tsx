@@ -1,15 +1,28 @@
 import { ElementType } from 'react'
 
 import { Repeat, Repeat1 } from 'lucide-react'
-import { RepeatMode } from 'types/graphql'
+import {
+  RepeatControlCellQuery,
+  RepeatControlCellQueryVariables,
+  RepeatMode,
+} from 'types/graphql'
+
+import { CellSuccessProps } from '@redwoodjs/web'
 
 import PlaybarControlButton from 'src/components/PlaybarControlButton'
 import { useSetRepeatModeMutation } from 'src/mutations/useSetRepeatModeMutation'
 
-interface RepeatControlProps {
-  disabled?: boolean
-  repeatState: RepeatMode
-}
+export const QUERY = gql`
+  query RepeatControlCellQuery {
+    me {
+      player {
+        playbackState {
+          repeatState
+        }
+      }
+    }
+  }
+`
 
 const TOOLTIP: Record<RepeatMode, string> = {
   OFF: 'Enable repeat',
@@ -29,14 +42,27 @@ const REPEAT_ICON: Record<RepeatMode, ElementType> = {
   TRACK: Repeat1,
 }
 
-const RepeatControl = ({ disabled, repeatState }: RepeatControlProps) => {
+export const Loading = () => {
+  return (
+    <PlaybarControlButton disabled tooltip={TOOLTIP.OFF}>
+      <Repeat />
+    </PlaybarControlButton>
+  )
+}
+
+export const Success = ({
+  me,
+}: CellSuccessProps<
+  RepeatControlCellQuery,
+  RepeatControlCellQueryVariables
+>) => {
   const setRepeatMode = useSetRepeatModeMutation()
+  const repeatState = me.player.playbackState?.repeatState ?? 'OFF'
   const RepeatIcon = REPEAT_ICON[repeatState]
 
   return (
     <PlaybarControlButton
       active={repeatState !== 'OFF'}
-      disabled={disabled}
       tooltip={TOOLTIP[repeatState]}
       onClick={() => setRepeatMode(NEXT_REPEAT_MODE[repeatState])}
     >
@@ -44,5 +70,3 @@ const RepeatControl = ({ disabled, repeatState }: RepeatControlProps) => {
     </PlaybarControlButton>
   )
 }
-
-export default RepeatControl
