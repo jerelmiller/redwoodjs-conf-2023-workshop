@@ -81,6 +81,6 @@ export const schema = gql`
       \`false\`: Do not shuffle user's playback.
       """
       state: Boolean!
-    ): ShufflePlaybackPayload
+    ): ShufflePlaybackPayload @requireAuth
   }
 `
