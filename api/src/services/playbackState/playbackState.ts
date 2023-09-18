@@ -24,7 +24,7 @@ export const setRepeatMode: MutationResolvers['setRepeatMode'] = async ({
   }
 
   const playbackState = await db.playbackState.upsert({
-    where: { id: currentUser.id },
+    where: { userId: currentUser.id },
     create: {
       repeatMode: state,
       user: {
@@ -58,7 +58,7 @@ export const shufflePlayback: MutationResolvers['shufflePlayback'] = async ({
   }
 
   const playbackState = await db.playbackState.upsert({
-    where: { id: currentUser.id },
+    where: { userId: currentUser.id },
     create: {
       shuffled: state,
       user: {
