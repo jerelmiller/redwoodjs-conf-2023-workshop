@@ -1,21 +1,20 @@
 import cx from 'classnames'
-import { Laptop2, Volume2, Volume1 } from 'lucide-react'
+import { Volume2, Volume1, Laptop2 } from 'lucide-react'
 import type { PlaybarQuery, PlaybarQueryVariables } from 'types/graphql'
 
 import { Link, routes } from '@redwoodjs/router'
 import type { CellSuccessProps, CellFailureProps } from '@redwoodjs/web'
 
-import AnimatedSoundWave from 'src/components/AnimatedSoundWave'
 import CoverPhoto from 'src/components/CoverPhoto'
 import DelimitedList from 'src/components/DelimitedList'
 import LikeButton from 'src/components/LikeButton'
 import PlaybarControlButton from 'src/components/PlaybarControlButton'
-import Popover from 'src/components/Popover'
 import ProgressBar from 'src/components/ProgressBar'
 import QueueControl from 'src/components/QueueControl'
 import Skeleton from 'src/components/Skeleton'
 import SkipToNextControl from 'src/components/SkipToNextControl'
 import SkipToPreviousControl from 'src/components/SkipToPreviousControl'
+import DevicePopoverCell from 'src/workshop/components/DevicePopoverCell'
 import PlaybackProgressBarCell from 'src/workshop/components/PlaybackProgressBarCell'
 import PlayControlCell from 'src/workshop/components/PlayControlCell'
 import RepeatControlCell from 'src/workshop/components/RepeatControlCell'
@@ -32,7 +31,6 @@ export const QUERY = gql`
           volumePercent
         }
         playbackState {
-          isPlaying
           progressMs
           timestamp
           context {
@@ -86,15 +84,11 @@ export const Success = ({
   me,
 }: CellSuccessProps<PlaybarQuery, PlaybarQueryVariables>) => {
   const playbackState = me.player.playbackState
-  const isPlaying = playbackState?.isPlaying ?? false
   const currentTrack = playbackState?.track
   const coverPhoto = currentTrack?.album.images[0]
 
   const activeDevice = me.player.devices.find(
     (device) => device.id === playbackState?.device.id
-  )
-  const availableDevices = me.player.devices.filter(
-    (device) => device.id !== playbackState?.device.id
   )
 
   return (
@@ -141,48 +135,15 @@ export const Success = ({
         </div>
         <div className="flex items-center justify-end gap-4">
           <QueueControl />
-
-          <Popover
-            content={
-              <div>
-                {activeDevice && (
-                  <div className="flex items-center gap-4 p-4">
-                    {isPlaying ? (
-                      <AnimatedSoundWave size="1.5rem" />
-                    ) : (
-                      <Laptop2 size="1.5rem" className="text-green" />
-                    )}
-                    <div className="flex flex-col">
-                      <h3 className="text-base font-bold">Current device</h3>
-                      <span className="text-sm text-green-light">
-                        {activeDevice.name}
-                      </span>
-                    </div>
-                  </div>
-                )}
-                {availableDevices.length > 0 && (
-                  <h4 className="my-2 px-4">Select another device</h4>
-                )}
-                <ul className="flex list-none flex-col">
-                  {availableDevices.map((device) => (
-                    <li key={device.id}>
-                      <button className="flex w-full cursor-pointer items-center gap-4 rounded p-4 text-sm hover:bg-white/10">
-                        <Laptop2 strokeWidth={1.5} />
-                        {device.name}
-                      </button>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            }
-          >
+          <DevicePopoverCell>
             <PlaybarControlButton
               disabled={false}
               tooltip="Connect to a device"
             >
               <Laptop2 strokeWidth={1.5} />
             </PlaybarControlButton>
-          </Popover>
+          </DevicePopoverCell>
+
           <div className="flex items-center gap-1">
             <PlaybarControlButton
               disabled={false}
