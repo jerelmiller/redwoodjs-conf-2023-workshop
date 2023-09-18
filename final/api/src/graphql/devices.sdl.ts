@@ -23,4 +23,19 @@ export const schema = gql`
     """
     volumePercent: Int!
   }
+
+  type SetVolumeResponse {
+    "The updated device after volume was set."
+    device: Device
+  }
+
+  type Mutation {
+    """
+    Set the volume for the user’s current playback device.
+    """
+    setVolume(
+      "The volume to set. Must be a value from 0 to 100 inclusive."
+      volumePercent: Int!
+    ): SetVolumeResponse
+  }
 `
