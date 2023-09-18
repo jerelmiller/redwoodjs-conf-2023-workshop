@@ -6,6 +6,7 @@ import {
 import { CellSuccessProps } from '@redwoodjs/web'
 
 import ProgressBar from 'src/components/ProgressBar'
+import { useSetVolumeMutation } from 'src/mutations/useSetVolumeMutation'
 
 export const QUERY = gql`
   query VolumeBarControlCellQuery {
@@ -32,12 +33,20 @@ export const Success = ({
   VolumeBarControlCellQuery,
   VolumeBarControlCellQueryVariables
 >) => {
+  const setVolume = useSetVolumeMutation()
+  const activeDevice = me.player.playbackState?.device
+
   return (
     <ProgressBar
       animate={false}
-      value={me.player.playbackState?.device.volumePercent ?? 0}
+      value={activeDevice?.volumePercent ?? 0}
       max={100}
       width="100px"
+      onChange={(volumePercent) => {
+        if (activeDevice) {
+          setVolume({ volumePercent })
+        }
+      }}
     />
   )
 }
