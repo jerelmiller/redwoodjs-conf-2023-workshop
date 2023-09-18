@@ -1,5 +1,5 @@
 import cx from 'classnames'
-import { List, Laptop2, Volume2, Volume1 } from 'lucide-react'
+import { Laptop2, Volume2, Volume1 } from 'lucide-react'
 import type { PlaybarQuery, PlaybarQueryVariables } from 'types/graphql'
 
 import { Link, routes } from '@redwoodjs/router'
@@ -12,6 +12,7 @@ import LikeButton from 'src/components/LikeButton'
 import PlaybarControlButton from 'src/components/PlaybarControlButton'
 import Popover from 'src/components/Popover'
 import ProgressBar from 'src/components/ProgressBar'
+import QueueControl from 'src/components/QueueControl'
 import Skeleton from 'src/components/Skeleton'
 import SkipToNextControl from 'src/components/SkipToNextControl'
 import SkipToPreviousControl from 'src/components/SkipToPreviousControl'
@@ -139,23 +140,7 @@ export const Success = ({
           <PlaybackProgressBarCell />
         </div>
         <div className="flex items-center justify-end gap-4">
-          <Link
-            to=""
-            className="block leading-none"
-            onClick={() =>
-              console.warn(
-                'Queue page is not implemented and therefore a noop.'
-              )
-            }
-          >
-            <PlaybarControlButton
-              active={false}
-              disabled={false}
-              tooltip="Queue"
-            >
-              <List strokeWidth={1.5} />
-            </PlaybarControlButton>
-          </Link>
+          <QueueControl />
 
           <Popover
             content={
