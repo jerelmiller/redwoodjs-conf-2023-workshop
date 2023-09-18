@@ -16,7 +16,6 @@ import type { CellSuccessProps, CellFailureProps } from '@redwoodjs/web'
 
 import { usePausePlaybackMutation } from 'src/mutations/usePausePlaybackMutation'
 import { useResumePlaybackMutation } from 'src/mutations/useResumePlaybackMutation'
-import { useSetRepeatModeMutation } from 'src/mutations/useSetRepeatModeMutation'
 
 import AnimatedSoundWave from '../AnimatedSoundWave'
 import CoverPhoto from '../CoverPhoto'
@@ -27,6 +26,7 @@ import PlaybarControlButton from '../PlaybarControlButton'
 import PlayButton from '../PlayButton'
 import Popover from '../Popover'
 import ProgressBar from '../ProgressBar'
+import RepeatControl from '../RepeatControl/RepeatControl'
 import Skeleton from '../Skeleton'
 
 export const QUERY = gql`
@@ -71,12 +71,6 @@ export const QUERY = gql`
     }
   }
 `
-
-const TOOLTIP = {
-  OFF: 'Enable repeat',
-  CONTEXT: 'Enable repeat one',
-  TRACK: 'Disable repeat',
-} as const
 
 export const Loading = () => (
   <footer className="flex flex-col [grid-area:playbar]">
@@ -146,7 +140,6 @@ export const Success = ({
   const playbackState = me.player.playbackState
   const resumePlayback = useResumePlaybackMutation()
   const pausePlayback = usePausePlaybackMutation()
-  const setRepeatMode = useSetRepeatModeMutation()
   const isPlaying = playbackState?.isPlaying ?? false
   const currentTrack = playbackState?.track
   const coverPhoto = currentTrack?.album.images[0]
@@ -216,14 +209,7 @@ export const Success = ({
             <PlaybarControlButton disallowed tooltip="Next">
               <SkipForward fill="currentColor" />
             </PlaybarControlButton>
-            <PlaybarControlButton
-              active={repeatState !== 'OFF'}
-              disallowed={false}
-              tooltip={TOOLTIP[repeatState]}
-              onClick={() => setRepeatMode('TRACK')}
-            >
-              <RepeatIcon />
-            </PlaybarControlButton>
+            <RepeatControl repeatState={repeatState} />
           </div>
 
           <PlaybackProgressBar
