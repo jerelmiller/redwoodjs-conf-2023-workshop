@@ -25,10 +25,9 @@ export const schema = gql`
     track: Track
   }
 
-  enum RepeatMode {
-    CONTEXT
-    OFF
-    TRACK
+  type PausePlaybackResponse {
+    "The updated playback state after pausing playback."
+    playbackState: PlaybackState
   }
 
   type PlaybackStateContext {
@@ -48,17 +47,52 @@ export const schema = gql`
     PLAYLIST
   }
 
+  enum RepeatMode {
+    CONTEXT
+    OFF
+    TRACK
+  }
+
+  input ResumePlaybackInput {
+    """
+    Spotify URI of the context to play. Valid contexts are albums, artists &
+    playlists.
+    """
+    contextUri: String
+
+    """
+    The track URI to play.
+    """
+    uri: String
+  }
+
+  type ResumePlaybackPayload {
+    "The updated playback state after resuming playback."
+    playbackState: PlaybackState
+  }
+
   type SetRepeatModePayload {
-    "The updated playback state"
+    "The updated playback state after setting repeat mode."
     playbackState: PlaybackState
   }
 
   type ShufflePlaybackPayload {
-    "The updated playback state"
+    "The updated playback state after shuffling playback."
     playbackState: PlaybackState
   }
 
   type Mutation {
+    """
+    Pause playback on the user's account.
+    """
+    pausePlayback: PausePlaybackResponse @requireAuth
+
+    """
+    Start a new context or resume current playback on the user's active device.
+    """
+    resumePlayback(input: ResumePlaybackInput): ResumePlaybackPayload
+      @requireAuth
+
     """
     Set the repeat mode for the user's playback.
     """
