@@ -42,6 +42,7 @@ export const QUERY = gql`
         playbackState {
           isPlaying
           shuffleState
+          repeatState
           progressMs
           timestamp
           context {
@@ -72,9 +73,9 @@ export const QUERY = gql`
 `
 
 const TOOLTIP = {
-  off: 'Enable repeat',
-  context: 'Enable repeat one',
-  track: 'Disable repeat',
+  OFF: 'Enable repeat',
+  CONTEXT: 'Enable repeat one',
+  TRACK: 'Disable repeat',
 } as const
 
 export const Loading = () => (
@@ -158,7 +159,7 @@ export const Success = ({
   )
 
   const shuffled = playbackState?.shuffleState ?? false
-  const repeatState = 'off' as const
+  const repeatState = playbackState?.repeatState ?? 'OFF'
 
   return (
     <footer className="flex flex-col [grid-area:playbar]">
@@ -216,7 +217,7 @@ export const Success = ({
               <SkipForward fill="currentColor" />
             </PlaybarControlButton>
             <PlaybarControlButton
-              active={repeatState !== 'off'}
+              active={repeatState !== 'OFF'}
               disallowed={false}
               tooltip={TOOLTIP[repeatState]}
               onClick={() => setRepeatMode('TRACK')}
