@@ -14,6 +14,7 @@ import type { CellSuccessProps, CellFailureProps } from '@redwoodjs/web'
 
 import { usePausePlaybackMutation } from 'src/mutations/usePausePlaybackMutation'
 import { useResumePlaybackMutation } from 'src/mutations/useResumePlaybackMutation'
+import { useSetVolumeMutation } from 'src/mutations/useSetVolumeMutation'
 
 import AnimatedSoundWave from '../AnimatedSoundWave'
 import CoverPhoto from '../CoverPhoto'
@@ -131,6 +132,7 @@ export const Success = ({
   const playbackState = me.player.playbackState
   const resumePlayback = useResumePlaybackMutation()
   const pausePlayback = usePausePlaybackMutation()
+  const setVolume = useSetVolumeMutation()
   const isPlaying = playbackState?.isPlaying ?? false
   const currentTrack = playbackState?.track
   const coverPhoto = currentTrack?.album.images[0]
@@ -265,8 +267,13 @@ export const Success = ({
           </Popover>
           <div className="flex items-center gap-1">
             <PlaybarControlButton
-              disabled={false}
+              disabled={!activeDevice}
               tooltip={activeDevice?.volumePercent === 0 ? 'Unmute' : 'Mute'}
+              onClick={() => {
+                if (activeDevice) {
+                  setVolume(activeDevice.volumePercent === 0 ? 100 : 0)
+                }
+              }}
             >
               <Volume2 />
             </PlaybarControlButton>
