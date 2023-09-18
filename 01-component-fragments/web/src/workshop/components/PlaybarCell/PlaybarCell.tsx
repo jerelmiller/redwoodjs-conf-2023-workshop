@@ -1,5 +1,5 @@
 import cx from 'classnames'
-import { Volume2, Volume1 } from 'lucide-react'
+import { Volume1 } from 'lucide-react'
 import type { PlaybarQuery, PlaybarQueryVariables } from 'types/graphql'
 
 import { Link, routes } from '@redwoodjs/router'
@@ -8,13 +8,13 @@ import type { CellSuccessProps, CellFailureProps } from '@redwoodjs/web'
 import CoverPhoto from 'src/components/CoverPhoto'
 import DelimitedList from 'src/components/DelimitedList'
 import LikeButton from 'src/components/LikeButton'
-import PlaybarControlButton from 'src/components/PlaybarControlButton'
 import ProgressBar from 'src/components/ProgressBar'
 import QueueControl from 'src/components/QueueControl'
 import Skeleton from 'src/components/Skeleton'
 import SkipToNextControl from 'src/components/SkipToNextControl'
 import SkipToPreviousControl from 'src/components/SkipToPreviousControl'
 import DeviceControlCell from 'src/workshop/components/DeviceControlCell'
+import MuteControlCell from 'src/workshop/components/MuteControlCell'
 import PlaybackProgressBarCell from 'src/workshop/components/PlaybackProgressBarCell'
 import PlayControlCell from 'src/workshop/components/PlayControlCell'
 import RepeatControlCell from 'src/workshop/components/RepeatControlCell'
@@ -138,12 +138,7 @@ export const Success = ({
           <DeviceControlCell />
 
           <div className="flex items-center gap-1">
-            <PlaybarControlButton
-              disabled={false}
-              tooltip={activeDevice?.volumePercent === 0 ? 'Unmute' : 'Mute'}
-            >
-              <Volume2 />
-            </PlaybarControlButton>
+            <MuteControlCell />
             <ProgressBar
               animate={false}
               value={activeDevice?.volumePercent ?? 0}
