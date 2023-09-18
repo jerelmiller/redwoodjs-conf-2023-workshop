@@ -1,5 +1,5 @@
 import cx from 'classnames'
-import { Volume2, Volume1, Laptop2 } from 'lucide-react'
+import { Volume2, Volume1 } from 'lucide-react'
 import type { PlaybarQuery, PlaybarQueryVariables } from 'types/graphql'
 
 import { Link, routes } from '@redwoodjs/router'
@@ -14,7 +14,7 @@ import QueueControl from 'src/components/QueueControl'
 import Skeleton from 'src/components/Skeleton'
 import SkipToNextControl from 'src/components/SkipToNextControl'
 import SkipToPreviousControl from 'src/components/SkipToPreviousControl'
-import DevicePopoverCell from 'src/workshop/components/DevicePopoverCell'
+import DeviceControlCell from 'src/workshop/components/DeviceControlCell'
 import PlaybackProgressBarCell from 'src/workshop/components/PlaybackProgressBarCell'
 import PlayControlCell from 'src/workshop/components/PlayControlCell'
 import RepeatControlCell from 'src/workshop/components/RepeatControlCell'
@@ -135,14 +135,7 @@ export const Success = ({
         </div>
         <div className="flex items-center justify-end gap-4">
           <QueueControl />
-          <DevicePopoverCell>
-            <PlaybarControlButton
-              disabled={false}
-              tooltip="Connect to a device"
-            >
-              <Laptop2 strokeWidth={1.5} />
-            </PlaybarControlButton>
-          </DevicePopoverCell>
+          <DeviceControlCell />
 
           <div className="flex items-center gap-1">
             <PlaybarControlButton
