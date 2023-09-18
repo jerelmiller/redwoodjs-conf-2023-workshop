@@ -6,7 +6,7 @@ displayName = 'Jerel Miller'
 [device]
 name = "Jerel's MacBook Pro"
 
-# valid types: 'computer', 'mobile', 'speaker'
+# valid types: 'computer', 'smarphone', 'speaker'
 type = 'computer'
 
 # Include any albums or tracks that you want to show up as "saved" when running
