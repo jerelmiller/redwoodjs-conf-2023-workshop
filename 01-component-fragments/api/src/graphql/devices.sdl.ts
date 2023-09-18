@@ -38,6 +38,6 @@ export const schema = gql`
     """
     Set the volume for the user’s current playback device.
     """
-    setVolume(input: SetVolumeInput!): SetVolumeResponse
+    setVolume(input: SetVolumeInput!): SetVolumeResponse @requireAuth
   }
 `
