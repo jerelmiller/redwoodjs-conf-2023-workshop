@@ -1,12 +1,5 @@
 import cx from 'classnames'
-import {
-  SkipBack,
-  SkipForward,
-  List,
-  Laptop2,
-  Volume2,
-  Volume1,
-} from 'lucide-react'
+import { List, Laptop2, Volume2, Volume1 } from 'lucide-react'
 import type { PlaybarQuery, PlaybarQueryVariables } from 'types/graphql'
 
 import { Link, routes } from '@redwoodjs/router'
@@ -16,9 +9,7 @@ import AnimatedSoundWave from 'src/components/AnimatedSoundWave'
 import CoverPhoto from 'src/components/CoverPhoto'
 import DelimitedList from 'src/components/DelimitedList'
 import LikeButton from 'src/components/LikeButton'
-import PlaybackProgressBar from 'src/components/PlaybackProgressBar'
 import PlaybarControlButton from 'src/components/PlaybarControlButton'
-import PlayButton from 'src/components/PlayButton'
 import Popover from 'src/components/Popover'
 import ProgressBar from 'src/components/ProgressBar'
 import Skeleton from 'src/components/Skeleton'
@@ -79,39 +70,6 @@ export const Loading = () => (
           <Skeleton.Text width="8rem" />
         </div>
         <LikeButton disabled liked={false} />
-      </div>
-      <div className="flex flex-col gap-2">
-        <div className="flex items-center justify-center gap-5">
-          {/* <ShuffleControl disabled shuffled={false} /> */}
-          <PlaybarControlButton disabled tooltip="Previous">
-            <SkipBack fill="currentColor" />
-          </PlaybarControlButton>
-          <PlayButton
-            disabled
-            playing={false}
-            size="2.5rem"
-            variant="secondary"
-          />
-          <PlaybarControlButton disabled tooltip="Next">
-            <SkipForward fill="currentColor" />
-          </PlaybarControlButton>
-          {/*<RepeatControl disabled repeatState="OFF" /> */}
-        </div>
-        <PlaybackProgressBar durationMs={0} progressMs={0} isPlaying={false} />
-      </div>
-      <div className="flex items-center justify-end gap-4">
-        <PlaybarControlButton active={false} disabled tooltip="Queue">
-          <List strokeWidth={1.5} />
-        </PlaybarControlButton>
-        <PlaybarControlButton disabled tooltip="Connect to a device">
-          <Laptop2 strokeWidth={1.5} />
-        </PlaybarControlButton>
-        <div className="flex items-center gap-2">
-          <PlaybarControlButton disabled tooltip="Mute">
-            <Volume2 />
-          </PlaybarControlButton>
-          <ProgressBar animate={false} value={100} max={100} width="100px" />
-        </div>
       </div>
     </div>
   </footer>
