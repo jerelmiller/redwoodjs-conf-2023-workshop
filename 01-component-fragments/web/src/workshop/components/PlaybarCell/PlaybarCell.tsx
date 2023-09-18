@@ -1,5 +1,3 @@
-import cx from 'classnames'
-import { Volume1 } from 'lucide-react'
 import type { PlaybarQuery, PlaybarQueryVariables } from 'types/graphql'
 
 import type { CellSuccessProps, CellFailureProps } from '@redwoodjs/web'
@@ -9,6 +7,7 @@ import QueueControl from 'src/components/QueueControl'
 import Skeleton from 'src/components/Skeleton'
 import SkipToNextControl from 'src/components/SkipToNextControl'
 import SkipToPreviousControl from 'src/components/SkipToPreviousControl'
+import ActiveDeviceBannerCell from 'src/workshop/components/ActiveDeviceBannerCell'
 import CurrentTrackDetailsCell from 'src/workshop/components/CurrentTrackDetailsCell'
 import DeviceControlCell from 'src/workshop/components/DeviceControlCell'
 import MuteControlCell from 'src/workshop/components/MuteControlCell'
@@ -22,15 +21,7 @@ export const QUERY = gql`
   query PlaybarQuery {
     me {
       player {
-        devices {
-          id
-          name
-        }
-        playbackState {
-          device {
-            id
-          }
-        }
+        __typename
       }
     }
   }
@@ -58,14 +49,8 @@ export const Failure = ({ error }: CellFailureProps<PlaybarQueryVariables>) => (
 )
 
 export const Success = ({
-  me,
+  me: _me,
 }: CellSuccessProps<PlaybarQuery, PlaybarQueryVariables>) => {
-  const playbackState = me.player.playbackState
-
-  const activeDevice = me.player.devices.find(
-    (device) => device.id === playbackState?.device.id
-  )
-
   return (
     <footer className="flex flex-col [grid-area:playbar]">
       <div className="grid grid-cols-[30%_1fr_30%] items-center px-6 py-4 text-primary">
@@ -91,19 +76,7 @@ export const Success = ({
           </div>
         </div>
       </div>
-      {activeDevice && (
-        <div
-          className={cx(
-            'flex items-center justify-end',
-            'before:[--arrow-size:0.625rem]',
-            'border-solid before:border-b-green before:border-l-transparent before:border-r-transparent before:[border-bottom-width:var(--arrow-size)] before:[border-left-width:var(--arrow-size)] before:[border-right-width:var(--arrow-size)]',
-            'relative rounded bg-green px-6 py-1 text-sm leading-none',
-            'pointer-events-none before:absolute before:right-[10.5rem] before:top-0 before:-translate-y-full'
-          )}
-        >
-          <Volume1 size="1.125rem" /> Listening on {activeDevice.name}
-        </div>
-      )}
+      <ActiveDeviceBannerCell />
     </footer>
   )
 }
