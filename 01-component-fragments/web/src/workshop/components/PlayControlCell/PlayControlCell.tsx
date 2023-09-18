@@ -37,10 +37,12 @@ export const Success = ({
 }: CellSuccessProps<PlayControlCellQuery, PlayControlCellQueryVariables>) => {
   const resumePlayback = useResumePlaybackMutation()
   const pausePlayback = usePausePlaybackMutation()
-  const isPlaying = me.player.playbackState?.isPlaying ?? false
+  const playbackState = me.player.playbackState
+  const isPlaying = playbackState?.isPlaying ?? false
 
   return (
     <PlayButton
+      disabled={!playbackState}
       size="2.5rem"
       playing={isPlaying}
       variant="secondary"

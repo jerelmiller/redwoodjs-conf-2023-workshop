@@ -36,11 +36,13 @@ export const Success = ({
   ShuffleControlCellQueryVariables
 >) => {
   const shufflePlayback = useShufflePlaybackMutation()
-  const shuffled = me.player.playbackState?.shuffleState
+  const playbackState = me.player.playbackState
+  const shuffled = playbackState?.shuffleState
 
   return (
     <PlaybarControlButton
       active={shuffled}
+      disabled={!playbackState}
       tooltip="Enable shuffle"
       onClick={() => shufflePlayback({ state: !shuffled })}
     >

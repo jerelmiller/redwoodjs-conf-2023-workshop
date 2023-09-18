@@ -57,12 +57,14 @@ export const Success = ({
   RepeatControlCellQueryVariables
 >) => {
   const setRepeatMode = useSetRepeatModeMutation()
-  const repeatState = me.player.playbackState?.repeatState ?? 'OFF'
+  const playbackState = me.player.playbackState
+  const repeatState = playbackState?.repeatState ?? 'OFF'
   const RepeatIcon = REPEAT_ICON[repeatState]
 
   return (
     <PlaybarControlButton
       active={repeatState !== 'OFF'}
+      disabled={!playbackState}
       tooltip={TOOLTIP[repeatState]}
       onClick={() => setRepeatMode({ state: NEXT_REPEAT_MODE[repeatState] })}
     >
