@@ -18,7 +18,7 @@ const TableCell = ({
   return (
     <td
       className={cx(
-        'px-2 py-3 text-left first:rounded-bl first:rounded-tl first:pl-4 last:rounded-bl last:rounded-br last:pr-4',
+        'px-2 py-3 text-left first:rounded-bl first:rounded-tl first:pl-4 last:rounded-br last:rounded-tr last:pr-4',
         {
           'w-px': shrink,
           'whitespace-nowrap': !wrap,
