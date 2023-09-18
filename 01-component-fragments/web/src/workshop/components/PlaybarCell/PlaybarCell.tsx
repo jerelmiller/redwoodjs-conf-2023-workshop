@@ -24,8 +24,8 @@ import ProgressBar from 'src/components/ProgressBar'
 import Skeleton from 'src/components/Skeleton'
 import { usePausePlaybackMutation } from 'src/mutations/usePausePlaybackMutation'
 import { useResumePlaybackMutation } from 'src/mutations/useResumePlaybackMutation'
-import RepeatControlCell from 'src/workshop/RepeatControlCell'
-import ShuffleControlCell from 'src/workshop/ShuffleControlCell'
+import RepeatControlCell from 'src/workshop/components/RepeatControlCell'
+import ShuffleControlCell from 'src/workshop/components/ShuffleControlCell'
 
 export const QUERY = gql`
   query PlaybarQuery {
