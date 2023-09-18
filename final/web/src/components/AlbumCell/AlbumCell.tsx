@@ -5,7 +5,6 @@ import type {
   AlbumCell_playbackState,
   FindAlbumQuery,
   FindAlbumQueryVariables,
-  PlaylistCell_playbackState,
 } from 'types/graphql'
 
 import { Link, routes } from '@redwoodjs/router'
