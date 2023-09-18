@@ -6,7 +6,6 @@ import ApolloLogo from 'src/components/ApolloLogo'
 import CurrentUserMenuCell from 'src/components/CurrentUserMenuCell'
 import DelimitedList from 'src/components/DelimitedList'
 import LikedTracksCoverPhoto from 'src/components/LikedTracksCoverPhoto/LikedTracksCoverPhoto'
-import PlaybarCell from 'src/components/PlaybarCell'
 import ScrollableList from 'src/components/ScrollableList'
 import SidebarNavLink from 'src/components/SidebarNavLink'
 import SidebarPlaylistContent from 'src/components/SidebarPlaylistContent/SidebarPlaylistContent'
@@ -14,6 +13,7 @@ import SidebarPlaylistLink from 'src/components/SidebarPlaylistLink/SidebarPlayl
 import SidebarPlaylistName from 'src/components/SidebarPlaylistName'
 import SidebarPlaylistsCell from 'src/components/SidebarPlaylistsCell'
 import SidebarSection from 'src/components/SidebarSection'
+import PlaybarCell from 'src/workshop/PlaybarCell'
 
 type BaseLayoutProps = {
   children?: React.ReactNode
