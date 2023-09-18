@@ -3,9 +3,8 @@ import { ElementType } from 'react'
 import { Repeat, Repeat1 } from 'lucide-react'
 import { RepeatMode } from 'types/graphql'
 
+import PlaybarControlButton from 'src/components/PlaybarControlButton'
 import { useSetRepeatModeMutation } from 'src/mutations/useSetRepeatModeMutation'
-
-import PlaybarControlButton from '../PlaybarControlButton'
 
 interface RepeatControlProps {
   disabled?: boolean

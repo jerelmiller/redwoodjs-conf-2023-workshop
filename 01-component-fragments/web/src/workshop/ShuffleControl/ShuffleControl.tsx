@@ -1,8 +1,7 @@
 import { Shuffle } from 'lucide-react'
 
+import PlaybarControlButton from 'src/components/PlaybarControlButton'
 import { useShufflePlaybackMutation } from 'src/mutations/useShufflePlaybackMutation'
-
-import PlaybarControlButton from '../PlaybarControlButton'
 
 interface ShuffleControlProps {
   disabled?: boolean

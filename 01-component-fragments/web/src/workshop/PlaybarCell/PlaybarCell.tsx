@@ -21,11 +21,11 @@ import PlaybarControlButton from 'src/components/PlaybarControlButton'
 import PlayButton from 'src/components/PlayButton'
 import Popover from 'src/components/Popover'
 import ProgressBar from 'src/components/ProgressBar'
-import RepeatControl from 'src/components/RepeatControl'
-import ShuffleControl from 'src/components/ShuffleControl'
 import Skeleton from 'src/components/Skeleton'
 import { usePausePlaybackMutation } from 'src/mutations/usePausePlaybackMutation'
 import { useResumePlaybackMutation } from 'src/mutations/useResumePlaybackMutation'
+import RepeatControl from 'src/workshop/RepeatControl'
+import ShuffleControl from 'src/workshop/ShuffleControl'
 
 export const QUERY = gql`
   query PlaybarQuery {
