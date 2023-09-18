@@ -13,7 +13,7 @@ import { getSession } from './session'
  */
 type User = {
   id: string
-  displayName: string
+  displayName: string | null
 }
 
 export const authDecoder: Decoder = async (
