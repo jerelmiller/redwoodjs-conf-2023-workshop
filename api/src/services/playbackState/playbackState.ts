@@ -11,7 +11,7 @@ import { UserInputError } from '@redwoodjs/graphql-server'
 import { db } from 'src/lib/db'
 
 export const setRepeatMode: MutationResolvers['setRepeatMode'] = async ({
-  mode,
+  state,
 }) => {
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const currentUser = context.currentUser!
@@ -26,7 +26,7 @@ export const setRepeatMode: MutationResolvers['setRepeatMode'] = async ({
   const playbackState = await db.playbackState.upsert({
     where: { id: currentUser.id },
     create: {
-      repeatMode: mode,
+      repeatMode: state,
       user: {
         connect: { id: currentUser.id },
       },
@@ -35,7 +35,41 @@ export const setRepeatMode: MutationResolvers['setRepeatMode'] = async ({
       },
     },
     update: {
-      repeatMode: mode,
+      repeatMode: state,
+    },
+  })
+
+  return {
+    playbackState,
+  }
+}
+
+export const shufflePlayback: MutationResolvers['shufflePlayback'] = async ({
+  state,
+}) => {
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  const currentUser = context.currentUser!
+  const device = await db.device.findFirst({
+    where: { userId: currentUser.id },
+  })
+
+  if (!device) {
+    throw new UserInputError('No device found.')
+  }
+
+  const playbackState = await db.playbackState.upsert({
+    where: { id: currentUser.id },
+    create: {
+      shuffled: state,
+      user: {
+        connect: { id: currentUser.id },
+      },
+      device: {
+        connect: { id: device.id },
+      },
+    },
+    update: {
+      shuffled: state,
     },
   })
 

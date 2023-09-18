@@ -53,6 +53,11 @@ export const schema = gql`
     playbackState: PlaybackState
   }
 
+  type ShufflePlaybackPayload {
+    "The updated playback state"
+    playbackState: PlaybackState
+  }
+
   type Mutation {
     """
     Set the repeat mode for the user's playback.
@@ -64,7 +69,18 @@ export const schema = gql`
       \`CONTEXT\` will repeat the current context.
       \`OFF\` will turn repeat off.
       """
-      mode: RepeatMode!
+      state: RepeatMode!
     ): SetRepeatModePayload @requireAuth
+
+    """
+    Toggle shuffle on or off for user’s playback.
+    """
+    shufflePlayback(
+      """
+      \`true\`: Shuffle user's playback.
+      \`false\`: Do not shuffle user's playback.
+      """
+      state: Boolean!
+    ): ShufflePlaybackPayload
   }
 `
