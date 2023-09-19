@@ -27,6 +27,10 @@ export const QUERY = gql`
   }
 `
 
+export const beforeQuery = (variables: PlaybarQueryVariables) => {
+  return { fetchPolicy: 'cache-first', variables }
+}
+
 export const Loading = () => (
   <footer className="flex flex-col [grid-area:playbar]">
     <div className="grid grid-cols-[30%_1fr_30%] items-center px-6 py-5 text-primary">

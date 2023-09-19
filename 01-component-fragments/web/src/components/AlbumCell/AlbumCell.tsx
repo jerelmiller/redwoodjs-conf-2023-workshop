@@ -75,6 +75,10 @@ export const QUERY = gql`
   }
 `
 
+export const beforeQuery = (variables: FindAlbumQueryVariables) => {
+  return { fetchPolicy: 'cache-first', variables }
+}
+
 export const Loading = () => {
   return (
     <PageContainer>

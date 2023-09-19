@@ -1,5 +1,5 @@
 import { Clock } from 'lucide-react'
-import type { LikedTracksQuery } from 'types/graphql'
+import type { LikedTracksQuery, LikedTracksQueryVariables } from 'types/graphql'
 
 import { Link, routes } from '@redwoodjs/router'
 import type { CellSuccessProps, CellFailureProps } from '@redwoodjs/web'
@@ -62,6 +62,10 @@ export const QUERY = gql`
     }
   }
 `
+
+export const beforeQuery = (variables: LikedTracksQueryVariables) => {
+  return { fetchPolicy: 'cache-first', variables }
+}
 
 const CONTEXT_URI = 'collection:tracks'
 

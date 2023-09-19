@@ -116,6 +116,10 @@ export const Loading = () => {
   )
 }
 
+export const beforeQuery = (variables: FindPlaylistQueryVariables) => {
+  return { fetchPolicy: 'cache-first', variables }
+}
+
 export const Empty = () => <div>Empty</div>
 
 export const Failure = ({
