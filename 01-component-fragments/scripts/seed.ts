@@ -3,9 +3,9 @@ import path from 'node:path'
 
 import { Prisma } from '@prisma/client'
 import { db } from 'api/src/lib/db'
-import toml from 'toml'
 
-import type { Spotify, SpotifyRecord, WorkshopConfig } from './shared/types'
+import { readConfig } from './shared/readConfig'
+import type { Spotify, SpotifyRecord } from './shared/types'
 
 const getPathFromRelative = (relativePath: string) =>
   path.resolve(__dirname, relativePath)
@@ -18,7 +18,7 @@ const getStoreKey = (record: { type: string; id: string }) => {
   return [record.type, record.id].join(':')
 }
 
-const config: WorkshopConfig = toml.parse(readFile('../workshop.config.toml'))
+const config = readConfig()
 const refs = JSON.parse(readFile('./spotify.json')) as Record<
   string,
   SpotifyRecord

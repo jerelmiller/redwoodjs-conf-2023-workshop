@@ -2,9 +2,8 @@
 import fs from 'node:fs'
 import path from 'node:path'
 
-import toml from 'toml'
-
-import type { Spotify, SpotifyRecord, WorkshopConfig } from './shared/types'
+import { readConfig } from './shared/readConfig'
+import type { Spotify, SpotifyRecord } from './shared/types'
 
 const DEFAULT_SYNCED_ALBUMS = [
   '151w1FgRZfnKZA9FEcg9Z3', // Midnights - Taylor Swift
@@ -66,12 +65,6 @@ const decode = (key: QueueKey): QueueItem => {
 
 const addToQueue = (record: BareRecord, { depth }: { depth: number }) => {
   queue.add(encode(record, { depth }))
-}
-
-const getWorkshopConfig = (): WorkshopConfig => {
-  return toml.parse(
-    fs.readFileSync(path.resolve(__dirname, '../workshop.config.toml'), 'utf8')
-  )
 }
 
 const authenticate = async (): Promise<AccessTokenResponse> => {
@@ -341,7 +334,7 @@ interface Program {
 export default async ({ args }: Program) => {
   maxDepth = args.maxDepth ?? 3
   accessToken = (await authenticate()).access_token
-  const { spotify: config } = getWorkshopConfig()
+  const { spotify: config } = readConfig()
 
   const artistIds = DEFAULT_SYNCED_ARTISTS.concat(config.synced.artistIds)
   const albumIds = DEFAULT_SYNCED_ALBUMS.concat(
