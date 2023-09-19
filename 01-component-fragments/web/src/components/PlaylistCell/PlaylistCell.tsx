@@ -25,7 +25,6 @@ import PageHeaderDetails from 'src/components/PageHeaderDetails'
 import PageMediaType from 'src/components/PageMediaType'
 import PageTitle from 'src/components/PageTitle'
 import PlayButton from 'src/components/PlayButton'
-import ScrollableListObserver from 'src/components/ScrollableListObserver'
 import Skeleton from 'src/components/Skeleton'
 import Table from 'src/components/Table'
 import TableBody from 'src/components/TableBody'
@@ -54,9 +53,6 @@ export const QUERY = gql`
       tracks(offset: $offset) {
         pageInfo {
           total
-          offset
-          limit
-          hasNextPage
         }
         edges {
           addedAt
@@ -148,7 +144,6 @@ export const Failure = ({
 
 export const Success = ({
   playlist,
-  queryResult,
 }: CellSuccessProps<FindPlaylistQuery, FindPlaylistQueryVariables>) => {
   const { data: playbackState } = useFragment<PlaylistCell_playbackState>({
     fragment: PLAYBACK_STATE_FRAGMENT,
@@ -156,12 +151,12 @@ export const Success = ({
   })
   const resumePlayback = useResumePlaybackMutation()
   const pausePlayback = usePausePlaybackMutation()
-  const totalTracks = playlist.tracks.pageInfo.total
+  const { pageInfo } = playlist.tracks
+  const totalTracks = pageInfo.total
   const coverPhoto = playlist.images[0]
   const isPlaying = playbackState?.isPlaying ?? false
   const isCurrentContext = playbackState?.context?.uri === playlist.uri
   const isPlayingPlaylist = isCurrentContext && isPlaying
-  const { pageInfo } = playlist.tracks
 
   const tracksContains = new Map()
 
@@ -297,16 +292,6 @@ export const Success = ({
             })}
           </TableBody>
         </Table>
-        <ScrollableListObserver
-          threshold="500px"
-          onIntersect={() => {
-            const { offset, limit, hasNextPage } = pageInfo
-
-            if (hasNextPage && queryResult?.fetchMore) {
-              queryResult.fetchMore({ variables: { offset: offset + limit } })
-            }
-          }}
-        />
       </PageContent>
     </PageContainer>
   )
