@@ -15,6 +15,11 @@ const RESUME_PLAYBACK_MUTATION = gql`
         isPlaying
         progressMs
         timestamp
+        shuffleState
+        repeatState
+        device {
+          id
+        }
         context {
           uri
         }
@@ -33,7 +38,50 @@ export const useResumePlaybackMutation = () => {
 
   return useCallback(
     (input?: ResumePlaybackInput) => {
-      return execute({ variables: { input } })
+      return execute({
+        variables: { input },
+        update: (cache, { data }) => {
+          const playbackState = data?.resumePlayback?.playbackState
+
+          if (!playbackState) {
+            return
+          }
+
+          cache.writeQuery({
+            query: gql`
+              query ResumePlaybackCacheQuery {
+                me {
+                  player {
+                    playbackState {
+                      isPlaying
+                      progressMs
+                      timestamp
+                      shuffleState
+                      repeatState
+                      device {
+                        id
+                      }
+                      context {
+                        uri
+                      }
+                      track {
+                        id
+                      }
+                    }
+                  }
+                }
+              }
+            `,
+            data: {
+              me: {
+                player: {
+                  playbackState,
+                },
+              },
+            },
+          })
+        },
+      })
     },
     [execute]
   )
