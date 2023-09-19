@@ -61,4 +61,26 @@ export const schema = gql`
     """
     uri: String!
   }
+
+  input SaveTrackInput {
+    """
+    The track id to save to the user's library.
+    """
+    id: ID!
+  }
+
+  type SaveTrackResponse {
+    "The date the track was saved."
+    addedAt: DateTime
+
+    "The track that was saved to the user's library."
+    track: Track
+  }
+
+  type Mutation {
+    """
+    Save one or more tracks to the current user's 'Your Music' library.
+    """
+    saveTrack(input: SaveTrackInput!): SaveTrackResponse @requireAuth
+  }
 `

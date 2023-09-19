@@ -1,6 +1,29 @@
-import type { TrackRelationResolvers } from 'types/graphql'
+import type { TrackRelationResolvers, MutationResolvers } from 'types/graphql'
 
 import { db } from 'src/lib/db'
+
+export const saveTrack: MutationResolvers['saveTrack'] = async ({ input }) => {
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  const currentUser = context.currentUser!
+
+  const savedTrack = await db.savedTrack.upsert({
+    select: { addedAt: true, track: true },
+    where: {
+      trackId_userId: { userId: currentUser.id, trackId: input.id },
+    },
+    create: {
+      user: {
+        connect: { id: currentUser.id },
+      },
+      track: {
+        connect: { id: input.id },
+      },
+    },
+    update: {},
+  })
+
+  return savedTrack
+}
 
 export const Track: TrackRelationResolvers = {
   album: (_obj, { root }) => {
