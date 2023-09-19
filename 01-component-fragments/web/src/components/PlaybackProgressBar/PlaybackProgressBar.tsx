@@ -1,7 +1,6 @@
 import { useEffect } from 'react'
 
-import { TypedDocumentNode, useApolloClient } from '@apollo/client'
-import { PlaybackProgressCacheQuery } from 'types/graphql'
+import { useApolloClient } from '@apollo/client'
 
 import Duration from '../Duration'
 import ProgressBar from '../ProgressBar'
@@ -13,16 +12,10 @@ interface PlaybackProgressBarProps {
   timestamp: number
 }
 
-const PLAYBACK_PROGRESS_QUERY: TypedDocumentNode<PlaybackProgressCacheQuery> = gql`
-  query PlaybackProgressCacheQuery {
-    me {
-      player {
-        playbackState {
-          timestamp
-          progressMs
-        }
-      }
-    }
+const PLAYBACK_PROGRESS_FRAGMENT = gql`
+  fragment PlaybackProgress on PlaybackState {
+    timestamp
+    progressMs
   }
 `
 
@@ -42,33 +35,20 @@ const PlaybackProgressBar = ({
     }
 
     const id = setInterval(() => {
-      const data = client.readQuery({
-        query: PLAYBACK_PROGRESS_QUERY,
+      const playbackState = client.readFragment({
+        fragment: PLAYBACK_PROGRESS_FRAGMENT,
+        id: client.cache.identify({ __typename: 'PlaybackState' }),
       })
 
-      const playbackState = data?.me?.player.playbackState
-
-      if (playbackState) {
-        client.writeQuery({
-          query: PLAYBACK_PROGRESS_QUERY,
-          data: {
-            me: {
-              __typename: 'CurrentUser',
-              player: {
-                __typename: 'Player',
-                playbackState: {
-                  __typename: 'PlaybackState',
-                  timestamp: Date.now(),
-                  progressMs:
-                    Date.now() -
-                    playbackState.timestamp +
-                    (playbackState.progressMs ?? 0),
-                },
-              },
-            },
-          },
-        })
-      }
+      client.writeFragment({
+        fragment: PLAYBACK_PROGRESS_FRAGMENT,
+        id: client.cache.identify({ __typename: 'PlaybackState' }),
+        data: {
+          timestamp: Date.now(),
+          progressMs:
+            Date.now() - playbackState.timestamp + playbackState.progressMs,
+        },
+      })
     }, 1000)
 
     return () => clearInterval(id)

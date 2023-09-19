@@ -47,36 +47,36 @@ export const useResumePlaybackMutation = () => {
             return
           }
 
-          cache.writeQuery({
-            query: gql`
-              query ResumePlaybackCacheQuery {
-                me {
-                  player {
-                    playbackState {
-                      isPlaying
-                      progressMs
-                      timestamp
-                      shuffleState
-                      repeatState
-                      device {
-                        id
-                      }
-                      context {
-                        uri
-                      }
-                      track {
-                        id
-                      }
-                    }
+          const playbackStateRef = cache.writeFragment({
+            id: cache.identify({ __typename: 'PlaybackState' }),
+            fragment: gql`
+              fragment ResumePlaybackCacheFragment on PlaybackState {
+                playbackState {
+                  isPlaying
+                  progressMs
+                  timestamp
+                  shuffleState
+                  repeatState
+                  device {
+                    id
+                  }
+                  context {
+                    uri
+                  }
+                  track {
+                    id
                   }
                 }
               }
             `,
-            data: {
-              me: {
-                player: {
-                  playbackState,
-                },
+            data: playbackState,
+          })
+
+          cache.modify({
+            id: cache.identify({ __typename: 'Player' }),
+            fields: {
+              playbackState: () => {
+                return playbackStateRef ?? null
               },
             },
           })
