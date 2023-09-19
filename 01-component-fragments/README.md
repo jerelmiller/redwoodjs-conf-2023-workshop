@@ -1,3 +1,3 @@
-# RedwoodJS Conf 2023
+# Exercise 1: Component fragments
 
-TODO congratulations message
+In this exercise, we will explore how to utilize GraphQL [fragments](https://graphql.org/learn/queries/#fragments) with components to declare their own data needs.
