@@ -8,11 +8,8 @@ import {
 import { Link, routes } from '@redwoodjs/router'
 import type { CellSuccessProps, CellFailureProps } from '@redwoodjs/web'
 
-import CoverPhoto from 'src/components/CoverPhoto'
 import DateTime from 'src/components/DateTime'
-import DelimitedList from 'src/components/DelimitedList'
 import Duration from 'src/components/Duration'
-import ExplicitBadge from 'src/components/ExplicitBadge'
 import LikeButton from 'src/components/LikeButton'
 import PageContainer from 'src/components/PageContainer'
 import PageContent from 'src/components/PageContent'
@@ -32,6 +29,8 @@ import TableHeader from 'src/components/TableHeader'
 import TableRow from 'src/components/TableRow'
 import TrackNumberCell from 'src/components/TrackNumberCell'
 import { useResumePlaybackMutation } from 'src/mutations/useResumePlaybackMutation'
+
+import TrackTitleTableCell from '../TrackTitleTableCell/TrackTitleTableCell'
 
 export const QUERY = gql`
   query FindPlaylistQuery($id: ID!, $offset: Int = 0) {
@@ -190,36 +189,7 @@ export const Success = ({
                   <TableCell shrink>
                     <TrackNumberCell position={index + 1} />
                   </TableCell>
-                  <TableCell>
-                    <div className="flex items-end gap-2">
-                      <CoverPhoto
-                        className="flex-shrink-0"
-                        image={track.album.images.at(-1)}
-                        size="2.5rem"
-                      />
-                      <div className="flex flex-col">
-                        <span className="line-clamp-1 text-base text-primary">
-                          {track.name}
-                        </span>
-                        <div className="flex items-center gap-2">
-                          {track.explicit && <ExplicitBadge />}
-                          <span className="text-muted">
-                            <DelimitedList delimiter=", ">
-                              {track.artists.map((artist) => (
-                                <Link
-                                  key={artist.id}
-                                  className="transition-colors duration-150 hover:text-primary"
-                                  to={routes.artist({ id: artist.id })}
-                                >
-                                  {artist.name}
-                                </Link>
-                              ))}
-                            </DelimitedList>
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                  </TableCell>
+                  <TrackTitleTableCell track={track} />
                   <TableCell>
                     <Link
                       className="text-muted transition-colors hover:text-primary"

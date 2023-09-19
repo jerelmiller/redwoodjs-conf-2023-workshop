@@ -20,9 +20,7 @@ import { useResumePlaybackMutation } from 'src/mutations/useResumePlaybackMutati
 import { yearOfRelease } from 'src/utils/releaseDate'
 import { pluralize } from 'src/utils/string'
 
-import DelimitedList from '../DelimitedList/DelimitedList'
 import Duration from '../Duration'
-import ExplicitBadge from '../ExplicitBadge'
 import LikeButton from '../LikeButton'
 import Table from '../Table'
 import TableBody from '../TableBody'
@@ -31,6 +29,7 @@ import TableHead from '../TableHead'
 import TableHeader from '../TableHeader'
 import TableRow from '../TableRow'
 import TrackNumberCell from '../TrackNumberCell'
+import TrackTitleTableCell from '../TrackTitleTableCell/TrackTitleTableCell'
 
 export const QUERY = gql`
   query FindAlbumQuery($id: ID!) {
@@ -189,27 +188,10 @@ export const Success = ({
                   <TableCell shrink>
                     <TrackNumberCell position={index + 1} />
                   </TableCell>
-                  <TableCell>
-                    <div className="flex flex-col">
-                      <span className="text-base">{track.name}</span>
-                      <div className="flex items-center gap-2">
-                        {track.explicit && <ExplicitBadge />}
-                        <span className="text-muted">
-                          <DelimitedList delimiter=", ">
-                            {track.artists.map((artist) => (
-                              <Link
-                                key={artist.id}
-                                to={routes.artist({ id: artist.id })}
-                                className="transition-colors duration-[0.15s] hover:text-primary"
-                              >
-                                {artist.name}
-                              </Link>
-                            ))}
-                          </DelimitedList>
-                        </span>
-                      </div>
-                    </div>
-                  </TableCell>
+                  <TrackTitleTableCell
+                    track={track}
+                    includeCoverPhoto={false}
+                  />
                   <TableCell shrink>
                     <div className="px-2">
                       <LikeButton

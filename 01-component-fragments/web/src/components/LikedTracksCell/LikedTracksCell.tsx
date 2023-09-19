@@ -10,11 +10,8 @@ import PageHeaderContent from 'src/components/PageHeaderContent'
 import PageMediaType from 'src/components/PageMediaType'
 import { useResumePlaybackMutation } from 'src/mutations/useResumePlaybackMutation'
 
-import CoverPhoto from '../CoverPhoto'
 import DateTime from '../DateTime'
-import DelimitedList from '../DelimitedList'
 import Duration from '../Duration'
-import ExplicitBadge from '../ExplicitBadge'
 import LikeButton from '../LikeButton'
 import LikedTracksCoverPhoto from '../LikedTracksCoverPhoto'
 import PageContent from '../PageContent'
@@ -28,6 +25,7 @@ import TableHead from '../TableHead'
 import TableHeader from '../TableHeader'
 import TableRow from '../TableRow'
 import TrackNumberCell from '../TrackNumberCell/TrackNumberCell'
+import TrackTitleTableCell from '../TrackTitleTableCell/TrackTitleTableCell'
 
 export const QUERY = gql`
   query LikedTracksQuery {
@@ -130,35 +128,7 @@ export const Success = ({ me }: CellSuccessProps<LikedTracksQuery>) => {
                   <TableCell shrink>
                     <TrackNumberCell position={index + 1} />
                   </TableCell>
-                  <TableCell>
-                    <div className="flex items-end gap-2">
-                      <CoverPhoto
-                        image={track.album.images.at(-1)}
-                        size="2.5rem"
-                      />
-                      <div className="flex flex-col">
-                        <span className="text-base text-primary">
-                          {track.name}
-                        </span>
-                        <div className="flex items-center gap-2">
-                          {track.explicit && <ExplicitBadge />}
-                          <span className="text-muted">
-                            <DelimitedList delimiter=", ">
-                              {track.artists.map((artist) => (
-                                <Link
-                                  key={artist.id}
-                                  className="transition-colors duration-150 hover:text-primary"
-                                  to={routes.artist({ id: artist.id })}
-                                >
-                                  {artist.name}
-                                </Link>
-                              ))}
-                            </DelimitedList>
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                  </TableCell>
+                  <TrackTitleTableCell track={track} />
                   <TableCell>
                     <Link
                       className="text-muted transition-colors hover:text-primary"
