@@ -6,7 +6,6 @@ import type { CellSuccessProps, CellFailureProps } from '@redwoodjs/web'
 
 import DateTime from 'src/components/DateTime'
 import Duration from 'src/components/Duration'
-import LikeButton from 'src/components/LikeButton'
 import LikedTracksCoverPhoto from 'src/components/LikedTracksCoverPhoto'
 import PageContainer from 'src/components/PageContainer'
 import PageContent from 'src/components/PageContent'
