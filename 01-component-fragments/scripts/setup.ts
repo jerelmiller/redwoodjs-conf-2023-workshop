@@ -32,4 +32,5 @@ const symlink = (target: string, pathname: string) => {
 export default async () => {
   // linkToShared('../api/db/dev.db')
   // linkToShared('../workshop.config.toml')
+  symlink(getRelative('../README.md'), getRelative('../web/src/README.md'))
 }
