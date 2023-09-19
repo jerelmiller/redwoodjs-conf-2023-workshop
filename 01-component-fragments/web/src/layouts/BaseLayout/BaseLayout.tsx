@@ -2,10 +2,12 @@ import { Home, Library, Pin } from 'lucide-react'
 
 import { Link, routes } from '@redwoodjs/router'
 
-import ApolloLogo from 'src/components/ApolloLogo'
+import ConferenceLogo from 'src/components/ConferenceLogo/ConferenceLogo'
 import CurrentUserMenuCell from 'src/components/CurrentUserMenuCell'
 import DelimitedList from 'src/components/DelimitedList'
 import LikedTracksCoverPhoto from 'src/components/LikedTracksCoverPhoto/LikedTracksCoverPhoto'
+import RedwoodConfLogo from 'src/components/RedwoodConfLogo/RedwoodConfLogo'
+import RedwoodLogo from 'src/components/RedwoodLogo/RedwoodLogo'
 import ScrollableList from 'src/components/ScrollableList'
 import SidebarNavLink from 'src/components/SidebarNavLink'
 import SidebarPlaylistContent from 'src/components/SidebarPlaylistContent/SidebarPlaylistContent'
@@ -26,10 +28,17 @@ const BaseLayout = ({ children }: BaseLayoutProps) => {
         'grid h-screen grid-cols-[375px_1fr] gap-2 p-2 [grid-template-areas:"sidebar_main-view""playbar_playbar"] [grid-template-rows:1fr_auto]'
       }
     >
-      <aside className="overflow-auto pb-0 pt-4 text-primary [grid-area:sidebar]">
+      <aside className="overflow-auto pb-0 pt-0 text-primary [grid-area:sidebar]">
         <nav className="flex h-full flex-col">
-          <Link to={routes.home()} className="-left-3 flex justify-center py-2">
-            <ApolloLogo size="225px" className="relative -left-3" />
+          <Link
+            to={routes.home()}
+            className="flex items-center gap-2 py-2 pl-4 hover:no-underline"
+          >
+            <RedwoodLogo size="70px" />
+            <div className="flex flex-col">
+              <RedwoodConfLogo width="200" />
+              <ConferenceLogo width="200" />
+            </div>
           </Link>
 
           <SidebarSection className="px-4 py-2">
