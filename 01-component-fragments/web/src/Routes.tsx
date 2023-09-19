@@ -18,8 +18,8 @@ const Routes = () => {
     <Router useAuth={useAuth}>
       <Route path="/login" page={LoginPage} name="login" />
       <Route path="/logout" page={LogoutPage} name="logout" />
+      <Route path="/" page={HomePage} name="home" />
       <Set wrap={BaseLayout}>
-        <Route path="/" page={HomePage} name="home" />
         <Route path="/albums/{id}" page={AlbumPage} name="album" />
         <Route path="/artists/{id}" page={ArtistPage} name="artist" />
         <Route path="/collection/tracks" page={LikedTracksPage} name="likedTracks" />
