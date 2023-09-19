@@ -33,7 +33,10 @@ const ProgressBar = ({
       className={cx(
         'relative block h-[0.375rem] w-[var(--progress-bar--width,100%)] overflow-hidden rounded-2xl border border-solid border-transparent bg-surface-active',
         className,
-        { 'cursor-pointer': onChange, 'cursor-not-allowed': disabled }
+        {
+          'cursor-pointer': onChange && !disabled,
+          'cursor-not-allowed': disabled,
+        }
       )}
       max={max}
       value={value}
