@@ -44,43 +44,15 @@ export const useResumePlaybackMutation = () => {
       return execute({
         variables: { input },
         update: (cache, { data }) => {
-          const playbackState = data?.resumePlayback?.playbackState
-
-          if (!playbackState) {
+          if (!data?.resumePlayback?.playbackState) {
             return
           }
-
-          const playbackStateRef = cache.writeFragment({
-            id: cache.identify({ __typename: 'PlaybackState' }),
-            fragment: gql`
-              fragment ResumePlaybackCacheFragment on PlaybackState {
-                isPlaying
-                progressMs
-                timestamp
-                shuffleState
-                repeatState
-                device {
-                  id
-                  name
-                  type
-                  volumePercent
-                }
-                context {
-                  uri
-                }
-                track {
-                  id
-                }
-              }
-            `,
-            data: playbackState,
-          })
 
           cache.modify({
             id: cache.identify({ __typename: 'Player' }),
             fields: {
-              playbackState: () => {
-                return playbackStateRef ?? null
+              playbackState: (_, { toReference }) => {
+                return toReference({ __typename: 'PlaybackState' }) ?? null
               },
             },
           })
