@@ -17,15 +17,15 @@ export const QUERY = gql`
       followerCount
       name
       albums(includeTypes: [ALBUM]) {
-        ...ArtistRouteQuery_albums
+        ...ArtistRouteQueryAlbumFragment
       }
 
       singles: albums(includeTypes: [SINGLE]) {
-        ...ArtistRouteQuery_albums
+        ...ArtistRouteQueryAlbumFragment
       }
 
       compilations: albums(includeTypes: [COMPILATION]) {
-        ...ArtistRouteQuery_albums
+        ...ArtistRouteQueryAlbumFragment
       }
 
       images {
@@ -34,12 +34,18 @@ export const QUERY = gql`
     }
   }
 
-  fragment ArtistRouteQuery_albums on ArtistAlbumsConnection {
+  fragment ArtistRouteQueryAlbumFragment on ArtistAlbumsConnection {
     edges {
       node {
         id
         name
-        ...AlbumTile_album
+        albumType
+        releaseDate {
+          date
+        }
+        images {
+          url
+        }
       }
     }
   }

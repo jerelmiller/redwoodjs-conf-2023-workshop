@@ -37,8 +37,7 @@ export const QUERY = gql`
       albums(limit: $limit) {
         edges {
           node {
-            id
-            ...AlbumTile_album
+            ...HomeQueryAlbumFragment
           }
         }
       }
@@ -46,10 +45,21 @@ export const QUERY = gql`
     albums(limit: 20) {
       edges {
         node {
-          id
-          ...AlbumTile_album
+          ...HomeQueryAlbumFragment
         }
       }
+    }
+  }
+
+  fragment HomeQueryAlbumFragment on Album {
+    id
+    name
+    albumType
+    releaseDate {
+      date
+    }
+    images {
+      url
     }
   }
 `
