@@ -28,7 +28,7 @@ import TableCell from '../TableCell'
 import TableHead from '../TableHead'
 import TableHeader from '../TableHeader'
 import TableRow from '../TableRow'
-import TrackNumberCell from '../TrackNumberCell'
+import TrackNumberTableCell from '../TrackNumberTableCell'
 import TrackTitleTableCell from '../TrackTitleTableCell/TrackTitleTableCell'
 
 export const QUERY = gql`
@@ -185,9 +185,7 @@ export const Success = ({
                     resumePlayback({ contextUri: album.uri, uri: track.uri })
                   }}
                 >
-                  <TableCell shrink>
-                    <TrackNumberCell position={index + 1} />
-                  </TableCell>
+                  <TrackNumberTableCell position={index + 1} />
                   <TrackTitleTableCell
                     track={track}
                     includeCoverPhoto={false}

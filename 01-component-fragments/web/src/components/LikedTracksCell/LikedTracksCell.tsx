@@ -4,28 +4,27 @@ import type { LikedTracksQuery } from 'types/graphql'
 import { Link, routes } from '@redwoodjs/router'
 import type { CellSuccessProps, CellFailureProps } from '@redwoodjs/web'
 
+import DateTime from 'src/components/DateTime'
+import Duration from 'src/components/Duration'
+import LikeButton from 'src/components/LikeButton'
+import LikedTracksCoverPhoto from 'src/components/LikedTracksCoverPhoto'
 import PageContainer from 'src/components/PageContainer'
+import PageContent from 'src/components/PageContent'
 import PageHeader from 'src/components/PageHeader'
 import PageHeaderContent from 'src/components/PageHeaderContent'
+import PageHeaderDetails from 'src/components/PageHeaderDetails'
 import PageMediaType from 'src/components/PageMediaType'
+import PageTitle from 'src/components/PageTitle'
+import PlayButton from 'src/components/PlayButton'
+import Table from 'src/components/Table'
+import TableBody from 'src/components/TableBody'
+import TableCell from 'src/components/TableCell'
+import TableHead from 'src/components/TableHead'
+import TableHeader from 'src/components/TableHeader'
+import TableRow from 'src/components/TableRow'
+import TrackNumberTableCell from 'src/components/TrackNumberTableCell'
+import TrackTitleTableCell from 'src/components/TrackTitleTableCell'
 import { useResumePlaybackMutation } from 'src/mutations/useResumePlaybackMutation'
-
-import DateTime from '../DateTime'
-import Duration from '../Duration'
-import LikeButton from '../LikeButton'
-import LikedTracksCoverPhoto from '../LikedTracksCoverPhoto'
-import PageContent from '../PageContent'
-import PageHeaderDetails from '../PageHeaderDetails'
-import PageTitle from '../PageTitle'
-import PlayButton from '../PlayButton'
-import Table from '../Table'
-import TableBody from '../TableBody'
-import TableCell from '../TableCell'
-import TableHead from '../TableHead'
-import TableHeader from '../TableHeader'
-import TableRow from '../TableRow'
-import TrackNumberCell from '../TrackNumberCell/TrackNumberCell'
-import TrackTitleTableCell from '../TrackTitleTableCell/TrackTitleTableCell'
 
 export const QUERY = gql`
   query LikedTracksQuery {
@@ -125,9 +124,7 @@ export const Success = ({ me }: CellSuccessProps<LikedTracksQuery>) => {
                     resumePlayback({ contextUri: CONTEXT_URI, uri: track.uri })
                   }}
                 >
-                  <TableCell shrink>
-                    <TrackNumberCell position={index + 1} />
-                  </TableCell>
+                  <TrackNumberTableCell position={index + 1} />
                   <TrackTitleTableCell track={track} />
                   <TableCell>
                     <Link
