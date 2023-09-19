@@ -7,6 +7,8 @@ import {
 
 import { useMutation } from '@redwoodjs/web'
 
+import NotificationManager from 'src/components/NotificationManager'
+
 const SAVE_TRACK_MUTATION: TypedDocumentNode<
   SaveTrackMutation,
   SaveTrackMutationVariables
@@ -25,6 +27,11 @@ export const useSaveTrackMutation = () => {
   const [execute] = useMutation(SAVE_TRACK_MUTATION)
 
   return (input: SaveTrackInput) => {
-    return execute({ variables: { input } })
+    return execute({
+      variables: { input },
+      onCompleted: () => {
+        NotificationManager.notify('Added to your Liked Songs')
+      },
+    })
   }
 }
