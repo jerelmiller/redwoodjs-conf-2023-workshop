@@ -25,6 +25,7 @@ import TableRow from 'src/components/TableRow'
 import TrackNumberTableCell from 'src/components/TrackNumberTableCell'
 import TrackTitleTableCell from 'src/components/TrackTitleTableCell'
 import { useResumePlaybackMutation } from 'src/mutations/useResumePlaybackMutation'
+import { pluralize } from 'src/utils/string'
 
 import LikedTrackTableCell from '../LikedTrackTableCell/LikedTrackTableCell'
 
@@ -36,6 +37,9 @@ export const QUERY = gql`
         displayName
       }
       tracks {
+        pageInfo {
+          total
+        }
         edges {
           addedAt
           node {
@@ -109,14 +113,13 @@ export const Loading = () => {
   )
 }
 
-export const Empty = () => <div>Empty</div>
-
 export const Failure = ({ error }: CellFailureProps) => (
   <div style={{ color: 'red' }}>Error: {error?.message}</div>
 )
 
 export const Success = ({ me }: CellSuccessProps<LikedTracksQuery>) => {
   const resumePlayback = useResumePlaybackMutation()
+  const totalTracks = me.tracks?.pageInfo.total ?? 0
 
   return (
     <PageContainer bgColor="#1F3363">
@@ -131,7 +134,9 @@ export const Success = ({ me }: CellSuccessProps<LikedTracksQuery>) => {
           <PageTitle>Liked Songs</PageTitle>
           <PageHeaderDetails>
             <span className="font-bold">{me.profile?.displayName}</span>
-            <span>1 song</span>
+            <span>
+              {totalTracks} {pluralize('track', totalTracks)}
+            </span>
           </PageHeaderDetails>
         </PageHeaderContent>
       </PageHeader>
