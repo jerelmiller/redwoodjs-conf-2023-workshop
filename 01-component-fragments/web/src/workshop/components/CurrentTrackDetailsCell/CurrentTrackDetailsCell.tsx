@@ -10,6 +10,8 @@ import CoverPhoto from 'src/components/CoverPhoto'
 import DelimitedList from 'src/components/DelimitedList'
 import LikeButton from 'src/components/LikeButton'
 import Skeleton from 'src/components/Skeleton/Skeleton'
+import { useRemoveSavedTrackMutation } from 'src/mutations/useRemoveSavedTrackMutation'
+import { useSaveTrackMutation } from 'src/mutations/useSaveTrackMutation'
 
 export const QUERY = gql`
   query CurrentTrackDetailsCellQuery {
@@ -55,7 +57,10 @@ export const Success = ({
   CurrentTrackDetailsCellQuery,
   CurrentTrackDetailsCellQueryVariables
 >) => {
+  const saveTrack = useSaveTrackMutation()
+  const removeSavedTrack = useRemoveSavedTrackMutation()
   const currentTrack = me.player.playbackState?.track
+  const liked = false
 
   return (
     <div className="flex items-center gap-4">
@@ -79,7 +84,17 @@ export const Success = ({
               </DelimitedList>
             </span>
           </div>
-          <LikeButton liked={false} size="1.25rem" />
+          <LikeButton
+            liked={liked}
+            size="1.25rem"
+            onClick={() => {
+              if (liked) {
+                removeSavedTrack({ id: currentTrack.id })
+              } else {
+                saveTrack({ id: currentTrack.id })
+              }
+            }}
+          />
         </>
       )}
     </div>
