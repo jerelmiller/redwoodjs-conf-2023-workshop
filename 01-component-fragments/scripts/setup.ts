@@ -17,11 +17,19 @@ const linkToShared = (pathname: string) => {
     fs.cpSync(absolutePath, sharedPath)
   }
 
-  const tmpPath = `${absolutePath}.tmp`
-  fs.symlinkSync(sharedPath, tmpPath)
-  fs.renameSync(tmpPath, absolutePath)
+  symlink(sharedPath, absolutePath)
+}
+
+// Create a tmp symlink, then rename it to force symlinking and avoid errors
+// when the file or symlink already exists
+const symlink = (target: string, pathname: string) => {
+  const tmpPath = `${pathname}.tmp`
+
+  fs.symlinkSync(target, tmpPath)
+  fs.renameSync(tmpPath, pathname)
 }
 
 export default async () => {
-  linkToShared('../api/db/dev.db')
+  // linkToShared('../api/db/dev.db')
+  // linkToShared('../workshop.config.toml')
 }
