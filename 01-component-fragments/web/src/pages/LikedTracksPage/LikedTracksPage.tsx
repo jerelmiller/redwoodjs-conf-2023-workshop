@@ -5,7 +5,7 @@ import LikedTracksCell from 'src/components/LikedTracksCell'
 const LikedTracksPage = () => {
   return (
     <>
-      <MetaTags title="LikedTracks" description="LikedTracks page" />
+      <MetaTags title="Liked songs" description="LikedTracks page" />
       <LikedTracksCell />
     </>
   )
