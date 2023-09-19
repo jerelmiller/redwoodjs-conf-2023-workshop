@@ -17,7 +17,8 @@ export interface ButtonProps<TButtonElement extends ElementType = 'button'> {
 }
 
 type ButtonComponent = <TButtonElement extends ElementType = 'button'>(
-  props: ButtonProps<TButtonElement>
+  props: Omit<ComponentPropsWithRef<ElementType>, keyof ButtonProps> &
+    ButtonProps<TButtonElement>
 ) => ReactElement | ReactNode | null
 
 const Button: ButtonComponent = forwardRef(function Button<
