@@ -13,7 +13,6 @@ type WorkshopConfig = {
   }
   spotify: {
     saved: {
-      albumIds: string[]
       trackIds: string[]
     }
     synced: {
