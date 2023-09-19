@@ -43,6 +43,32 @@ declare global {
 
 const getAuthUrl = () => `${RWJS_API_URL}/auth`
 
+const getToken = async () => {
+  if (getTokenPromise) {
+    return getTokenPromise
+  }
+
+  if (isTokenCacheExpired()) {
+    getTokenPromise = fetch(`${getAuthUrl()}?method=getToken`, {
+      credentials: 'same-origin',
+    })
+      .then((res) => res.text())
+      .then((token) => {
+        console.log('got token', token)
+        lastCheckedAt = new Date()
+        cachedToken = token.length === 0 ? null : token
+
+        return cachedToken
+      })
+      .catch(() => null)
+      .finally(() => {
+        getTokenPromise = null
+      })
+  }
+
+  return cachedToken
+}
+
 // Replace this with the auth service provider client sdk
 const client: AuthClient = {
   login: async () => {
@@ -67,33 +93,8 @@ const client: AuthClient = {
 
     return true
   },
-  getToken: async () => {
-    if (getTokenPromise) {
-      return getTokenPromise
-    }
-
-    if (isTokenCacheExpired()) {
-      getTokenPromise = fetch(`${getAuthUrl()}?method=getToken`, {
-        credentials: 'same-origin',
-      })
-        .then((res) => res.text())
-        .then((token) => {
-          cachedToken = token.length === 0 ? null : token
-
-          if (cachedToken) {
-            lastCheckedAt = new Date()
-          }
-
-          return cachedToken
-        })
-        .finally(() => {
-          getTokenPromise = null
-        })
-    }
-
-    return cachedToken
-  },
-  getUserMetadata: () => client.getToken(),
+  getToken,
+  getUserMetadata: getToken,
 }
 
 function createAuth() {
