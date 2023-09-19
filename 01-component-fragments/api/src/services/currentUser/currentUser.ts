@@ -90,4 +90,17 @@ export const CurrentUser: CurrentUserResolvers = {
       })),
     }
   },
+  tracksContains: async ({ ids }) => {
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const currentUser = context.currentUser!
+
+    const savedTracks = await db.savedTrack.findMany({
+      where: { userId: currentUser.id, trackId: { in: ids } },
+      select: { trackId: true },
+    })
+
+    const savedTrackIds = savedTracks.map((track) => track.trackId)
+
+    return ids.map((id) => savedTrackIds.includes(id))
+  },
 }

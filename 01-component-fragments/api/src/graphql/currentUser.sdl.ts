@@ -47,6 +47,16 @@ export const schema = gql`
       """
       offset: Int = 0
     ): SavedTracksConnection
+
+    """
+    Check if one or more tracks is already saved in the current user's library.
+    """
+    tracksContains(
+      """
+      A comma-separated list of the IDs for the tracks.
+      """
+      ids: [ID!]!
+    ): [Boolean!]
   }
 
   type SavedAlbumConnection {
