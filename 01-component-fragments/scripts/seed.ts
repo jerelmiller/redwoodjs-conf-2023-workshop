@@ -422,7 +422,7 @@ const removeOldUsers = async () => {
   })
 }
 
-const DEVICE_TYPES = ['computer', 'mobile', 'speaker']
+const DEVICE_TYPES = ['computer', 'smartphone', 'speaker']
 
 const saveDevice = async (currentUser: { id: string }) => {
   const name = config.device.name ?? 'My Computer'
