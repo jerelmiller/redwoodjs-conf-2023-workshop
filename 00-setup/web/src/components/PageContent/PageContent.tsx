@@ -9,7 +9,7 @@ interface PageContentProps {
 
 const PageContent = ({ children, gap }: PageContentProps) => {
   return (
-    <div className="relative flex-1 bg-black-base">
+    <div className="relative flex flex-1 flex-col bg-black-base">
       <div
         className={cx(
           'absolute h-[230px] w-full transition duration-200 ease-out [background:var(--backdrop-color)]',
