@@ -6,6 +6,7 @@ import ConferenceLogo from 'src/components/ConferenceLogo/ConferenceLogo'
 import CurrentUserMenuCell from 'src/components/CurrentUserMenuCell'
 import DelimitedList from 'src/components/DelimitedList'
 import LikedTracksCoverPhoto from 'src/components/LikedTracksCoverPhoto/LikedTracksCoverPhoto'
+import NotificationManager from 'src/components/NotificationManager/NotificationManager'
 import PlaybarCell from 'src/components/PlaybarCell'
 import RedwoodConfLogo from 'src/components/RedwoodConfLogo/RedwoodConfLogo'
 import RedwoodLogo from 'src/components/RedwoodLogo/RedwoodLogo'
@@ -96,6 +97,7 @@ const BaseLayout = ({ children }: BaseLayoutProps) => {
       </main>
 
       <PlaybarCell />
+      <NotificationManager />
     </div>
   )
 }
