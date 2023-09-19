@@ -19,6 +19,9 @@ const RESUME_PLAYBACK_MUTATION = gql`
         repeatState
         device {
           id
+          name
+          type
+          volumePercent
         }
         context {
           uri
@@ -59,6 +62,9 @@ export const useResumePlaybackMutation = () => {
                   repeatState
                   device {
                     id
+                    name
+                    type
+                    volumePercent
                   }
                   context {
                     uri
