@@ -1,4 +1,3 @@
-import cx from 'classnames'
 import { Clock } from 'lucide-react'
 import {
   type FindPlaylistQuery,
@@ -10,7 +9,6 @@ import type { CellSuccessProps, CellFailureProps } from '@redwoodjs/web'
 
 import DateTime from 'src/components/DateTime'
 import Duration from 'src/components/Duration'
-import LikeButton from 'src/components/LikeButton'
 import PageContainer from 'src/components/PageContainer'
 import PageContent from 'src/components/PageContent'
 import PageCoverPhoto from 'src/components/PageCoverPhoto'
@@ -30,6 +28,7 @@ import TableRow from 'src/components/TableRow'
 import TrackNumberTableCell from 'src/components/TrackNumberTableCell'
 import { useResumePlaybackMutation } from 'src/mutations/useResumePlaybackMutation'
 
+import LikedTrackTableCell from '../LikedTrackTableCell/LikedTrackTableCell'
 import TrackTitleTableCell from '../TrackTitleTableCell/TrackTitleTableCell'
 
 export const QUERY = gql`
@@ -133,8 +132,6 @@ export const Success = ({
   const totalTracks = pageInfo.total
   const coverPhoto = playlist.images[0]
 
-  const tracksContains = new Map()
-
   return (
     <PageContainer bgColor={coverPhoto.vibrantColor}>
       <PageHeader>
@@ -177,8 +174,6 @@ export const Success = ({
           </TableHead>
           <TableBody>
             {playlist.tracks.edges.map(({ addedAt, track }, index) => {
-              const liked = tracksContains.get(track.id) ?? false
-
               return (
                 <TableRow
                   key={track.id}
@@ -206,18 +201,7 @@ export const Success = ({
                       </span>
                     )}
                   </TableCell>
-                  <TableCell shrink>
-                    <div className="px-2">
-                      <LikeButton
-                        liked={liked}
-                        size="1rem"
-                        className={cx(
-                          'relative top-[2px] group-hover:visible',
-                          { invisible: !liked }
-                        )}
-                      />
-                    </div>
-                  </TableCell>
+                  <LikedTrackTableCell liked={false} track={track} />
                   <TableCell shrink>
                     <Duration durationMs={track.durationMs} />
                   </TableCell>

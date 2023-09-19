@@ -1,4 +1,3 @@
-import cx from 'classnames'
 import { Clock } from 'lucide-react'
 import type { FindAlbumQuery, FindAlbumQueryVariables } from 'types/graphql'
 
@@ -21,7 +20,7 @@ import { yearOfRelease } from 'src/utils/releaseDate'
 import { pluralize } from 'src/utils/string'
 
 import Duration from '../Duration'
-import LikeButton from '../LikeButton'
+import LikedTrackTableCell from '../LikedTrackTableCell/LikedTrackTableCell'
 import Table from '../Table'
 import TableBody from '../TableBody'
 import TableCell from '../TableCell'
@@ -129,7 +128,6 @@ export const Success = ({
   const resumePlayback = useResumePlaybackMutation()
   const coverPhoto = album.images[0]
   const totalTracks = album.tracks?.pageInfo.total ?? 0
-  const tracksContains = new Map()
 
   return (
     <PageContainer bgColor={coverPhoto.vibrantColor}>
@@ -176,8 +174,6 @@ export const Success = ({
           </TableHead>
           <TableBody>
             {album.tracks?.edges.map(({ node: track }, index) => {
-              const liked = tracksContains.get(track.id) ?? false
-
               return (
                 <TableRow
                   key={track.id}
@@ -190,20 +186,7 @@ export const Success = ({
                     track={track}
                     includeCoverPhoto={false}
                   />
-                  <TableCell shrink>
-                    <div className="px-2">
-                      <LikeButton
-                        liked={liked}
-                        size="1rem"
-                        className={cx(
-                          'relative top-[2px] group-hover:visible',
-                          {
-                            invisible: !liked,
-                          }
-                        )}
-                      />
-                    </div>
-                  </TableCell>
+                  <LikedTrackTableCell liked={false} track={track} />
                   <TableCell shrink>
                     <Duration durationMs={track.durationMs} />
                   </TableCell>

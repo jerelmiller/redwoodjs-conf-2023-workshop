@@ -27,6 +27,8 @@ import TrackNumberTableCell from 'src/components/TrackNumberTableCell'
 import TrackTitleTableCell from 'src/components/TrackTitleTableCell'
 import { useResumePlaybackMutation } from 'src/mutations/useResumePlaybackMutation'
 
+import LikedTrackTableCell from '../LikedTrackTableCell/LikedTrackTableCell'
+
 export const QUERY = gql`
   query LikedTracksQuery {
     me {
@@ -182,15 +184,7 @@ export const Success = ({ me }: CellSuccessProps<LikedTracksQuery>) => {
                       />
                     </span>
                   </TableCell>
-                  <TableCell shrink>
-                    <div className="px-2">
-                      <LikeButton
-                        liked
-                        size="1rem"
-                        className="relative top-[2px]"
-                      />
-                    </div>
-                  </TableCell>
+                  <LikedTrackTableCell liked track={track} />
                   <TableCell shrink>
                     <Duration durationMs={track.durationMs} />
                   </TableCell>
