@@ -1,8 +1,10 @@
 import { Link, routes } from '@redwoodjs/router'
 
+import Button from 'src/components/Button'
 import ConferenceLogo from 'src/components/ConferenceLogo'
 import RedwoodConfLogo from 'src/components/RedwoodConfLogo'
 import RedwoodLogo from 'src/components/RedwoodLogo/RedwoodLogo'
+import SidebarSection from 'src/components/SidebarSection'
 
 type UnauthenticatedLayoutProps = {
   children?: React.ReactNode
@@ -27,6 +29,22 @@ const UnauthenticatedLayout = ({ children }: UnauthenticatedLayoutProps) => {
               <ConferenceLogo width="200" />
             </div>
           </Link>
+          <SidebarSection className="p-4">
+            <h3 className="font-semibold">Ready to get started?</h3>
+            <p className="mt-2">
+              Log in to make sure the setup completed successfully. Feel free to
+              ask questions if you get stuck at this step.
+            </p>
+            <Button
+              as="a"
+              href="/login"
+              variant="secondary"
+              size="sm"
+              className="mt-6"
+            >
+              Log in
+            </Button>
+          </SidebarSection>
         </nav>
       </aside>
 
