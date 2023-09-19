@@ -1,4 +1,4 @@
-import { Clock } from 'lucide-react'
+import { Clock, Music } from 'lucide-react'
 import type { LikedTracksQuery, LikedTracksQueryVariables } from 'types/graphql'
 
 import { Link, routes } from '@redwoodjs/router'
@@ -27,6 +27,9 @@ import TrackTitleTableCell from 'src/components/TrackTitleTableCell'
 import { useResumePlaybackMutation } from 'src/mutations/useResumePlaybackMutation'
 import { pluralize } from 'src/utils/string'
 
+import EmptyState from '../EmptyState/EmptyState'
+import EmptyStateDescription from '../EmptyStateDescription/EmptyStateDescription'
+import EmptyStateTitle from '../EmptyStateTitle/EmptyStateTitle'
 import LikedTrackTableCell from '../LikedTrackTableCell/LikedTrackTableCell'
 
 export const QUERY = gql`
@@ -143,6 +146,7 @@ export const Success = ({ me }: CellSuccessProps<LikedTracksQuery>) => {
       <PageContent>
         <div>
           <PlayButton
+            disabled={totalTracks === 0}
             playing={false}
             size="3.5rem"
             variant="primary"
@@ -154,53 +158,66 @@ export const Success = ({ me }: CellSuccessProps<LikedTracksQuery>) => {
             }}
           />
         </div>
-        <Table>
-          <TableHead>
-            <TableHeader alignText="right">#</TableHeader>
-            <TableHeader>Title</TableHeader>
-            <TableHeader>Album</TableHeader>
-            <TableHeader>Date added</TableHeader>
-            <TableHeader />
-            <TableHeader alignText="right">
-              <Clock size="1rem" />
-            </TableHeader>
-          </TableHead>
-          <TableBody>
-            {me.tracks?.edges.map(({ addedAt, node: track }, index) => {
-              return (
-                <TableRow
-                  key={track.id}
-                  onDoubleClick={() => {
-                    resumePlayback({ contextUri: CONTEXT_URI, uri: track.uri })
-                  }}
-                >
-                  <TrackNumberTableCell position={index + 1} />
-                  <TrackTitleTableCell track={track} />
-                  <TableCell>
-                    <Link
-                      className="text-muted transition-colors hover:text-primary"
-                      to={routes.album({ id: track.album.id })}
-                    >
-                      {track.album.name}
-                    </Link>
-                  </TableCell>
-                  <TableCell>
-                    <span className="text-muted">
-                      <DateTime
-                        date={addedAt}
-                        format={DateTime.FORMAT.timeAgo}
-                      />
-                    </span>
-                  </TableCell>
-                  <LikedTrackTableCell liked track={track} />
-                  <TableCell shrink>
-                    <Duration durationMs={track.durationMs} />
-                  </TableCell>
-                </TableRow>
-              )
-            })}
-          </TableBody>
-        </Table>
+        {totalTracks > 0 ? (
+          <Table>
+            <TableHead>
+              <TableHeader alignText="right">#</TableHeader>
+              <TableHeader>Title</TableHeader>
+              <TableHeader>Album</TableHeader>
+              <TableHeader>Date added</TableHeader>
+              <TableHeader />
+              <TableHeader alignText="right">
+                <Clock size="1rem" />
+              </TableHeader>
+            </TableHead>
+            <TableBody>
+              {me.tracks?.edges.map(({ addedAt, node: track }, index) => {
+                return (
+                  <TableRow
+                    key={track.id}
+                    onDoubleClick={() => {
+                      resumePlayback({
+                        contextUri: CONTEXT_URI,
+                        uri: track.uri,
+                      })
+                    }}
+                  >
+                    <TrackNumberTableCell position={index + 1} />
+                    <TrackTitleTableCell track={track} />
+                    <TableCell>
+                      <Link
+                        className="text-muted transition-colors hover:text-primary"
+                        to={routes.album({ id: track.album.id })}
+                      >
+                        {track.album.name}
+                      </Link>
+                    </TableCell>
+                    <TableCell>
+                      <span className="text-muted">
+                        <DateTime
+                          date={addedAt}
+                          format={DateTime.FORMAT.timeAgo}
+                        />
+                      </span>
+                    </TableCell>
+                    <LikedTrackTableCell liked track={track} />
+                    <TableCell shrink>
+                      <Duration durationMs={track.durationMs} />
+                    </TableCell>
+                  </TableRow>
+                )
+              })}
+            </TableBody>
+          </Table>
+        ) : (
+          <EmptyState>
+            <Music size="3rem" className="text-muted" />
+            <EmptyStateTitle>Songs you like will appear here</EmptyStateTitle>
+            <EmptyStateDescription>
+              Save songs by tapping the heart icon.
+            </EmptyStateDescription>
+          </EmptyState>
+        )}
       </PageContent>
     </PageContainer>
   )
