@@ -62,6 +62,18 @@ export const schema = gql`
     uri: String!
   }
 
+  input RemoveSavedTrackInput {
+    """
+    The track id to remove from to the user's library.
+    """
+    id: ID!
+  }
+
+  type RemoveSavedTracksResponse {
+    "The track that was removed from the user's library."
+    track: Track
+  }
+
   input SaveTrackInput {
     """
     The track id to save to the user's library.
@@ -78,6 +90,12 @@ export const schema = gql`
   }
 
   type Mutation {
+    """
+    Remove one or more tracks from the current user's 'Your Music' library.
+    """
+    removeSavedTrack(input: RemoveSavedTrackInput!): RemoveSavedTracksResponse
+      @requireAuth
+
     """
     Save one or more tracks to the current user's 'Your Music' library.
     """
