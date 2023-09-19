@@ -1,6 +1,7 @@
 import cx from 'classnames'
 
 import TableCell from 'src/components/TableCell'
+import { useRemoveSavedTrackMutation } from 'src/mutations/useRemoveSavedTrackMutation'
 import { useSaveTrackMutation } from 'src/mutations/useSaveTrackMutation'
 
 import LikeButton from '../LikeButton'
@@ -16,6 +17,7 @@ interface LikedTrackTableCellProps {
 
 const LikedTrackTableCell = ({ track, liked }: LikedTrackTableCellProps) => {
   const saveTrack = useSaveTrackMutation()
+  const removeSavedTrack = useRemoveSavedTrackMutation()
 
   return (
     <TableCell shrink>
@@ -27,7 +29,9 @@ const LikedTrackTableCell = ({ track, liked }: LikedTrackTableCellProps) => {
             invisible: !liked,
           })}
           onClick={() => {
-            if (!liked) {
+            if (liked) {
+              removeSavedTrack({ id: track.id })
+            } else {
               saveTrack({ id: track.id })
             }
           }}
