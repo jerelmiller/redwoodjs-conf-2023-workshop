@@ -1,9 +1,4 @@
-import { useFragment } from '@apollo/client'
-import { Volume2 } from 'lucide-react'
-import {
-  SidebarPlaylistsCell_playbackState,
-  type SidebarPlaylistsQuery,
-} from 'types/graphql'
+import { type SidebarPlaylistsQuery } from 'types/graphql'
 
 import { routes } from '@redwoodjs/router'
 import type { CellSuccessProps, CellFailureProps } from '@redwoodjs/web'
@@ -39,15 +34,6 @@ export const QUERY = gql`
   }
 `
 
-const PLAYBACK_STATE_FRAGMENT = gql`
-  fragment SidebarPlaylistsCell_playbackState on PlaybackState {
-    isPlaying
-    context {
-      uri
-    }
-  }
-`
-
 export const Loading = () => {
   const skeletons = range(0, randomBetween(5, 8))
 
@@ -72,15 +58,7 @@ export const Failure = ({ error }: CellFailureProps) => (
 )
 
 export const Success = ({ me }: CellSuccessProps<SidebarPlaylistsQuery>) => {
-  const { data: playbackState } =
-    useFragment<SidebarPlaylistsCell_playbackState>({
-      fragment: PLAYBACK_STATE_FRAGMENT,
-      from: { __typename: 'PlaybackState' },
-    })
-
   return me?.playlists?.edges?.map(({ node: playlist }) => {
-    const isCurrentContext = playlist.uri === playbackState.context?.uri
-
     return (
       <SidebarPlaylistLink
         key={playlist.id}
@@ -88,7 +66,7 @@ export const Success = ({ me }: CellSuccessProps<SidebarPlaylistsQuery>) => {
       >
         <CoverPhoto image={playlist.images.at(-1)} size="48px" />
         <SidebarPlaylistContent>
-          <SidebarPlaylistName isCurrentContext={isCurrentContext}>
+          <SidebarPlaylistName isCurrentContext={false}>
             {playlist.name}
           </SidebarPlaylistName>
           <div className="flex items-center gap-2">
@@ -100,9 +78,6 @@ export const Success = ({ me }: CellSuccessProps<SidebarPlaylistsQuery>) => {
             </span>
           </div>
         </SidebarPlaylistContent>
-        {isCurrentContext && playbackState.isPlaying && (
-          <Volume2 color="var(--color--theme--light)" size="0.875rem" />
-        )}
       </SidebarPlaylistLink>
     )
   })

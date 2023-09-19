@@ -1,8 +1,6 @@
-import { useFragment } from '@apollo/client'
 import cx from 'classnames'
 import { Clock } from 'lucide-react'
 import {
-  PlaylistCell_playbackState,
   type FindPlaylistQuery,
   type FindPlaylistQueryVariables,
 } from 'types/graphql'
@@ -33,7 +31,6 @@ import TableHead from 'src/components/TableHead'
 import TableHeader from 'src/components/TableHeader'
 import TableRow from 'src/components/TableRow'
 import TrackNumberCell from 'src/components/TrackNumberCell'
-import { usePausePlaybackMutation } from 'src/mutations/usePausePlaybackMutation'
 import { useResumePlaybackMutation } from 'src/mutations/useResumePlaybackMutation'
 
 export const QUERY = gql`
@@ -73,22 +70,9 @@ export const QUERY = gql`
               id
               name
             }
-            ...TrackNumberCell_track
           }
         }
       }
-    }
-  }
-`
-
-const PLAYBACK_STATE_FRAGMENT = gql`
-  fragment PlaylistCell_playbackState on PlaybackState {
-    isPlaying
-    context {
-      uri
-    }
-    track {
-      id
     }
   }
 `
@@ -145,18 +129,10 @@ export const Failure = ({
 export const Success = ({
   playlist,
 }: CellSuccessProps<FindPlaylistQuery, FindPlaylistQueryVariables>) => {
-  const { data: playbackState } = useFragment<PlaylistCell_playbackState>({
-    fragment: PLAYBACK_STATE_FRAGMENT,
-    from: { __typename: 'PlaybackState' },
-  })
   const resumePlayback = useResumePlaybackMutation()
-  const pausePlayback = usePausePlaybackMutation()
   const { pageInfo } = playlist.tracks
   const totalTracks = pageInfo.total
   const coverPhoto = playlist.images[0]
-  const isPlaying = playbackState?.isPlaying ?? false
-  const isCurrentContext = playbackState?.context?.uri === playlist.uri
-  const isPlayingPlaylist = isCurrentContext && isPlaying
 
   const tracksContains = new Map()
 
@@ -178,20 +154,14 @@ export const Success = ({
       <PageContent>
         <div>
           <PlayButton
-            playing={isPlayingPlaylist}
+            playing={false}
             size="3.5rem"
             variant="primary"
             onClick={() => {
-              if (isPlayingPlaylist) {
-                pausePlayback()
-              } else if (isCurrentContext) {
-                resumePlayback()
-              } else {
-                resumePlayback({
-                  contextUri: playlist.uri,
-                  uri: playlist.tracks.edges[0].track.uri,
-                })
-              }
+              resumePlayback({
+                contextUri: playlist.uri,
+                uri: playlist.tracks.edges[0].track.uri,
+              })
             }}
           />
         </div>
@@ -218,7 +188,7 @@ export const Success = ({
                   }}
                 >
                   <TableCell shrink>
-                    <TrackNumberCell track={track} position={index + 1} />
+                    <TrackNumberCell position={index + 1} />
                   </TableCell>
                   <TableCell>
                     <div className="flex items-end gap-2">
@@ -228,11 +198,7 @@ export const Success = ({
                         size="2.5rem"
                       />
                       <div className="flex flex-col">
-                        <span
-                          className={cx('line-clamp-1 text-base text-primary', {
-                            'text-theme': playbackState.track?.id === track.id,
-                          })}
-                        >
+                        <span className="line-clamp-1 text-base text-primary">
                           {track.name}
                         </span>
                         <div className="flex items-center gap-2">

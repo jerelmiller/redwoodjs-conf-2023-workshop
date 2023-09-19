@@ -1,12 +1,6 @@
-import { useFragment } from '@apollo/client'
 import cx from 'classnames'
 import { Clock } from 'lucide-react'
-import type {
-  AlbumCell_playbackState,
-  FindAlbumQuery,
-  FindAlbumQueryVariables,
-  PlaylistCell_playbackState,
-} from 'types/graphql'
+import type { FindAlbumQuery, FindAlbumQueryVariables } from 'types/graphql'
 
 import { Link, routes } from '@redwoodjs/router'
 import type { CellSuccessProps, CellFailureProps } from '@redwoodjs/web'
@@ -22,7 +16,6 @@ import PageTitle from 'src/components/PageTitle'
 import PlayButton from 'src/components/PlayButton'
 import ReleaseDate from 'src/components/ReleaseDate'
 import Skeleton from 'src/components/Skeleton'
-import { usePausePlaybackMutation } from 'src/mutations/usePausePlaybackMutation'
 import { useResumePlaybackMutation } from 'src/mutations/useResumePlaybackMutation'
 import { yearOfRelease } from 'src/utils/releaseDate'
 import { pluralize } from 'src/utils/string'
@@ -77,22 +70,9 @@ export const QUERY = gql`
               id
               name
             }
-            ...TrackNumberCell_track
           }
         }
       }
-    }
-  }
-`
-
-const PLAYBACK_STATE_FRAGMENT = gql`
-  fragment AlbumCell_playbackState on PlaybackState {
-    isPlaying
-    context {
-      uri
-    }
-    track {
-      id
     }
   }
 `
@@ -147,18 +127,9 @@ export const Failure = ({
 export const Success = ({
   album,
 }: CellSuccessProps<FindAlbumQuery, FindAlbumQueryVariables>) => {
-  const { data: playbackState } = useFragment<AlbumCell_playbackState>({
-    fragment: PLAYBACK_STATE_FRAGMENT,
-    from: { __typename: 'PlaybackState' },
-  })
   const resumePlayback = useResumePlaybackMutation()
-  const pausePlayback = usePausePlaybackMutation()
   const coverPhoto = album.images[0]
   const totalTracks = album.tracks?.pageInfo.total ?? 0
-  const isPlaying = playbackState?.isPlaying ?? false
-  const isCurrentContext = playbackState?.context?.uri === album.uri
-  const isPlayingAlbum = isCurrentContext && isPlaying
-
   const tracksContains = new Map()
 
   return (
@@ -186,18 +157,12 @@ export const Success = ({
           <PlayButton
             variant="primary"
             size="3.5rem"
-            playing={isPlayingAlbum}
+            playing={false}
             onClick={() => {
-              if (isPlayingAlbum) {
-                pausePlayback()
-              } else if (isCurrentContext) {
-                resumePlayback()
-              } else {
-                resumePlayback({
-                  contextUri: album.uri,
-                  uri: album.tracks?.edges[0].node.uri,
-                })
-              }
+              resumePlayback({
+                contextUri: album.uri,
+                uri: album.tracks?.edges[0].node.uri,
+              })
             }}
           />
         </div>
@@ -222,17 +187,11 @@ export const Success = ({
                   }}
                 >
                   <TableCell shrink>
-                    <TrackNumberCell track={track} position={index + 1} />
+                    <TrackNumberCell position={index + 1} />
                   </TableCell>
                   <TableCell>
                     <div className="flex flex-col">
-                      <span
-                        className={cx('text-base', {
-                          'text-theme': playbackState.track?.id === track.id,
-                        })}
-                      >
-                        {track.name}
-                      </span>
+                      <span className="text-base">{track.name}</span>
                       <div className="flex items-center gap-2">
                         {track.explicit && <ExplicitBadge />}
                         <span className="text-muted">
