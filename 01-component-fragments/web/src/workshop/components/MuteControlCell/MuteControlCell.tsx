@@ -1,4 +1,4 @@
-import { Volume2 } from 'lucide-react'
+import { VolumeX } from 'lucide-react'
 import {
   MuteControlCellQuery,
   MuteControlCellQueryVariables,
@@ -7,6 +7,7 @@ import {
 import { CellSuccessProps } from '@redwoodjs/web'
 
 import PlaybarControlButton from 'src/components/PlaybarControlButton'
+import VolumeIcon from 'src/components/VolumeIcon'
 import { useSetVolumeMutation } from 'src/mutations/useSetVolumeMutation'
 
 export const QUERY = gql`
@@ -27,7 +28,7 @@ export const QUERY = gql`
 export const Loading = () => {
   return (
     <PlaybarControlButton disabled tooltip="Mute">
-      <Volume2 />
+      <VolumeX />
     </PlaybarControlButton>
   )
 }
@@ -47,7 +48,7 @@ export const Success = ({
         setVolume({ volumePercent: volumePercent === 0 ? 100 : 0 })
       }
     >
-      <Volume2 />
+      <VolumeIcon volumePercent={volumePercent} />
     </PlaybarControlButton>
   )
 }

@@ -54,24 +54,22 @@ export const useResumePlaybackMutation = () => {
             id: cache.identify({ __typename: 'PlaybackState' }),
             fragment: gql`
               fragment ResumePlaybackCacheFragment on PlaybackState {
-                playbackState {
-                  isPlaying
-                  progressMs
-                  timestamp
-                  shuffleState
-                  repeatState
-                  device {
-                    id
-                    name
-                    type
-                    volumePercent
-                  }
-                  context {
-                    uri
-                  }
-                  track {
-                    id
-                  }
+                isPlaying
+                progressMs
+                timestamp
+                shuffleState
+                repeatState
+                device {
+                  id
+                  name
+                  type
+                  volumePercent
+                }
+                context {
+                  uri
+                }
+                track {
+                  id
                 }
               }
             `,
