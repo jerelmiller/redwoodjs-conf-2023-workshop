@@ -87,7 +87,7 @@ const BaseLayout = ({ children }: BaseLayoutProps) => {
       <main className="relative flex h-full flex-col overflow-hidden overflow-y-auto rounded-md bg-black-base text-primary [--main-content--padding:2rem] [--main-header--height:80px] [grid-area:main-view]">
         <ScrollableList as="article" className="flex flex-1 flex-col">
           <header className="pointer-events-none absolute top-0 z-10 flex w-full flex-shrink-0 items-center justify-end bg-transparent px-[var(--main-content--padding)] pt-[var(--main-content--padding)] text-primary">
-            <div className="pointer-events-auto flex items-center gap-4">
+            <div className="pointer-events-auto relative -top-3 flex items-center gap-4">
               <CurrentUserMenuCell />
             </div>
           </header>
