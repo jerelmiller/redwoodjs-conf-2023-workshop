@@ -19,5 +19,8 @@
   "prisma": {
     "seed": "yarn rw exec seed"
   },
+  "scripts": {
+    "postinstall": "yarn rw exec setup"
+  },
   "packageManager": "yarn@3.6.1"
 }
