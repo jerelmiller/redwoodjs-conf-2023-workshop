@@ -42,6 +42,8 @@ function createAuthClient() {
         .finally(() => {
           getTokenPromise = null
         })
+
+      return getTokenPromise
     }
 
     return cachedToken
