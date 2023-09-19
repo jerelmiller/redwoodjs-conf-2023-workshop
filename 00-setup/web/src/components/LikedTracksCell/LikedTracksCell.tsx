@@ -6,7 +6,11 @@ import type { CellSuccessProps, CellFailureProps } from '@redwoodjs/web'
 
 import DateTime from 'src/components/DateTime'
 import Duration from 'src/components/Duration'
+import EmptyState from 'src/components/EmptyState'
+import EmptyStateDescription from 'src/components/EmptyStateDescription'
+import EmptyStateTitle from 'src/components/EmptyStateTitle'
 import LikedTracksCoverPhoto from 'src/components/LikedTracksCoverPhoto'
+import LikedTrackTableCell from 'src/components/LikedTrackTableCell'
 import PageContainer from 'src/components/PageContainer'
 import PageContent from 'src/components/PageContent'
 import PageHeader from 'src/components/PageHeader'
@@ -26,11 +30,6 @@ import TrackNumberTableCell from 'src/components/TrackNumberTableCell'
 import TrackTitleTableCell from 'src/components/TrackTitleTableCell'
 import { useResumePlaybackMutation } from 'src/mutations/useResumePlaybackMutation'
 import { pluralize } from 'src/utils/string'
-
-import EmptyState from '../EmptyState/EmptyState'
-import EmptyStateDescription from '../EmptyStateDescription/EmptyStateDescription'
-import EmptyStateTitle from '../EmptyStateTitle/EmptyStateTitle'
-import LikedTrackTableCell from '../LikedTrackTableCell/LikedTrackTableCell'
 
 export const QUERY = gql`
   query LikedTracksQuery {
