@@ -32,19 +32,18 @@ export const Loading = () => {
   )
 }
 
-export const Success = ({
-  me,
-}: CellSuccessProps<
+type DeviceControlCellProps = CellSuccessProps<
   DeviceControlCellQuery,
   DeviceControlCellQueryVariables
->) => {
+>
+
+export const Success = ({ me }: DeviceControlCellProps) => {
+  const activeDevice = me.player.playbackState?.device
+
   return (
     <Popover content={<DevicePopoverContentCell />}>
       <PlaybarControlButton tooltip="Connect to a device">
-        <DeviceIcon
-          deviceType={me.player.playbackState?.device.type}
-          strokeWidth={1.5}
-        />
+        <DeviceIcon deviceType={activeDevice?.type} strokeWidth={1.5} />
       </PlaybarControlButton>
     </Popover>
   )

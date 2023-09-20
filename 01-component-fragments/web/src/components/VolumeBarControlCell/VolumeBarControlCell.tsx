@@ -27,12 +27,12 @@ export const Loading = () => {
   return <ProgressBar animate={false} value={100} max={100} width="100px" />
 }
 
-export const Success = ({
-  me,
-}: CellSuccessProps<
+type VolumeBarControlCellProps = CellSuccessProps<
   VolumeBarControlCellQuery,
   VolumeBarControlCellQueryVariables
->) => {
+>
+
+export const Success = ({ me }: VolumeBarControlCellProps) => {
   const setVolume = useSetVolumeMutation()
   const activeDevice = me.player.playbackState?.device
 

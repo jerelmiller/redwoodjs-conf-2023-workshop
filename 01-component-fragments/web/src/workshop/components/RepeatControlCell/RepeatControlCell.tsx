@@ -50,12 +50,12 @@ export const Loading = () => {
   )
 }
 
-export const Success = ({
-  me,
-}: CellSuccessProps<
+type RepeatControlCellProps = CellSuccessProps<
   RepeatControlCellQuery,
   RepeatControlCellQueryVariables
->) => {
+>
+
+export const Success = ({ me }: RepeatControlCellProps) => {
   const setRepeatMode = useSetRepeatModeMutation()
   const playbackState = me.player.playbackState
   const repeatState = playbackState?.repeatState ?? 'OFF'

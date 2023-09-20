@@ -1,6 +1,6 @@
 import type { PlaybarQuery, PlaybarQueryVariables } from 'types/graphql'
 
-import type { CellSuccessProps, CellFailureProps } from '@redwoodjs/web'
+import type { CellSuccessProps } from '@redwoodjs/web'
 
 import ActiveDeviceBannerCell from 'src/components/ActiveDeviceBannerCell'
 import LikeButton from 'src/components/LikeButton'
@@ -47,10 +47,6 @@ export const Loading = () => (
 )
 
 export const Empty = () => null
-
-export const Failure = ({ error }: CellFailureProps<PlaybarQueryVariables>) => (
-  <div style={{ color: 'red' }}>Error: {error?.message}</div>
-)
 
 export const Success = ({
   me: _me,

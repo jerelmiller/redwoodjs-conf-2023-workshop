@@ -29,12 +29,12 @@ export const Loading = () => {
   )
 }
 
-export const Success = ({
-  me,
-}: CellSuccessProps<
+type ShuffleControlCellProps = CellSuccessProps<
   ShuffleControlCellQuery,
   ShuffleControlCellQueryVariables
->) => {
+>
+
+export const Success = ({ me }: ShuffleControlCellProps) => {
   const shufflePlayback = useShufflePlaybackMutation()
   const playbackState = me.player.playbackState
   const shuffled = playbackState?.shuffleState

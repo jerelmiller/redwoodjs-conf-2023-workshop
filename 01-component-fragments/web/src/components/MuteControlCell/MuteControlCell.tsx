@@ -33,9 +33,12 @@ export const Loading = () => {
   )
 }
 
-export const Success = ({
-  me,
-}: CellSuccessProps<MuteControlCellQuery, MuteControlCellQueryVariables>) => {
+type MuteControlCellProps = CellSuccessProps<
+  MuteControlCellQuery,
+  MuteControlCellQueryVariables
+>
+
+export const Success = ({ me }: MuteControlCellProps) => {
   const setVolume = useSetVolumeMutation()
   const activeDevice = me.player.playbackState?.device
   const volumePercent = activeDevice?.volumePercent ?? 0

@@ -22,12 +22,12 @@ export const QUERY = gql`
   }
 `
 
-export const Success = ({
-  me,
-}: CellSuccessProps<
+type ActiveDeviceBannerCellProps = CellSuccessProps<
   ActiveDeviceBannerCellQuery,
   ActiveDeviceBannerCellQueryVariables
->) => {
+>
+
+export const Success = ({ me }: ActiveDeviceBannerCellProps) => {
   const activeDevice = me.player.playbackState?.device
 
   return activeDevice ? (

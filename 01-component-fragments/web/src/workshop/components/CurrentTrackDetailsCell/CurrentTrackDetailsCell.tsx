@@ -51,12 +51,12 @@ export const Loading = () => {
   )
 }
 
-export const Success = ({
-  me,
-}: CellSuccessProps<
+type CurrentTrackDetailsCellProps = CellSuccessProps<
   CurrentTrackDetailsCellQuery,
   CurrentTrackDetailsCellQueryVariables
->) => {
+>
+
+export const Success = ({ me }: CurrentTrackDetailsCellProps) => {
   const saveTrack = useSaveTrackMutation()
   const removeSavedTrack = useRemoveSavedTrackMutation()
   const currentTrack = me.player.playbackState?.track

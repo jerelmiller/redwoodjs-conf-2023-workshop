@@ -3,7 +3,7 @@ import {
   PlayControlCellQueryVariables,
 } from 'types/graphql'
 
-import { CellFailureProps, CellSuccessProps } from '@redwoodjs/web'
+import { CellSuccessProps } from '@redwoodjs/web'
 
 import PlayButton from 'src/components/PlayButton'
 import { usePausePlaybackMutation } from 'src/mutations/usePausePlaybackMutation'
@@ -26,15 +26,12 @@ export const Loading = () => {
   )
 }
 
-export const Failure = ({
-  error,
-}: CellFailureProps<PlayControlCellQueryVariables>) => (
-  <div style={{ color: 'red' }}>Error: {error?.message}</div>
-)
+type PlayControlCellProps = CellSuccessProps<
+  PlayControlCellQuery,
+  PlayControlCellQueryVariables
+>
 
-export const Success = ({
-  me,
-}: CellSuccessProps<PlayControlCellQuery, PlayControlCellQueryVariables>) => {
+export const Success = ({ me }: PlayControlCellProps) => {
   const resumePlayback = useResumePlaybackMutation()
   const pausePlayback = usePausePlaybackMutation()
   const playbackState = me.player.playbackState

@@ -28,12 +28,12 @@ export const QUERY = gql`
   }
 `
 
-export const Success = ({
-  me,
-}: CellSuccessProps<
+type DevicePopoverContentCellProps = CellSuccessProps<
   DevicePopoverContentCellQuery,
   DevicePopoverContentCellQueryVariables
->) => {
+>
+
+export const Success = ({ me }: DevicePopoverContentCellProps) => {
   const playbackState = me.player.playbackState
   const activeDevice = me.player.devices.find(
     (device) => device.id === playbackState?.device.id
