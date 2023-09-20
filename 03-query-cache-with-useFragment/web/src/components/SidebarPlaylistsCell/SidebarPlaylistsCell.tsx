@@ -1,15 +1,11 @@
 import { type SidebarPlaylistsQuery } from 'types/graphql'
 
-import { routes } from '@redwoodjs/router'
 import type { CellSuccessProps, CellFailureProps } from '@redwoodjs/web'
 
-import CoverPhoto from 'src/components/CoverPhoto'
-import DelimitedList from 'src/components/DelimitedList'
-import SidebarPlaylistContent from 'src/components/SidebarPlaylistContent'
-import SidebarPlaylistLink from 'src/components/SidebarPlaylistLink'
-import SidebarPlaylistName from 'src/components/SidebarPlaylistName'
 import Skeleton from 'src/components/Skeleton'
 import { randomBetween, range } from 'src/utils/common'
+
+import SidebarPlaylistItem from '../SidebarPlaylistItem/SidebarPlaylistItem'
 
 export const QUERY = gql`
   query SidebarPlaylistsQuery {
@@ -18,20 +14,14 @@ export const QUERY = gql`
         edges {
           node {
             id
-            name
-            uri
-            images {
-              url
-            }
-            owner {
-              id
-              displayName
-            }
+            ...SidebarPlaylistItem_playlist
           }
         }
       }
     }
   }
+
+  ${SidebarPlaylistItem.fragments.playlist}
 `
 
 export const Loading = () => {
@@ -59,26 +49,6 @@ export const Failure = ({ error }: CellFailureProps) => (
 
 export const Success = ({ me }: CellSuccessProps<SidebarPlaylistsQuery>) => {
   return me?.playlists?.edges?.map(({ node: playlist }) => {
-    return (
-      <SidebarPlaylistLink
-        key={playlist.id}
-        to={routes.playlist({ id: playlist.id })}
-      >
-        <CoverPhoto image={playlist.images.at(-1)} size="48px" />
-        <SidebarPlaylistContent>
-          <SidebarPlaylistName isCurrentContext={false}>
-            {playlist.name}
-          </SidebarPlaylistName>
-          <div className="flex items-center gap-2">
-            <span className="text-sm text-muted">
-              <DelimitedList delimiter=" · ">
-                <span>Playlist</span>
-                <span>{playlist.owner.displayName}</span>
-              </DelimitedList>
-            </span>
-          </div>
-        </SidebarPlaylistContent>
-      </SidebarPlaylistLink>
-    )
+    return <SidebarPlaylistItem key={playlist.id} playlist={playlist} />
   })
 }
