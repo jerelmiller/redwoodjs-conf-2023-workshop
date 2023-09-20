@@ -1,23 +1,17 @@
 import fs from 'node:fs'
 import path from 'node:path'
 
-const resolveSharedDir = (pathname: string) =>
-  getRelative(path.join('../../shared/', pathname))
+const resolveSetupDir = (pathname: string) =>
+  getRelative(path.join('../../00-setup', pathname))
 
 const getRelative = (relativePath: string) =>
   path.resolve(path.join(__dirname, relativePath))
 
 const linkToShared = (pathname: string) => {
   const absolutePath = getRelative(pathname)
-  const sharedPath = resolveSharedDir(
-    path.relative(process.cwd(), absolutePath)
-  )
+  const setupPath = resolveSetupDir(path.relative(process.cwd(), absolutePath))
 
-  if (!fs.existsSync(sharedPath)) {
-    fs.cpSync(absolutePath, sharedPath)
-  }
-
-  symlink(sharedPath, absolutePath)
+  symlink(setupPath, absolutePath)
 }
 
 // Create a tmp symlink, then rename it to force symlinking and avoid errors
@@ -30,7 +24,7 @@ const symlink = (target: string, pathname: string) => {
 }
 
 export default async () => {
-  // linkToShared('../api/db/dev.db')
-  // linkToShared('../workshop.config.toml')
+  linkToShared('../api/db/dev.db')
+  linkToShared('../workshop.config.toml')
   symlink(getRelative('../README.md'), getRelative('../web/src/README.md'))
 }
