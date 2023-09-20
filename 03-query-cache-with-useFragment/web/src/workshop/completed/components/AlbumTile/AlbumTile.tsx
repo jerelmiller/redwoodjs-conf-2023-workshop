@@ -21,7 +21,7 @@ const AlbumTile = ({ album }: AlbumTileProps) => {
         <MediaTileTitle>{album.name}</MediaTileTitle>
         <MediaTileDetails>
           <ReleaseDate releaseDate={album.releaseDate} />
-          <span>{capitalize(album.albumType)}</span>
+          <span>{capitalize(album.albumType.toLowerCase())}</span>
         </MediaTileDetails>
       </div>
     </MediaTile>
