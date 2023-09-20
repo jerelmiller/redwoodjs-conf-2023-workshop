@@ -1,0 +1,4 @@
+{
+  "extends": "@redwoodjs/eslint-config",
+  "root": true
+}
