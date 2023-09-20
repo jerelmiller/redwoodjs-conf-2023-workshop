@@ -26,10 +26,10 @@ import TableCell from 'src/components/TableCell'
 import TableHead from 'src/components/TableHead'
 import TableHeader from 'src/components/TableHeader'
 import TableRow from 'src/components/TableRow'
+import TrackNumberTableCell from 'src/components/TrackNumberTableCell'
+import TrackTitleTableCell from 'src/components/TrackTitleTableCell'
 import { useResumePlaybackMutation } from 'src/mutations/useResumePlaybackMutation'
 import { pluralize } from 'src/utils/string'
-import TrackNumberTableCell from 'src/workshop/components/TrackNumberTableCell'
-import TrackTitleTableCell from 'src/workshop/components/TrackTitleTableCell'
 
 export const QUERY = gql`
   query LikedTracksQuery {

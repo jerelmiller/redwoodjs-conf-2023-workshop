@@ -2,9 +2,9 @@ import { type SidebarPlaylistsQuery } from 'types/graphql'
 
 import type { CellSuccessProps, CellFailureProps } from '@redwoodjs/web'
 
+import SidebarPlaylistItem from 'src/components/SidebarPlaylistItem'
 import Skeleton from 'src/components/Skeleton'
 import { randomBetween, range } from 'src/utils/common'
-import SidebarPlaylistItem from 'src/workshop/components/SidebarPlaylistItem'
 
 export const QUERY = gql`
   query SidebarPlaylistsQuery {
