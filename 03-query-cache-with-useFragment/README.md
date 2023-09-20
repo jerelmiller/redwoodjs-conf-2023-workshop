@@ -1,4 +1,4 @@
-# Exercise 2: Reusable components with fragments
+# Exercise 3: Querying the cache with `useFragment`
 
 TODO
 
@@ -6,6 +6,5 @@ TODO
 
 TODO
 
-- Update `AlbumTile` to add some new details
-  - Convert to use fragments first
-- Update `TrackTitleTableCell` to show if the track is explicit
+- Add `keyFields` singleton types
+- Add `useFragment` to track title
