@@ -16,7 +16,7 @@ import SidebarPlaylistLink from 'src/components/SidebarPlaylistLink'
 import SidebarPlaylistName from 'src/components/SidebarPlaylistName'
 import SidebarPlaylistsCell from 'src/components/SidebarPlaylistsCell'
 import SidebarSection from 'src/components/SidebarSection'
-import PlaybarCell from 'src/workshop/components/PlaybarCell'
+import PlaybarCell from 'src/workshop/completed/components/PlaybarCell'
 
 type BaseLayoutProps = {
   children?: React.ReactNode

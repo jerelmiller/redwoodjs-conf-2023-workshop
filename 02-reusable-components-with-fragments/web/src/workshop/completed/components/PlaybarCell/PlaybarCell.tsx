@@ -11,11 +11,11 @@ import Skeleton from 'src/components/Skeleton'
 import SkipToNextControl from 'src/components/SkipToNextControl'
 import SkipToPreviousControl from 'src/components/SkipToPreviousControl'
 import VolumeBarControlCell from 'src/components/VolumeBarControlCell'
-import CurrentTrackDetailsCell from 'src/workshop/components/CurrentTrackDetailsCell'
-import DeviceControlCell from 'src/workshop/components/DeviceControlCell'
-import PlayControlCell from 'src/workshop/components/PlayControlCell'
-import RepeatControlCell from 'src/workshop/components/RepeatControlCell'
-import ShuffleControlCell from 'src/workshop/components/ShuffleControlCell'
+import CurrentTrackDetailsCell from 'src/workshop/completed/components/CurrentTrackDetailsCell'
+import DeviceControlCell from 'src/workshop/completed/components/DeviceControlCell'
+import PlayControlCell from 'src/workshop/completed/components/PlayControlCell'
+import RepeatControlCell from 'src/workshop/completed/components/RepeatControlCell'
+import ShuffleControlCell from 'src/workshop/completed/components/ShuffleControlCell'
 
 export const QUERY = gql`
   query PlaybarQuery {
