@@ -2,21 +2,21 @@ import { Home, Library, Pin } from 'lucide-react'
 
 import { Link, routes } from '@redwoodjs/router'
 
-import ConferenceLogo from 'src/components/ConferenceLogo/ConferenceLogo'
+import ConferenceLogo from 'src/components/ConferenceLogo'
 import CurrentUserMenuCell from 'src/components/CurrentUserMenuCell'
 import DelimitedList from 'src/components/DelimitedList'
-import LikedTracksCoverPhoto from 'src/components/LikedTracksCoverPhoto/LikedTracksCoverPhoto'
-import NotificationManager from 'src/components/NotificationManager/NotificationManager'
-import PlaybarCell from 'src/components/PlaybarCell'
-import RedwoodConfLogo from 'src/components/RedwoodConfLogo/RedwoodConfLogo'
+import LikedTracksCoverPhoto from 'src/components/LikedTracksCoverPhoto'
+import NotificationManager from 'src/components/NotificationManager'
+import RedwoodConfLogo from 'src/components/RedwoodConfLogo'
 import RedwoodLogo from 'src/components/RedwoodLogo/RedwoodLogo'
 import ScrollableList from 'src/components/ScrollableList'
 import SidebarNavLink from 'src/components/SidebarNavLink'
-import SidebarPlaylistContent from 'src/components/SidebarPlaylistContent/SidebarPlaylistContent'
-import SidebarPlaylistLink from 'src/components/SidebarPlaylistLink/SidebarPlaylistLink'
+import SidebarPlaylistContent from 'src/components/SidebarPlaylistContent'
+import SidebarPlaylistLink from 'src/components/SidebarPlaylistLink'
 import SidebarPlaylistName from 'src/components/SidebarPlaylistName'
 import SidebarPlaylistsCell from 'src/components/SidebarPlaylistsCell'
 import SidebarSection from 'src/components/SidebarSection'
+import PlaybarCell from 'src/workshop/components/PlaybarCell'
 
 type BaseLayoutProps = {
   children?: React.ReactNode
