@@ -1,0 +1,14 @@
+config:
+  mappers:
+    Album: 'PrismaAlbum'
+    Artist: 'PrismaArtist'
+    CurrentUser: 'PrismaUser'
+    CurrentUserProfile: 'PrismaUser'
+    Copyright: 'PrismaCopyright'
+    Device: 'PrismaDevice'
+    Player: '{}'
+    PlaybackState: 'PrismaPlaybackState'
+    PlaybackStateContext: 'string'
+    Playlist: 'PrismaPlaylist'
+    PlaylistTrackEdge: 'PrismaPlaylistTrack'
+    Track: 'PrismaTrack'
