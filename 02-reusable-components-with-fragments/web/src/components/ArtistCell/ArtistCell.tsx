@@ -3,12 +3,12 @@ import type { FindArtistQuery, FindArtistQueryVariables } from 'types/graphql'
 
 import type { CellSuccessProps, CellFailureProps } from '@redwoodjs/web'
 
-import AlbumTile from 'src/components/AlbumTile'
 import PageContainer from 'src/components/PageContainer'
 import PageContent from 'src/components/PageContent'
 import PageTitle from 'src/components/PageTitle'
 import Skeleton from 'src/components/Skeleton'
 import TileGrid from 'src/components/TileGrid'
+import AlbumTile from 'src/workshop/components/AlbumTile'
 
 export const QUERY = gql`
   query FindArtistQuery($id: ID!) {
@@ -39,11 +39,6 @@ export const QUERY = gql`
       node {
         id
         name
-        albumType
-        releaseDate {
-          date
-          precision
-        }
         images {
           url
         }

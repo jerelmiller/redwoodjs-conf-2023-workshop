@@ -4,8 +4,8 @@ import type { HomeQuery, HomeQueryVariables } from 'types/graphql'
 
 import type { CellSuccessProps, CellFailureProps } from '@redwoodjs/web'
 
-import AlbumTile from 'src/components/AlbumTile'
 import TileGrid from 'src/components/TileGrid'
+import AlbumTile from 'src/workshop/components/AlbumTile'
 
 const matchesWidth = (width: number) =>
   window.matchMedia(`(min-width: ${width}px)`).matches
@@ -54,11 +54,6 @@ export const QUERY = gql`
   fragment HomeQueryAlbumFragment on Album {
     id
     name
-    albumType
-    releaseDate {
-      date
-      precision
-    }
     images {
       url
     }
