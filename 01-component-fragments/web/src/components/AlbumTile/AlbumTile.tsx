@@ -32,9 +32,7 @@ const AlbumTile = ({ album }: AlbumTileProps) => {
       <div className="flex flex-col">
         <MediaTileTitle>{album.name}</MediaTileTitle>
         <MediaTileDetails>
-          <span>
-            <ReleaseDate releaseDate={album.releaseDate} />
-          </span>
+          <ReleaseDate releaseDate={album.releaseDate} />
           <span>{capitalize(album.albumType.toLowerCase())}</span>
         </MediaTileDetails>
       </div>
