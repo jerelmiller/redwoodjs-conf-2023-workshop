@@ -14,6 +14,7 @@ web/src/README.md
 web/types/graphql.d.ts
 api/types/graphql.d.ts
 api/src/lib/generateGraphiQLHeader.*
+workshop.config.toml
 .pnp.*
 .yarn/*
 !.yarn/patches
