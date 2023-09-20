@@ -30,6 +30,8 @@ git clone https://github.com/jerelmiller/redwoodjs-conf-2023-workshop.git
 
 Once cloned, navigate to the [`00-setup` folder](./00-setup/) and follow the instructions in the [README.md](./00-setup/README.md) to get the app up and running.
 
+TODO add note about devtools
+
 ## Exercises
 
 Each exercise is designed to build on the previous one. Because this app is complex with a good number of components that make up the UI, code that we interact with throughout the exercise will be available in the `web/src/workshop` folder. You're free to browse the other components and code that make up the app, but modifying anything outside `web/src/workshop` isn't necessary to complete the exercise.
