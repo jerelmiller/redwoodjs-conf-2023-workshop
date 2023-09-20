@@ -71,6 +71,8 @@ export const CurrentUser: CurrentUserResolvers = {
       where: {
         userId: currentUser.id,
       },
+      skip: offset,
+      take: limit,
       include: {
         track: true,
       },
@@ -81,8 +83,8 @@ export const CurrentUser: CurrentUserResolvers = {
         limit,
         offset,
         total,
-        hasNextPage: false,
-        hasPreviousPage: false,
+        hasNextPage: offset + savedTracks.length < total,
+        hasPreviousPage: total > 0 && offset > 0,
       },
       edges: savedTracks.map((savedTrack) => ({
         addedAt: savedTrack.addedAt,
