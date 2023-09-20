@@ -11,6 +11,7 @@ import PageHeader from 'src/components/PageHeader'
 import PageHeaderContent from 'src/components/PageHeaderContent'
 import PageHeaderDetails from 'src/components/PageHeaderDetails'
 import PageMediaType from 'src/components/PageMediaType'
+import PagePlayButton from 'src/components/PagePlayButton'
 import PageTitle from 'src/components/PageTitle'
 import PlayButton from 'src/components/PlayButton'
 import ReleaseDate from 'src/components/ReleaseDate'
@@ -154,15 +155,8 @@ export const Success = ({
         </PageHeaderContent>
       </PageHeader>
       <PageContent>
-        <div className="flex gap-4">
-          <PlayButton
-            variant="primary"
-            size="3.5rem"
-            playing={false}
-            onClick={() => {
-              resumePlayback({ contextUri: album.uri })
-            }}
-          />
+        <div>
+          <PagePlayButton contextUri={album.uri} />
         </div>
         <Table>
           <TableHead>
