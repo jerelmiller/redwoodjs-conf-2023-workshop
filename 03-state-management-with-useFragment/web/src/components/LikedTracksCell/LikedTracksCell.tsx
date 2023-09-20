@@ -17,6 +17,7 @@ import PageHeader from 'src/components/PageHeader'
 import PageHeaderContent from 'src/components/PageHeaderContent'
 import PageHeaderDetails from 'src/components/PageHeaderDetails'
 import PageMediaType from 'src/components/PageMediaType'
+import PagePlayButton from 'src/components/PagePlayButton'
 import PageTitle from 'src/components/PageTitle'
 import PlayButton from 'src/components/PlayButton'
 import Skeleton from 'src/components/Skeleton'
@@ -146,14 +147,9 @@ export const Success = ({ me }: CellSuccessProps<LikedTracksQuery>) => {
       </PageHeader>
       <PageContent>
         <div>
-          <PlayButton
+          <PagePlayButton
             disabled={totalTracks === 0}
-            playing={false}
-            size="3.5rem"
-            variant="primary"
-            onClick={() => {
-              resumePlayback({ contextUri: CONTEXT_URI })
-            }}
+            contextUri={CONTEXT_URI}
           />
         </div>
         {totalTracks > 0 ? (

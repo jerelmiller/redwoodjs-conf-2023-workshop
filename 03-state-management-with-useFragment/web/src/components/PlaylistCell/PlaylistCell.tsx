@@ -16,6 +16,7 @@ import PageHeader from 'src/components/PageHeader'
 import PageHeaderContent from 'src/components/PageHeaderContent'
 import PageHeaderDetails from 'src/components/PageHeaderDetails'
 import PageMediaType from 'src/components/PageMediaType'
+import PagePlayButton from 'src/components/PagePlayButton'
 import PageTitle from 'src/components/PageTitle'
 import PlayButton from 'src/components/PlayButton'
 import ScrollableListObserver from 'src/components/ScrollableListObserver'
@@ -160,13 +161,9 @@ export const Success = ({
       </PageHeader>
       <PageContent>
         <div>
-          <PlayButton
-            playing={false}
-            size="3.5rem"
-            variant="primary"
-            onClick={() => {
-              resumePlayback({ contextUri: playlist.uri })
-            }}
+          <PagePlayButton
+            disabled={totalTracks === 0}
+            contextUri={playlist.uri}
           />
         </div>
         <Table>
