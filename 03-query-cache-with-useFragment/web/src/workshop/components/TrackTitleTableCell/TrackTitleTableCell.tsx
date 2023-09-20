@@ -1,3 +1,4 @@
+import cx from 'classnames'
 import { TrackTitleTableCell_track } from 'types/graphql'
 
 import { Link, routes } from '@redwoodjs/router'
@@ -16,6 +17,8 @@ const TrackTitleTableCell = ({
   includeCoverPhoto = true,
   track,
 }: TrackTitleTableCellProps) => {
+  const isCurrentTrack = false
+
   return (
     <TableCell>
       <div className="flex items-end gap-2">
@@ -27,7 +30,11 @@ const TrackTitleTableCell = ({
           />
         )}
         <div className="flex flex-col">
-          <span className="line-clamp-1 text-base text-primary">
+          <span
+            className={cx('line-clamp-1 text-base text-primary', {
+              'text-theme': isCurrentTrack,
+            })}
+          >
             {track.name}
           </span>
           <div className="flex items-center gap-2">
