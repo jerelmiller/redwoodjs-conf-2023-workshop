@@ -1,4 +1,4 @@
-# Exercise 3: Querying the cache with `useFragment`
+# Exercise 3: Adding type policies
 
 TODO
 
@@ -7,4 +7,3 @@ TODO
 TODO
 
 - Add `keyFields` singleton types
-- Add `useFragment` to track title
