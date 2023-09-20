@@ -3,9 +3,9 @@ import * as Tooltip from '@radix-ui/react-tooltip'
 import { FatalErrorBoundary, RedwoodProvider } from '@redwoodjs/web'
 import { RedwoodApolloProvider } from '@redwoodjs/web/apollo'
 
-import { typePolicies } from 'src/apollo/typePolicies'
 import FatalErrorPage from 'src/pages/FatalErrorPage'
 import Routes from 'src/Routes'
+import { typePolicies } from 'src/workshop/apollo/typePolicies'
 
 import { AuthProvider, useAuth } from './auth'
 
