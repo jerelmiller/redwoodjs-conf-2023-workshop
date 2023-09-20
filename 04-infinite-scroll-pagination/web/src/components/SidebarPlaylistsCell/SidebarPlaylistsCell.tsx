@@ -4,7 +4,7 @@ import type { CellSuccessProps, CellFailureProps } from '@redwoodjs/web'
 
 import Skeleton from 'src/components/Skeleton'
 import { randomBetween, range } from 'src/utils/common'
-import SidebarPlaylistItem from 'src/workshop/components/SidebarPlaylistItem'
+import SidebarPlaylistItem from 'src/workshop/completed/components/SidebarPlaylistItem'
 
 export const QUERY = gql`
   query SidebarPlaylistsQuery {

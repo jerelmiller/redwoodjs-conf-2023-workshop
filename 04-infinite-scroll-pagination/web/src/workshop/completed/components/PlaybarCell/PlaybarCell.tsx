@@ -25,6 +25,9 @@ export const QUERY = gql`
           ...DeviceControlCell_devices
         }
         playbackState {
+          context {
+            uri
+          }
           ...DeviceControlCell_playbackState
           ...PlaybackProgressBarCell_playbackState
           ...PlayControlCell_playbackState

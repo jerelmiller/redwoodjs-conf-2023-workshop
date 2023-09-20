@@ -27,9 +27,9 @@ import TableHead from 'src/components/TableHead'
 import TableHeader from 'src/components/TableHeader'
 import TableRow from 'src/components/TableRow'
 import { useResumePlaybackMutation } from 'src/mutations/useResumePlaybackMutation'
-import PagePlayButton from 'src/workshop/components/PagePlayButton'
-import TrackNumberTableCell from 'src/workshop/components/TrackNumberTableCell'
-import TrackTitleTableCell from 'src/workshop/components/TrackTitleTableCell'
+import PagePlayButton from 'src/workshop/completed/components/PagePlayButton'
+import TrackNumberTableCell from 'src/workshop/completed/components/TrackNumberTableCell'
+import TrackTitleTableCell from 'src/workshop/completed/components/TrackTitleTableCell'
 
 import LikedTrackTableCell from '../LikedTrackTableCell/LikedTrackTableCell'
 

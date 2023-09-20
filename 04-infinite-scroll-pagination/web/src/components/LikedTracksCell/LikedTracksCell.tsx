@@ -28,9 +28,9 @@ import TableHeader from 'src/components/TableHeader'
 import TableRow from 'src/components/TableRow'
 import { useResumePlaybackMutation } from 'src/mutations/useResumePlaybackMutation'
 import { pluralize } from 'src/utils/string'
-import PagePlayButton from 'src/workshop/components/PagePlayButton'
-import TrackNumberTableCell from 'src/workshop/components/TrackNumberTableCell'
-import TrackTitleTableCell from 'src/workshop/components/TrackTitleTableCell'
+import PagePlayButton from 'src/workshop/completed/components/PagePlayButton'
+import TrackNumberTableCell from 'src/workshop/completed/components/TrackNumberTableCell'
+import TrackTitleTableCell from 'src/workshop/completed/components/TrackTitleTableCell'
 
 export const QUERY = gql`
   query LikedTracksQuery {

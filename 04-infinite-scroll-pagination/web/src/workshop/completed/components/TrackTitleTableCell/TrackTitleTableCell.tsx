@@ -1,5 +1,9 @@
+import { TypedDocumentNode, useFragment } from '@apollo/client'
 import cx from 'classnames'
-import { TrackTitleTableCell_track } from 'types/graphql'
+import {
+  TrackTitleTableCell_playbackState,
+  TrackTitleTableCell_track,
+} from 'types/graphql'
 
 import { Link, routes } from '@redwoodjs/router'
 
@@ -13,11 +17,24 @@ interface TrackTitleTableCellProps {
   track: TrackTitleTableCell_track
 }
 
+const PLAYBACK_STATE_FRAGMENT: TypedDocumentNode<TrackTitleTableCell_playbackState> = gql`
+  fragment TrackTitleTableCell_playbackState on PlaybackState {
+    track {
+      id
+    }
+  }
+`
+
 const TrackTitleTableCell = ({
   includeCoverPhoto = true,
   track,
 }: TrackTitleTableCellProps) => {
-  const isCurrentTrack = false
+  const { data: playbackState } = useFragment({
+    fragment: PLAYBACK_STATE_FRAGMENT,
+    from: { __typename: 'PlaybackState' },
+  })
+
+  const isCurrentTrack = playbackState.track?.id === track.id
 
   return (
     <TableCell>

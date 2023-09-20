@@ -1,5 +1,9 @@
+import { TypedDocumentNode, useFragment } from '@apollo/client'
 import { Volume2 } from 'lucide-react'
-import { SidebarPlaylistItem_playlist } from 'types/graphql'
+import {
+  SidebarPlaylistItem_playbackState,
+  SidebarPlaylistItem_playlist,
+} from 'types/graphql'
 
 import { routes } from '@redwoodjs/router'
 
@@ -13,9 +17,23 @@ interface SidebarPlaylistItemProps {
   playlist: SidebarPlaylistItem_playlist
 }
 
+const PLAYBACK_STATE_FRAGMENT: TypedDocumentNode<SidebarPlaylistItem_playbackState> = gql`
+  fragment SidebarPlaylistItem_playbackState on PlaybackState {
+    isPlaying
+    context {
+      uri
+    }
+  }
+`
+
 const SidebarPlaylistItem = ({ playlist }: SidebarPlaylistItemProps) => {
-  const isCurrentContext = false
-  const isPlaying = false
+  const { data: playbackState } = useFragment({
+    fragment: PLAYBACK_STATE_FRAGMENT,
+    from: { __typename: 'PlaybackState' },
+  })
+
+  const isCurrentContext = playbackState.context?.uri === playlist.uri
+  const isPlaying = playbackState.isPlaying ?? false
 
   return (
     <SidebarPlaylistLink to={routes.playlist({ id: playlist.id })}>
@@ -45,6 +63,7 @@ SidebarPlaylistItem.fragments = {
     fragment SidebarPlaylistItem_playlist on Playlist {
       id
       name
+      uri
       images {
         url
       }
