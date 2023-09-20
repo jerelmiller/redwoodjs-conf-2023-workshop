@@ -14,8 +14,8 @@ const Markdown = ({ children }: MarkdownProps) => {
 
 const components: ReactMarkdownProps['components'] = {
   h1: ({ children }) => <h1 className="mb-8 text-5xl">{children}</h1>,
-  h2: ({ children }) => <h1 className="mb-4 text-4xl">{children}</h1>,
-  h3: ({ children }) => <h1 className="mb-4 text-3xl">{children}</h1>,
+  h2: ({ children }) => <h1 className="mb-4 text-3xl">{children}</h1>,
+  h3: ({ children }) => <h1 className="mb-4 text-2xl">{children}</h1>,
   p: ({ children }) => <p className="mb-4 last:mb-0">{children}</p>,
   pre: ({ children }) => children,
   a: ({ children, ...props }) => (
