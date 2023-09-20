@@ -1,43 +1,15 @@
-import { VolumeX } from 'lucide-react'
-import {
-  MuteControlCellQuery,
-  MuteControlCellQueryVariables,
-} from 'types/graphql'
-
-import { CellSuccessProps } from '@redwoodjs/web'
+import { MuteControlCell_device } from 'types/graphql'
 
 import PlaybarControlButton from 'src/components/PlaybarControlButton'
 import VolumeIcon from 'src/components/VolumeIcon'
 import { useSetVolumeMutation } from 'src/mutations/useSetVolumeMutation'
 
-export const QUERY = gql`
-  query MuteControlCellQuery {
-    me {
-      player {
-        playbackState {
-          device {
-            id
-            volumePercent
-          }
-        }
-      }
-    }
-  }
-`
-
-export const Loading = () => {
-  return (
-    <PlaybarControlButton disabled tooltip="Mute">
-      <VolumeX />
-    </PlaybarControlButton>
-  )
+interface MuteControlCellProps {
+  activeDevice: MuteControlCell_activeDevice | null | undefined
 }
 
-export const Success = ({
-  me,
-}: CellSuccessProps<MuteControlCellQuery, MuteControlCellQueryVariables>) => {
+const MuteControlCell = ({ activeDevice }: MuteControlCellProps) => {
   const setVolume = useSetVolumeMutation()
-  const activeDevice = me.player.playbackState?.device
   const volumePercent = activeDevice?.volumePercent ?? 0
 
   return (
@@ -52,3 +24,14 @@ export const Success = ({
     </PlaybarControlButton>
   )
 }
+
+MuteControlCell.fragments = {
+  device: gql`
+    fragment MuteControlCell_activeDevice on Device {
+      id
+      volumePercent
+    }
+  `,
+}
+
+export default MuteControlCell

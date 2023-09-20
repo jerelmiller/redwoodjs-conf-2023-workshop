@@ -1,42 +1,15 @@
 import { Shuffle } from 'lucide-react'
-import {
-  ShuffleControlCellQuery,
-  ShuffleControlCellQueryVariables,
-} from 'types/graphql'
-
-import { CellSuccessProps } from '@redwoodjs/web'
+import { ShuffleControlCell_playbackState } from 'types/graphql'
 
 import PlaybarControlButton from 'src/components/PlaybarControlButton'
 import { useShufflePlaybackMutation } from 'src/mutations/useShufflePlaybackMutation'
 
-export const QUERY = gql`
-  query ShuffleControlCellQuery {
-    me {
-      player {
-        playbackState {
-          shuffleState
-        }
-      }
-    }
-  }
-`
-
-export const Loading = () => {
-  return (
-    <PlaybarControlButton disabled tooltip="Enable shuffle">
-      <Shuffle size="1.25rem" />
-    </PlaybarControlButton>
-  )
+interface ShuffleControlCellProps {
+  playbackState: ShuffleControlCell_playbackState | null | undefined
 }
 
-export const Success = ({
-  me,
-}: CellSuccessProps<
-  ShuffleControlCellQuery,
-  ShuffleControlCellQueryVariables
->) => {
+const ShuffleControlCell = ({ playbackState }: ShuffleControlCellProps) => {
   const shufflePlayback = useShufflePlaybackMutation()
-  const playbackState = me.player.playbackState
   const shuffled = playbackState?.shuffleState
 
   return (
@@ -50,3 +23,13 @@ export const Success = ({
     </PlaybarControlButton>
   )
 }
+
+ShuffleControlCell.fragments = {
+  playbackState: gql`
+    fragment ShuffleControlCell_playbackState on PlaybackState {
+      shuffleState
+    }
+  `,
+}
+
+export default ShuffleControlCell

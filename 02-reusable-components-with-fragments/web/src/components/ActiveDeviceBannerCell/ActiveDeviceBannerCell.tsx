@@ -1,35 +1,14 @@
 import cx from 'classnames'
 import { Volume1 } from 'lucide-react'
-import {
-  ActiveDeviceBannerCellQuery,
-  ActiveDeviceBannerCellQueryVariables,
-} from 'types/graphql'
+import { ActiveDeviceBannerCell_activeDevice } from 'types/graphql'
 
-import { CellSuccessProps } from '@redwoodjs/web'
+interface ActiveDeviceBannerCellProps {
+  activeDevice: ActiveDeviceBannerCell_activeDevice | null | undefined
+}
 
-export const QUERY = gql`
-  query ActiveDeviceBannerCellQuery {
-    me {
-      player {
-        playbackState {
-          device {
-            id
-            name
-          }
-        }
-      }
-    }
-  }
-`
-
-export const Success = ({
-  me,
-}: CellSuccessProps<
-  ActiveDeviceBannerCellQuery,
-  ActiveDeviceBannerCellQueryVariables
->) => {
-  const activeDevice = me.player.playbackState?.device
-
+const ActiveDeviceBannerCell = ({
+  activeDevice,
+}: ActiveDeviceBannerCellProps) => {
   return activeDevice ? (
     <div
       className={cx(
@@ -44,3 +23,14 @@ export const Success = ({
     </div>
   ) : null
 }
+
+ActiveDeviceBannerCell.fragments = {
+  activeDevice: gql`
+    fragment ActiveDeviceBannerCell_activeDevice on Device {
+      id
+      name
+    }
+  `,
+}
+
+export default ActiveDeviceBannerCell

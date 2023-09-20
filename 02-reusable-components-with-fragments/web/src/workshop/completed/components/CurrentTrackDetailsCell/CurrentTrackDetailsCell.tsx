@@ -1,82 +1,34 @@
-import {
-  CurrentTrackDetailsCellQuery,
-  CurrentTrackDetailsCellQueryVariables,
-} from 'types/graphql'
+import { CurrentTrackDetailsCell_track } from 'types/graphql'
 
 import { Link, routes } from '@redwoodjs/router'
-import { CellSuccessProps } from '@redwoodjs/web'
 
 import CoverPhoto from 'src/components/CoverPhoto'
 import DelimitedList from 'src/components/DelimitedList'
 import LikeButton from 'src/components/LikeButton'
-import Skeleton from 'src/components/Skeleton/Skeleton'
 import { useRemoveSavedTrackMutation } from 'src/mutations/useRemoveSavedTrackMutation'
 import { useSaveTrackMutation } from 'src/mutations/useSaveTrackMutation'
 
-export const QUERY = gql`
-  query CurrentTrackDetailsCellQuery {
-    me {
-      player {
-        playbackState {
-          track {
-            id
-            name
-            album {
-              id
-              images {
-                url
-              }
-            }
-            artists {
-              id
-              name
-            }
-          }
-        }
-      }
-    }
-  }
-`
-
-export const Loading = () => {
-  return (
-    <div className="flex items-center gap-4">
-      <Skeleton.CoverPhoto size="4rem" />
-      <div className="flex flex-col gap-2">
-        <Skeleton.Text width="4rem" />
-        <Skeleton.Text width="8rem" />
-      </div>
-      <LikeButton disabled liked={false} />
-    </div>
-  )
+interface CurrentTrackDetailsCellProps {
+  track: CurrentTrackDetailsCell_track | null | undefined
 }
 
-export const Success = ({
-  me,
-}: CellSuccessProps<
-  CurrentTrackDetailsCellQuery,
-  CurrentTrackDetailsCellQueryVariables
->) => {
+const CurrentTrackDetailsCell = ({ track }: CurrentTrackDetailsCellProps) => {
   const saveTrack = useSaveTrackMutation()
   const removeSavedTrack = useRemoveSavedTrackMutation()
-  const currentTrack = me.player.playbackState?.track
   const liked = false
 
   return (
     <div className="flex items-center gap-4">
-      <CoverPhoto size="4rem" image={currentTrack?.album.images[0]} />
-      {currentTrack && (
+      <CoverPhoto size="4rem" image={track?.album.images[0]} />
+      {track && (
         <>
           <div className="flex flex-col gap-1">
-            <Link
-              className="text-sm"
-              to={routes.album({ id: currentTrack.album.id })}
-            >
-              {currentTrack.name}
+            <Link className="text-sm" to={routes.album({ id: track.album.id })}>
+              {track.name}
             </Link>
             <span className="text-xs text-muted">
               <DelimitedList className="text-xs text-muted" delimiter=", ">
-                {currentTrack.artists.map((artist) => (
+                {track.artists.map((artist) => (
                   <Link key={artist.id} to={routes.artist({ id: artist.id })}>
                     {artist.name}
                   </Link>
@@ -89,9 +41,9 @@ export const Success = ({
             size="1.25rem"
             onClick={() => {
               if (liked) {
-                removeSavedTrack({ id: currentTrack.id })
+                removeSavedTrack({ id: track.id })
               } else {
-                saveTrack({ id: currentTrack.id })
+                saveTrack({ id: track.id })
               }
             }}
           />
@@ -100,3 +52,24 @@ export const Success = ({
     </div>
   )
 }
+
+CurrentTrackDetailsCell.fragments = {
+  track: gql`
+    fragment CurrentTrackDetailsCell_track on Track {
+      id
+      name
+      album {
+        id
+        images {
+          url
+        }
+      }
+      artists {
+        id
+        name
+      }
+    }
+  `,
+}
+
+export default CurrentTrackDetailsCell

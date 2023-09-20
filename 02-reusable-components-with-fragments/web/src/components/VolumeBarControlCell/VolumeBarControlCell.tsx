@@ -1,40 +1,14 @@
-import {
-  VolumeBarControlCellQuery,
-  VolumeBarControlCellQueryVariables,
-} from 'types/graphql'
-
-import { CellSuccessProps } from '@redwoodjs/web'
+import { VolumeBarControlCell_activeDevice } from 'types/graphql'
 
 import ProgressBar from 'src/components/ProgressBar'
 import { useSetVolumeMutation } from 'src/mutations/useSetVolumeMutation'
 
-export const QUERY = gql`
-  query VolumeBarControlCellQuery {
-    me {
-      player {
-        playbackState {
-          device {
-            id
-            volumePercent
-          }
-        }
-      }
-    }
-  }
-`
-
-export const Loading = () => {
-  return <ProgressBar animate={false} value={100} max={100} width="100px" />
+interface VolumeBarControlCellProps {
+  activeDevice: VolumeBarControlCell_activeDevice | null | undefined
 }
 
-export const Success = ({
-  me,
-}: CellSuccessProps<
-  VolumeBarControlCellQuery,
-  VolumeBarControlCellQueryVariables
->) => {
+const VolumeBarControlCell = ({ activeDevice }: VolumeBarControlCellProps) => {
   const setVolume = useSetVolumeMutation()
-  const activeDevice = me.player.playbackState?.device
 
   return (
     <ProgressBar
@@ -51,3 +25,14 @@ export const Success = ({
     />
   )
 }
+
+VolumeBarControlCell.fragments = {
+  activeDevice: gql`
+    fragment VolumeBarControlCell_activeDevice on Device {
+      id
+      volumePercent
+    }
+  `,
+}
+
+export default VolumeBarControlCell

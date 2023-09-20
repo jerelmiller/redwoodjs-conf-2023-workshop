@@ -1,44 +1,24 @@
 import {
-  DevicePopoverContentCellQuery,
-  DevicePopoverContentCellQueryVariables,
+  DevicePopoverContentCell_activeDevice,
+  DevicePopoverContentCell_devices,
+  DevicePopoverContentCell_playbackState,
 } from 'types/graphql'
-
-import { CellSuccessProps } from '@redwoodjs/web'
 
 import AnimatedSoundWave from 'src/components/AnimatedSoundWave'
 import DeviceIcon from 'src/components/DeviceIcon'
 
-export const QUERY = gql`
-  query DevicePopoverContentCellQuery {
-    me {
-      player {
-        devices {
-          id
-          name
-          type
-        }
-        playbackState {
-          isPlaying
-          device {
-            id
-          }
-        }
-      }
-    }
-  }
-`
+interface DevicePopoverContentCellProps {
+  activeDevice: DevicePopoverContentCell_activeDevice | null | undefined
+  devices: DevicePopoverContentCell_devices[]
+  playbackState: DevicePopoverContentCell_playbackState | null | undefined
+}
 
-export const Success = ({
-  me,
-}: CellSuccessProps<
-  DevicePopoverContentCellQuery,
-  DevicePopoverContentCellQueryVariables
->) => {
-  const playbackState = me.player.playbackState
-  const activeDevice = me.player.devices.find(
-    (device) => device.id === playbackState?.device.id
-  )
-  const availableDevices = me.player.devices.filter(
+const DevicePopoverContentCell = ({
+  activeDevice,
+  devices,
+  playbackState,
+}: DevicePopoverContentCellProps) => {
+  const availableDevices = devices.filter(
     (device) => device.id !== playbackState?.device.id
   )
 
@@ -79,3 +59,30 @@ export const Success = ({
     </div>
   )
 }
+
+DevicePopoverContentCell.fragments = {
+  activeDevice: gql`
+    fragment DevicePopoverContentCell_activeDevice on Device {
+      id
+      name
+      type
+    }
+  `,
+  devices: gql`
+    fragment DevicePopoverContentCell_devices on Device {
+      id
+      name
+      type
+    }
+  `,
+  playbackState: gql`
+    fragment DevicePopoverContentCell_playbackState on PlaybackState {
+      isPlaying
+      device {
+        id
+      }
+    }
+  `,
+}
+
+export default DevicePopoverContentCell

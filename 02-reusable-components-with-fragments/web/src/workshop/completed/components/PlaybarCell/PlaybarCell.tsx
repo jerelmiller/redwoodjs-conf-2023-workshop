@@ -21,10 +21,40 @@ export const QUERY = gql`
   query PlaybarQuery {
     me {
       player {
-        __typename
+        devices {
+          ...DeviceControlCell_devices
+        }
+        playbackState {
+          ...DeviceControlCell_playbackState
+          ...PlaybackProgressBarCell_playbackState
+          ...PlayControlCell_playbackState
+          ...ShuffleControlCell_playbackState
+          ...RepeatControlCell_playbackState
+          device {
+            ...ActiveDeviceBannerCell_activeDevice
+            ...DeviceControlCell_activeDevice
+            ...MuteControlCell_activeDevice
+            ...VolumeBarControlCell_activeDevice
+          }
+          track {
+            ...CurrentTrackDetailsCell_track
+          }
+        }
       }
     }
   }
+
+  ${ActiveDeviceBannerCell.fragments.activeDevice}
+  ${CurrentTrackDetailsCell.fragments.track}
+  ${DeviceControlCell.fragments.activeDevice}
+  ${DeviceControlCell.fragments.devices}
+  ${DeviceControlCell.fragments.playbackState}
+  ${MuteControlCell.fragments.device}
+  ${PlaybackProgressBarCell.fragments.playbackState}
+  ${PlayControlCell.fragments.playbackState}
+  ${RepeatControlCell.fragments.playbackState}
+  ${ShuffleControlCell.fragments.playbackState}
+  ${VolumeBarControlCell.fragments.activeDevice}
 `
 
 export const beforeQuery = (variables: PlaybarQueryVariables) => {
@@ -53,34 +83,40 @@ export const Failure = ({ error }: CellFailureProps<PlaybarQueryVariables>) => (
 )
 
 export const Success = ({
-  me: _me,
+  me,
 }: CellSuccessProps<PlaybarQuery, PlaybarQueryVariables>) => {
+  const { playbackState } = me.player
+
   return (
     <footer className="flex flex-col [grid-area:playbar]">
       <div className="grid grid-cols-[30%_1fr_30%] items-center px-6 py-4 text-primary">
-        <CurrentTrackDetailsCell />
+        <CurrentTrackDetailsCell track={playbackState?.track} />
         <div className="flex flex-col gap-2">
           <div className="flex items-center justify-center gap-5">
-            <ShuffleControlCell />
+            <ShuffleControlCell playbackState={playbackState} />
             <SkipToPreviousControl />
-            <PlayControlCell />
+            <PlayControlCell playbackState={playbackState} />
             <SkipToNextControl />
-            <RepeatControlCell />
+            <RepeatControlCell playbackState={playbackState} />
           </div>
 
-          <PlaybackProgressBarCell />
+          <PlaybackProgressBarCell playbackState={playbackState} />
         </div>
         <div className="flex items-center justify-end gap-4">
           <QueueControl />
-          <DeviceControlCell />
+          <DeviceControlCell
+            activeDevice={playbackState?.device}
+            devices={me.player.devices}
+            playbackState={playbackState}
+          />
 
           <div className="flex items-center gap-1">
-            <MuteControlCell />
-            <VolumeBarControlCell />
+            <MuteControlCell activeDevice={playbackState?.device} />
+            <VolumeBarControlCell activeDevice={playbackState?.device} />
           </div>
         </div>
       </div>
-      <ActiveDeviceBannerCell />
+      <ActiveDeviceBannerCell activeDevice={playbackState?.device} />
     </footer>
   )
 }

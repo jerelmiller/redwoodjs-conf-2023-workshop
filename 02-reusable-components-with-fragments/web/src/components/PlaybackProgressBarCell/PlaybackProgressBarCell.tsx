@@ -1,49 +1,14 @@
-import {
-  PlaybackProgressBarCellQuery,
-  PlaybackProgressBarCellQueryVariables,
-} from 'types/graphql'
-
-import { CellSuccessProps } from '@redwoodjs/web'
+import { PlaybackProgressBarCell_playbackState } from 'types/graphql'
 
 import PlaybackProgressBar from 'src/components/PlaybackProgressBar'
 
-export const QUERY = gql`
-  query PlaybackProgressBarCellQuery {
-    me {
-      player {
-        playbackState {
-          isPlaying
-          progressMs
-          timestamp
-          track {
-            id
-            durationMs
-          }
-        }
-      }
-    }
-  }
-`
-
-export const Loading = () => {
-  return (
-    <PlaybackProgressBar
-      isPlaying={false}
-      durationMs={0}
-      progressMs={0}
-      timestamp={Date.now()}
-    />
-  )
+interface PlaybackProgressBarProps {
+  playbackState: PlaybackProgressBarCell_playbackState | null | undefined
 }
 
-export const Success = ({
-  me,
-}: CellSuccessProps<
-  PlaybackProgressBarCellQuery,
-  PlaybackProgressBarCellQueryVariables
->) => {
-  const playbackState = me.player.playbackState
-
+const PlaybackProgressBarCell = ({
+  playbackState,
+}: PlaybackProgressBarProps) => {
   return (
     <PlaybackProgressBar
       isPlaying={playbackState?.isPlaying ?? false}
@@ -53,3 +18,19 @@ export const Success = ({
     />
   )
 }
+
+PlaybackProgressBarCell.fragments = {
+  playbackState: gql`
+    fragment PlaybackProgressBarCell_playbackState on PlaybackState {
+      isPlaying
+      progressMs
+      timestamp
+      track {
+        id
+        durationMs
+      }
+    }
+  `,
+}
+
+export default PlaybackProgressBarCell
