@@ -15,7 +15,7 @@ export const CurrentUser: CurrentUserResolvers = {
     const total = await db.savedAlbum.count({
       where: { userId: currentUser.id },
     })
-    const savedTracks = await db.savedAlbum.findMany({
+    const savedAlbums = await db.savedAlbum.findMany({
       where: { userId: currentUser.id },
       skip: offset,
       take: limit,
@@ -29,10 +29,10 @@ export const CurrentUser: CurrentUserResolvers = {
         total,
         offset,
         limit,
-        hasNextPage: offset + savedTracks.length < total,
+        hasNextPage: offset + savedAlbums.length < total,
         hasPreviousPage: total > 0 && offset > 0,
       },
-      edges: savedTracks.map((savedAlbum) => ({
+      edges: savedAlbums.map((savedAlbum) => ({
         addedAt: savedAlbum.addedAt,
         node: savedAlbum.album,
       })),
@@ -71,6 +71,8 @@ export const CurrentUser: CurrentUserResolvers = {
       where: {
         userId: currentUser.id,
       },
+      skip: offset,
+      take: limit,
       include: {
         track: true,
       },
@@ -81,8 +83,8 @@ export const CurrentUser: CurrentUserResolvers = {
         limit,
         offset,
         total,
-        hasNextPage: false,
-        hasPreviousPage: false,
+        hasNextPage: offset + savedTracks.length < total,
+        hasPreviousPage: total > 0 && offset > 0,
       },
       edges: savedTracks.map((savedTrack) => ({
         addedAt: savedTrack.addedAt,
