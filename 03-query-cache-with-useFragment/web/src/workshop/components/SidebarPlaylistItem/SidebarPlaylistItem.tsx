@@ -3,11 +3,11 @@ import { SidebarPlaylistItem_playlist } from 'types/graphql'
 
 import { routes } from '@redwoodjs/router'
 
-import CoverPhoto from '../CoverPhoto'
-import DelimitedList from '../DelimitedList'
-import SidebarPlaylistContent from '../SidebarPlaylistContent'
-import SidebarPlaylistLink from '../SidebarPlaylistLink'
-import SidebarPlaylistName from '../SidebarPlaylistName'
+import CoverPhoto from 'src/components/CoverPhoto'
+import DelimitedList from 'src/components/DelimitedList'
+import SidebarPlaylistContent from 'src/components/SidebarPlaylistContent'
+import SidebarPlaylistLink from 'src/components/SidebarPlaylistLink'
+import SidebarPlaylistName from 'src/components/SidebarPlaylistName'
 
 interface SidebarPlaylistItemProps {
   playlist: SidebarPlaylistItem_playlist
