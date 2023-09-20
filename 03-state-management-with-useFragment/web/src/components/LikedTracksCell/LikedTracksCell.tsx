@@ -152,10 +152,7 @@ export const Success = ({ me }: CellSuccessProps<LikedTracksQuery>) => {
             size="3.5rem"
             variant="primary"
             onClick={() => {
-              resumePlayback({
-                contextUri: CONTEXT_URI,
-                uri: me.tracks?.edges[0].node.uri,
-              })
+              resumePlayback({ contextUri: CONTEXT_URI })
             }}
           />
         </div>

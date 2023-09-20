@@ -163,10 +163,7 @@ export const Success = ({
             size="3.5rem"
             variant="primary"
             onClick={() => {
-              resumePlayback({
-                contextUri: playlist.uri,
-                uri: playlist.tracks.edges[0].track.uri,
-              })
+              resumePlayback({ contextUri: playlist.uri })
             }}
           />
         </div>

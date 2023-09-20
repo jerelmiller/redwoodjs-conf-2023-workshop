@@ -62,6 +62,50 @@ const ResumePlaybackInput = z
   })
   .optional()
 
+const getFirstTrackInContext = async (contextUri: string) => {
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  const currentUser = context.currentUser!
+  const [type, id] = contextUri.split(':')
+  let track: { id: string } | null = null
+
+  switch (type) {
+    case 'album': {
+      track = await db.track.findFirst({
+        where: { albumId: id },
+        orderBy: { trackNumber: 'asc' },
+        select: { id: true },
+      })
+      break
+    }
+    case 'playlist': {
+      track = await db.playlistTrack
+        .findFirst({
+          where: { playlistId: id },
+          select: { trackId: true },
+          orderBy: { addedAt: 'asc' },
+        })
+        .then((track) => (track ? { id: track.trackId } : null))
+      break
+    }
+    case 'collection': {
+      track = await db.savedTrack
+        .findFirst({
+          where: { userId: currentUser.id },
+          select: { trackId: true },
+          orderBy: { addedAt: 'asc' },
+        })
+        .then((track) => (track ? { id: track.trackId } : null))
+      break
+    }
+  }
+
+  if (!track) {
+    throw new UserInputError('This context has no tracks')
+  }
+
+  return `track:${track.id}`
+}
+
 export const resumePlayback: MutationResolvers['resumePlayback'] = async ({
   input,
 }) => {
@@ -81,6 +125,12 @@ export const resumePlayback: MutationResolvers['resumePlayback'] = async ({
     throw new UserInputError('No device found.')
   }
 
+  let currentTrackUri = input?.uri
+
+  if (input?.contextUri && !input.uri) {
+    currentTrackUri = await getFirstTrackInContext(input.contextUri)
+  }
+
   await db.device.update({
     where: { id: device.id },
     data: {
@@ -93,7 +143,7 @@ export const resumePlayback: MutationResolvers['resumePlayback'] = async ({
     create: {
       isPlaying: true,
       contextUri: input?.contextUri,
-      currentTrackUri: input?.uri,
+      currentTrackUri,
       lastPlayedAt: new Date(),
       user: {
         connect: { id: currentUser.id },
@@ -105,7 +155,7 @@ export const resumePlayback: MutationResolvers['resumePlayback'] = async ({
     update: {
       isPlaying: true,
       contextUri: input?.contextUri,
-      currentTrackUri: input?.uri,
+      currentTrackUri,
       lastPlayedAt: new Date(),
       progressMs: input?.uri || input?.contextUri ? 0 : undefined,
     },
