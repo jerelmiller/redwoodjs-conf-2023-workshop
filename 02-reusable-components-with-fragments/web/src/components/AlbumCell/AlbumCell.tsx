@@ -18,6 +18,7 @@ import Skeleton from 'src/components/Skeleton'
 import { useResumePlaybackMutation } from 'src/mutations/useResumePlaybackMutation'
 import { yearOfRelease } from 'src/utils/releaseDate'
 import { pluralize } from 'src/utils/string'
+import TrackTitleTableCell from 'src/workshop/components/TrackTitleTableCell'
 
 import Duration from '../Duration'
 import LikedTrackTableCell from '../LikedTrackTableCell/LikedTrackTableCell'
@@ -28,7 +29,6 @@ import TableHead from '../TableHead'
 import TableHeader from '../TableHeader'
 import TableRow from '../TableRow'
 import TrackNumberTableCell from '../TrackNumberTableCell'
-import TrackTitleTableCell from '../TrackTitleTableCell/TrackTitleTableCell'
 
 export const QUERY = gql`
   query FindAlbumQuery($id: ID!) {
@@ -61,7 +61,6 @@ export const QUERY = gql`
           node {
             id
             durationMs
-            explicit
             name
             uri
             artists {

@@ -28,9 +28,9 @@ import TableHeader from 'src/components/TableHeader'
 import TableRow from 'src/components/TableRow'
 import TrackNumberTableCell from 'src/components/TrackNumberTableCell'
 import { useResumePlaybackMutation } from 'src/mutations/useResumePlaybackMutation'
+import TrackTitleTableCell from 'src/workshop/components/TrackTitleTableCell'
 
 import LikedTrackTableCell from '../LikedTrackTableCell/LikedTrackTableCell'
-import TrackTitleTableCell from '../TrackTitleTableCell/TrackTitleTableCell'
 
 export const QUERY = gql`
   query FindPlaylistQuery($id: ID!, $offset: Int = 0) {
@@ -58,7 +58,6 @@ export const QUERY = gql`
           track: node {
             id
             durationMs
-            explicit
             name
             uri
             album {
