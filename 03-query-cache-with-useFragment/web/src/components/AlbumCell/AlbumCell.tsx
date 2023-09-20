@@ -18,6 +18,7 @@ import Skeleton from 'src/components/Skeleton'
 import { useResumePlaybackMutation } from 'src/mutations/useResumePlaybackMutation'
 import { yearOfRelease } from 'src/utils/releaseDate'
 import { pluralize } from 'src/utils/string'
+import TrackNumberTableCell from 'src/workshop/components/TrackNumberTableCell'
 import TrackTitleTableCell from 'src/workshop/components/TrackTitleTableCell'
 
 import Duration from '../Duration'
@@ -28,7 +29,6 @@ import TableCell from '../TableCell'
 import TableHead from '../TableHead'
 import TableHeader from '../TableHeader'
 import TableRow from '../TableRow'
-import TrackNumberTableCell from '../TrackNumberTableCell'
 
 export const QUERY = gql`
   query FindAlbumQuery($id: ID!) {
@@ -187,7 +187,10 @@ export const Success = ({
                     resumePlayback({ contextUri: album.uri, uri: track.uri })
                   }}
                 >
-                  <TrackNumberTableCell position={index + 1} />
+                  <TrackNumberTableCell
+                    position={index + 1}
+                    trackId={track.id}
+                  />
                   <TrackTitleTableCell
                     track={track}
                     includeCoverPhoto={false}

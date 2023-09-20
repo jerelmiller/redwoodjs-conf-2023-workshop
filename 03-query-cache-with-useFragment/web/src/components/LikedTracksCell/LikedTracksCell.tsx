@@ -26,9 +26,9 @@ import TableCell from 'src/components/TableCell'
 import TableHead from 'src/components/TableHead'
 import TableHeader from 'src/components/TableHeader'
 import TableRow from 'src/components/TableRow'
-import TrackNumberTableCell from 'src/components/TrackNumberTableCell'
 import { useResumePlaybackMutation } from 'src/mutations/useResumePlaybackMutation'
 import { pluralize } from 'src/utils/string'
+import TrackNumberTableCell from 'src/workshop/components/TrackNumberTableCell'
 import TrackTitleTableCell from 'src/workshop/components/TrackTitleTableCell'
 
 export const QUERY = gql`
@@ -183,7 +183,10 @@ export const Success = ({ me }: CellSuccessProps<LikedTracksQuery>) => {
                       })
                     }}
                   >
-                    <TrackNumberTableCell position={index + 1} />
+                    <TrackNumberTableCell
+                      position={index + 1}
+                      trackId={track.id}
+                    />
                     <TrackTitleTableCell track={track} />
                     <TableCell>
                       <Link

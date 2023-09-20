@@ -26,8 +26,8 @@ import TableCell from 'src/components/TableCell'
 import TableHead from 'src/components/TableHead'
 import TableHeader from 'src/components/TableHeader'
 import TableRow from 'src/components/TableRow'
-import TrackNumberTableCell from 'src/components/TrackNumberTableCell'
 import { useResumePlaybackMutation } from 'src/mutations/useResumePlaybackMutation'
+import TrackNumberTableCell from 'src/workshop/components/TrackNumberTableCell'
 import TrackTitleTableCell from 'src/workshop/components/TrackTitleTableCell'
 
 import LikedTrackTableCell from '../LikedTrackTableCell/LikedTrackTableCell'
@@ -192,7 +192,10 @@ export const Success = ({
                     resumePlayback({ contextUri: playlist.uri, uri: track.uri })
                   }}
                 >
-                  <TrackNumberTableCell position={index + 1} />
+                  <TrackNumberTableCell
+                    position={index + 1}
+                    trackId={track.id}
+                  />
                   <TrackTitleTableCell track={track} />
                   <TableCell>
                     <Link
