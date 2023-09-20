@@ -18,6 +18,7 @@ import PageHeaderDetails from 'src/components/PageHeaderDetails'
 import PageMediaType from 'src/components/PageMediaType'
 import PageTitle from 'src/components/PageTitle'
 import PlayButton from 'src/components/PlayButton'
+import ScrollableListObserver from 'src/components/ScrollableListObserver'
 import Skeleton from 'src/components/Skeleton'
 import Table from 'src/components/Table'
 import TableBody from 'src/components/TableBody'
@@ -48,6 +49,9 @@ export const QUERY = gql`
       tracks(offset: $offset) {
         pageInfo {
           total
+          offset
+          limit
+          hasNextPage
         }
         edges {
           addedAt
@@ -130,6 +134,7 @@ export const Failure = ({
 
 export const Success = ({
   playlist,
+  queryResult,
 }: CellSuccessProps<FindPlaylistQuery, FindPlaylistQueryVariables>) => {
   const resumePlayback = useResumePlaybackMutation()
   const { pageInfo } = playlist.tracks
@@ -214,6 +219,16 @@ export const Success = ({
             })}
           </TableBody>
         </Table>
+        <ScrollableListObserver
+          threshold="500px"
+          onIntersect={() => {
+            const { offset, limit, hasNextPage } = pageInfo
+
+            if (hasNextPage && queryResult?.fetchMore) {
+              queryResult.fetchMore({ variables: { offset: offset + limit } })
+            }
+          }}
+        />
       </PageContent>
     </PageContainer>
   )
