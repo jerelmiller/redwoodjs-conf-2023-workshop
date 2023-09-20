@@ -5,7 +5,7 @@ import type { HomeQuery, HomeQueryVariables } from 'types/graphql'
 import type { CellSuccessProps, CellFailureProps } from '@redwoodjs/web'
 
 import TileGrid from 'src/components/TileGrid'
-import AlbumTile from 'src/workshop/components/AlbumTile'
+import AlbumTile from 'src/workshop/completed/components/AlbumTile'
 
 const matchesWidth = (width: number) =>
   window.matchMedia(`(min-width: ${width}px)`).matches
@@ -53,11 +53,10 @@ export const QUERY = gql`
 
   fragment HomeQueryAlbumFragment on Album {
     id
-    name
-    images {
-      url
-    }
+    ...AlbumTile_album
   }
+
+  ${AlbumTile.fragments.album}
 `
 
 export const Loading = () => <div>Loading...</div>

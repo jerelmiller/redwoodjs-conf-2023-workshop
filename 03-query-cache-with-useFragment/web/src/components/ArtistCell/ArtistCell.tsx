@@ -8,7 +8,7 @@ import PageContent from 'src/components/PageContent'
 import PageTitle from 'src/components/PageTitle'
 import Skeleton from 'src/components/Skeleton'
 import TileGrid from 'src/components/TileGrid'
-import AlbumTile from 'src/workshop/components/AlbumTile'
+import AlbumTile from 'src/workshop/completed/components/AlbumTile'
 
 export const QUERY = gql`
   query FindArtistQuery($id: ID!) {
@@ -38,13 +38,12 @@ export const QUERY = gql`
     edges {
       node {
         id
-        name
-        images {
-          url
-        }
+        ...AlbumTile_album
       }
     }
   }
+
+  ${AlbumTile.fragments.album}
 `
 
 export const Loading = () => (
