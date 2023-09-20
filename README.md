@@ -14,15 +14,21 @@ TODO NEED TO FINISH THIS LIST
 
 ## Before you arrive...
 
-Before you arrive for the workshop, I ask that you work through the [setup](#setup) steps below to ensure we can hit the ground running. We have a good amount of material to cover. This will help ensure a smooth start to the workshop.
+Before you arrive for the workshop, I ask that you work through the [setup](#setup) steps below to ensure we can hit the ground running. We have a good amount of material to cover and this will help ensure a smooth start to the workshop.
 
-The setup steps will ensure that you're able to get the app up and running. This includes getting the database up and running, seeding the database with some initial data, and personalizing the workshop. This is crucial as provides some setup that will be shared by the rest of the exercises.
+The setup steps will ensure that you're able to get the app up and running. This includes getting the database up and running, seeding the database with some initial data, and personalizing the workshop for you. This is crucial as it provides setup that will be shared by the rest of the exercises.
 
 ## Setup
 
 Like Redwood, this workshop requires [Node.js](https://nodejs.org/en/) >= 18.x and [Yarn](https://yarnpkg.com/) >= 1.15. Please ensure these versions are installed on your machine.
 
-To get started, clone this repo onto your machine. Once cloned, navigate to the [`00-setup` folder](./00-setup/) and follow the instructions in the [README.md](./00-setup/README.md). This will ensure you are able to successfully run the app for the rest of the exercises.
+To get started, clone this repo onto your machine.
+
+```sh
+git clone https://github.com/jerelmiller/redwoodjs-conf-2023-workshop.git
+```
+
+Once cloned, navigate to the [`00-setup` folder](./00-setup/) and follow the instructions in the [README.md](./00-setup/README.md) to get the app up and running.
 
 ## Exercises
 
