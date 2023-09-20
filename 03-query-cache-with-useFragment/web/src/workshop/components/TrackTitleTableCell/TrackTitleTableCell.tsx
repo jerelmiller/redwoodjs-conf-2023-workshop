@@ -1,22 +1,15 @@
+import { TrackTitleTableCell_track } from 'types/graphql'
+
 import { Link, routes } from '@redwoodjs/router'
 
 import CoverPhoto from 'src/components/CoverPhoto'
 import DelimitedList from 'src/components/DelimitedList'
-// Use the ExplicitBadge component to mark the track as explicit
-// import ExplicitBadge from 'src/components/ExplicitBadge'
+import ExplicitBadge from 'src/components/ExplicitBadge'
 import TableCell from 'src/components/TableCell'
-
-interface Track {
-  name: string
-  album?: {
-    images: Array<{ url: string }>
-  }
-  artists: Array<{ id: string; name: string }>
-}
 
 interface TrackTitleTableCellProps {
   includeCoverPhoto?: boolean
-  track: Track
+  track: TrackTitleTableCell_track
 }
 
 const TrackTitleTableCell = ({
@@ -38,6 +31,7 @@ const TrackTitleTableCell = ({
             {track.name}
           </span>
           <div className="flex items-center gap-2">
+            {track.explicit && <ExplicitBadge />}
             <span className="text-muted">
               <DelimitedList delimiter=", ">
                 {track.artists.map((artist) => (
@@ -56,6 +50,25 @@ const TrackTitleTableCell = ({
       </div>
     </TableCell>
   )
+}
+
+TrackTitleTableCell.fragments = {
+  track: gql`
+    fragment TrackTitleTableCell_track on Track {
+      id
+      explicit
+      name
+      album {
+        images {
+          url
+        }
+      }
+      artists {
+        id
+        name
+      }
+    }
+  `,
 }
 
 export default TrackTitleTableCell

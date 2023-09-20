@@ -71,11 +71,14 @@ export const QUERY = gql`
               id
               name
             }
+            ...TrackTitleTableCell_track
           }
         }
       }
     }
   }
+
+  ${TrackTitleTableCell.fragments.track}
 `
 
 export const Loading = () => {
