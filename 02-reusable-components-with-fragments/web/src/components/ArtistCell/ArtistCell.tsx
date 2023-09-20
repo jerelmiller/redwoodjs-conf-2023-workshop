@@ -42,6 +42,7 @@ export const QUERY = gql`
         albumType
         releaseDate {
           date
+          precision
         }
         images {
           url
