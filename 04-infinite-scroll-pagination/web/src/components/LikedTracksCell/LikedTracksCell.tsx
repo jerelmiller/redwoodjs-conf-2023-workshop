@@ -19,6 +19,7 @@ import PageHeaderDetails from 'src/components/PageHeaderDetails'
 import PageMediaType from 'src/components/PageMediaType'
 import PageTitle from 'src/components/PageTitle'
 import PlayButton from 'src/components/PlayButton'
+import ScrollableListObserver from 'src/components/ScrollableListObserver'
 import Skeleton from 'src/components/Skeleton'
 import Table from 'src/components/Table'
 import TableBody from 'src/components/TableBody'
@@ -39,9 +40,12 @@ export const QUERY = gql`
         id
         displayName
       }
-      tracks {
+      tracks(limit: 10) {
         pageInfo {
           total
+          offset
+          limit
+          hasNextPage
         }
         edges {
           addedAt
@@ -122,9 +126,13 @@ export const Failure = ({ error }: CellFailureProps) => (
   <div style={{ color: 'red' }}>Error: {error?.message}</div>
 )
 
-export const Success = ({ me }: CellSuccessProps<LikedTracksQuery>) => {
+export const Success = ({
+  me,
+  queryResult,
+}: CellSuccessProps<LikedTracksQuery>) => {
   const resumePlayback = useResumePlaybackMutation()
-  const totalTracks = me.tracks?.pageInfo.total ?? 0
+  const pageInfo = me.tracks?.pageInfo
+  const totalTracks = pageInfo?.total ?? 0
 
   return (
     <PageContainer bgColor="#1F3363">
@@ -215,6 +223,20 @@ export const Success = ({ me }: CellSuccessProps<LikedTracksQuery>) => {
             </EmptyStateDescription>
           </EmptyState>
         )}
+        <ScrollableListObserver
+          threshold="500px"
+          onIntersect={() => {
+            if (!pageInfo) {
+              return
+            }
+
+            const { offset, limit, hasNextPage } = pageInfo
+
+            if (hasNextPage && queryResult?.fetchMore) {
+              queryResult.fetchMore({ variables: { offset: offset + limit } })
+            }
+          }}
+        />
       </PageContent>
     </PageContainer>
   )
