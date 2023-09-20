@@ -2,20 +2,20 @@ import type { PlaybarQuery, PlaybarQueryVariables } from 'types/graphql'
 
 import type { CellSuccessProps, CellFailureProps } from '@redwoodjs/web'
 
+import ActiveDeviceBannerCell from 'src/components/ActiveDeviceBannerCell'
 import LikeButton from 'src/components/LikeButton'
+import MuteControlCell from 'src/components/MuteControlCell'
+import PlaybackProgressBarCell from 'src/components/PlaybackProgressBarCell'
 import QueueControl from 'src/components/QueueControl'
 import Skeleton from 'src/components/Skeleton'
 import SkipToNextControl from 'src/components/SkipToNextControl'
 import SkipToPreviousControl from 'src/components/SkipToPreviousControl'
-import ActiveDeviceBannerCell from 'src/workshop/components/ActiveDeviceBannerCell'
+import VolumeBarControlCell from 'src/components/VolumeBarControlCell'
 import CurrentTrackDetailsCell from 'src/workshop/components/CurrentTrackDetailsCell'
 import DeviceControlCell from 'src/workshop/components/DeviceControlCell'
-import MuteControlCell from 'src/workshop/components/MuteControlCell'
-import PlaybackProgressBarCell from 'src/workshop/components/PlaybackProgressBarCell'
 import PlayControlCell from 'src/workshop/components/PlayControlCell'
 import RepeatControlCell from 'src/workshop/components/RepeatControlCell'
 import ShuffleControlCell from 'src/workshop/components/ShuffleControlCell'
-import VolumeBarControlCell from 'src/workshop/components/VolumeBarControlCell'
 
 export const QUERY = gql`
   query PlaybarQuery {
