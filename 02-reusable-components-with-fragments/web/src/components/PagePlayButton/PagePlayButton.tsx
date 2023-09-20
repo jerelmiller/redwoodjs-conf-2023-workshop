@@ -12,15 +12,16 @@ const PagePlayButton = ({ disabled, contextUri }: PagePlayButtonProps) => {
   const resumePlayback = useResumePlaybackMutation()
   const isPlaying = false
   const isCurrentContext = false
+  const isPlayingInContext = isPlaying && isCurrentContext
 
   return (
     <PlayButton
       disabled={disabled}
       variant="primary"
       size="3.5rem"
-      playing={isPlaying}
+      playing={isPlayingInContext}
       onClick={() => {
-        if (isPlaying && isCurrentContext) {
+        if (isPlayingInContext) {
           pausePlayback()
         } else if (isCurrentContext) {
           resumePlayback()
