@@ -8,6 +8,9 @@ import SidebarPlaylistContent from 'src/components/SidebarPlaylistContent'
 import SidebarPlaylistLink from 'src/components/SidebarPlaylistLink'
 import SidebarPlaylistName from 'src/components/SidebarPlaylistName'
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const LIKED_TRACKS_URI = 'collection:tracks'
+
 const SidebarLikedTracksItem = () => {
   const isPlaying = false
   const isCurrentContext = false

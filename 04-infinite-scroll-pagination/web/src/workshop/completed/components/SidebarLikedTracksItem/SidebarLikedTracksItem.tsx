@@ -10,6 +10,8 @@ import SidebarPlaylistContent from 'src/components/SidebarPlaylistContent'
 import SidebarPlaylistLink from 'src/components/SidebarPlaylistLink'
 import SidebarPlaylistName from 'src/components/SidebarPlaylistName'
 
+const LIKED_TRACKS_URI = 'collection:tracks'
+
 const PLAYBACK_STATE_FRAGMENT: TypedDocumentNode<SidebarLikedTracksItem_playbackState> = gql`
   fragment SidebarLikedTracksItem_playbackState on PlaybackState {
     isPlaying
@@ -26,7 +28,7 @@ const SidebarLikedTracksItem = () => {
   })
 
   const isPlaying = playbackState.isPlaying ?? false
-  const isCurrentContext = playbackState.context?.uri === 'collection:tracks'
+  const isCurrentContext = playbackState.context?.uri === LIKED_TRACKS_URI
 
   return (
     <SidebarPlaylistLink to={routes.likedTracks()}>
