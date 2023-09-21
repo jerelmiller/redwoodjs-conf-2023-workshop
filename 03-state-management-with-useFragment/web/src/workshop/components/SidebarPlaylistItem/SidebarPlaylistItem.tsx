@@ -14,8 +14,8 @@ interface SidebarPlaylistItemProps {
 }
 
 const SidebarPlaylistItem = ({ playlist }: SidebarPlaylistItemProps) => {
-  const isCurrentContext = false
   const isPlaying = false
+  const isCurrentContext = false
 
   return (
     <SidebarPlaylistLink to={routes.playlist({ id: playlist.id })}>
