@@ -92,7 +92,7 @@ const getFirstTrackInContext = async (contextUri: string) => {
         .findFirst({
           where: { userId: currentUser.id },
           select: { trackId: true },
-          orderBy: { addedAt: 'asc' },
+          orderBy: { addedAt: 'desc' },
         })
         .then((track) => (track ? { id: track.trackId } : null))
       break
