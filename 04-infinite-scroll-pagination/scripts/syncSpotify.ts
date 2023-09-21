@@ -334,30 +334,17 @@ interface Program {
 export default async ({ args }: Program) => {
   maxDepth = args.maxDepth ?? 3
   accessToken = (await authenticate()).access_token
-  const { spotify: config } = readConfig()
 
-  const artistIds = DEFAULT_SYNCED_ARTISTS.concat(config.synced.artistIds)
-  const albumIds = DEFAULT_SYNCED_ALBUMS.concat(
-    config.synced.albumIds,
-    config.saved.albumIds
-  )
-  const playlistIds = DEFAULT_SYNCED_PLAYLISTS.concat(config.synced.playlistIds)
-  const trackIds = config.saved.trackIds
-
-  for (const id of artistIds) {
+  for (const id of DEFAULT_SYNCED_ARTISTS) {
     addToQueue({ type: 'artist', id }, { depth: 1 })
   }
 
-  for (const id of albumIds) {
+  for (const id of DEFAULT_SYNCED_ALBUMS) {
     addToQueue({ type: 'album', id }, { depth: 1 })
   }
 
-  for (const id of playlistIds) {
+  for (const id of DEFAULT_SYNCED_PLAYLISTS) {
     addToQueue({ type: 'playlist', id }, { depth: 1 })
-  }
-
-  for (const id of trackIds) {
-    addToQueue({ type: 'track', id }, { depth: 1 })
   }
 
   await processQueue()

@@ -370,46 +370,6 @@ const saveUser = (user: {
   })
 }
 
-const saveAlbumToLibrary = async (
-  albumId: string,
-  currentUser: { id: string }
-) => {
-  await db.savedAlbum.upsert({
-    where: {
-      albumId_userId: { albumId, userId: currentUser.id },
-    },
-    create: {
-      album: {
-        connect: { id: albumId },
-      },
-      user: {
-        connect: { id: currentUser.id },
-      },
-    },
-    update: {},
-  })
-}
-
-const saveTrackToLibrary = async (
-  trackId: string,
-  currentUser: { id: string }
-) => {
-  await db.savedTrack.upsert({
-    where: {
-      trackId_userId: { trackId, userId: currentUser.id },
-    },
-    create: {
-      track: {
-        connect: { id: trackId },
-      },
-      user: {
-        connect: { id: currentUser.id },
-      },
-    },
-    update: {},
-  })
-}
-
 const resetUserImage = () => {
   return db.userImage.deleteMany({
     where: { url: { in: ['/avatar.png', '/defaultAvatar.png'] } },
@@ -475,14 +435,6 @@ export default async () => {
 
   for (const record of Object.values(refs)) {
     await saveRecord(record as SpotifyRecord)
-  }
-
-  for (const id of config.spotify.saved.albumIds) {
-    await saveAlbumToLibrary(id, currentUser)
-  }
-
-  for (const id of config.spotify.saved.trackIds) {
-    await saveTrackToLibrary(id, currentUser)
   }
 
   await removeOldUsers()
