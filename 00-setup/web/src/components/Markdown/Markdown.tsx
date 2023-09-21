@@ -38,6 +38,12 @@ const components: ReactMarkdownProps['components'] = {
       </pre>
     )
   },
+  ol: ({ children }) => <ol className="mb-4">{children}</ol>,
+  blockquote: ({ children }) => (
+    <blockquote className="mb-4 border-l-4 border-l-primary pl-4 text-muted">
+      {children}
+    </blockquote>
+  ),
 }
 
 export default Markdown
