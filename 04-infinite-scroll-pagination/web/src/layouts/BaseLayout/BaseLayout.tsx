@@ -1,22 +1,18 @@
-import { Home, Library, Pin } from 'lucide-react'
+import { Home, Library } from 'lucide-react'
 
 import { Link, routes } from '@redwoodjs/router'
 
 import ConferenceLogo from 'src/components/ConferenceLogo'
 import CurrentUserMenuCell from 'src/components/CurrentUserMenuCell'
-import DelimitedList from 'src/components/DelimitedList'
-import LikedTracksCoverPhoto from 'src/components/LikedTracksCoverPhoto'
 import NotificationManager from 'src/components/NotificationManager'
 import RedwoodConfLogo from 'src/components/RedwoodConfLogo'
 import RedwoodLogo from 'src/components/RedwoodLogo/RedwoodLogo'
 import ScrollableList from 'src/components/ScrollableList'
 import SidebarNavLink from 'src/components/SidebarNavLink'
-import SidebarPlaylistContent from 'src/components/SidebarPlaylistContent'
-import SidebarPlaylistLink from 'src/components/SidebarPlaylistLink'
-import SidebarPlaylistName from 'src/components/SidebarPlaylistName'
 import SidebarPlaylistsCell from 'src/components/SidebarPlaylistsCell'
 import SidebarSection from 'src/components/SidebarSection'
 import PlaybarCell from 'src/workshop/completed/components/PlaybarCell'
+import SidebarLikedTracksItem from 'src/workshop/completed/components/SidebarLikedTracksItem'
 
 type BaseLayoutProps = {
   children?: React.ReactNode
@@ -56,29 +52,7 @@ const BaseLayout = ({ children }: BaseLayoutProps) => {
               </h2>
             </header>
             <ScrollableList as="ul" className="-mx-1 flex-1 px-3">
-              <SidebarPlaylistLink to={routes.likedTracks()}>
-                <LikedTracksCoverPhoto iconSize="1rem" size="48px" />
-                <SidebarPlaylistContent>
-                  <SidebarPlaylistName isCurrentContext={false}>
-                    Liked Songs
-                  </SidebarPlaylistName>
-                  <div className="flex items-center gap-2">
-                    <Pin
-                      fill="currentColor"
-                      size="1rem"
-                      strokeWidth={1}
-                      className="rotate-45 text-theme-light"
-                    />
-                    <span className="text-sm text-muted">
-                      <DelimitedList delimiter=" · ">
-                        <span>Playlist</span>
-                        <span>Spotify</span>
-                      </DelimitedList>
-                    </span>
-                  </div>
-                </SidebarPlaylistContent>
-              </SidebarPlaylistLink>
-
+              <SidebarLikedTracksItem />
               <SidebarPlaylistsCell />
             </ScrollableList>
           </SidebarSection>
