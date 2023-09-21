@@ -11,17 +11,6 @@ type WorkshopConfig = {
     name?: string
     type?: string
   }
-  spotify: {
-    saved: {
-      albumIds: string[]
-      trackIds: string[]
-    }
-    synced: {
-      albumIds: string[]
-      artistIds: string[]
-      playlistIds: string[]
-    }
-  }
 }
 
 export const readConfig = (): WorkshopConfig => {

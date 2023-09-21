@@ -8,17 +8,3 @@ name = "My Computer"
 
 # valid types: 'computer', 'smartphone', 'speaker'
 type = 'computer'
-
-# Include any albums or tracks that you want to show up as "saved" when running
-# the app
-[spotify.saved]
-albumIds = []
-trackIds = []
-
-# If you want to ensure a full data set of albums, artist, or playlists are
-# fetched, add their ids here. This can provide greater details for some of their
-# application
-[spotify.synced]
-albumIds = []
-artistIds = []
-playlistIds = []
