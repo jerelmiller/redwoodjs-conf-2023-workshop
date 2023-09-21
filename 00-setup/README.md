@@ -22,7 +22,7 @@ This setup guide will walk you through the prerequisites needed for the workshop
    yarn rw prisma db seed
    ```
 
-   > NOTE: If you'd like to customize some of the Spotify data that is displayed in the workshop app, see the section below on [customizing spotify data](#customize-the-spotify-data).
+   > NOTE: If you'd like to customize the user or device information for the workshop, see the [workshop config](#workshop-config) section for more information. This should be done before running seeds.
 
 4. Start the app
 
@@ -36,18 +36,45 @@ If everything works as expected, you should see a home screen with these instruc
 
 You can personalize this workshop experience by modifying the workshop config. This step is not required, though highly encouraged to get the most of your experience.
 
-This configuration allows you to set your display name, name the device used to simulate playback, ensure certain albums, tracks, or playlists are synced from Spotify, as well as a starting point for saved albums and tracks.
+This configuration allows you to set your display name, avatar, and device information used for playback.
 
-This data is saved to the local database.
+### Applying changes
+
+Changes to the configuration can be applied by running the seed script. If you've already run the seed script, running it again will update this information.
+
+```sh
+yarn rw prisma db seed
+```
 
 ### Customizing your user
+
+You can customize both your display name and your avatar. This will show up in the user dropdown once logged in.
+
+To customize your username, update the `displayName` property. By default this will be "RedwoodConf Attendee".
 
 ```toml
 [user]
 
-displayName = 'RedwoodConf Attendee'
+displayName = "RedwoodConf Attendee"
 ```
+
+To customize your avatar, add an image to `web/public/avatar.png`. By default, the `web/public/defaultAvatar.png` will be used. Adding this file will require you to [apply changes](#applying-changes) to the database by running the seed script, otherwise the default avatar will be displayed.
 
 ### Customizing your device
 
-### Customize the Spotify data
+To replicate the Spotify UI, the app displays a device for playback. If you'd like to customize the name and/or type of this device in the UI, update the `name` and `type` properties in the config.
+
+By default, the `name` will be set to "My Computer" and the `type` to "computer".
+
+```toml
+[device]
+
+name = "My Computer"
+type = "computer"
+```
+
+## You're done 🎉
+
+To make sure everything is working, [log into](http://localhost:8910/login) the app. Once logged in, the app should resemble the authenticated Spotify UI complete with the data you configured in the workshop config.
+
+Each exercise uses the database and workshop configuration completed in this phase.
