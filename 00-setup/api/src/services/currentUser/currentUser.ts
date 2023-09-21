@@ -17,6 +17,7 @@ export const CurrentUser: CurrentUserResolvers = {
     })
     const savedAlbums = await db.savedAlbum.findMany({
       where: { userId: currentUser.id },
+      orderBy: { addedAt: 'desc' },
       skip: offset,
       take: limit,
       include: {
@@ -70,6 +71,9 @@ export const CurrentUser: CurrentUserResolvers = {
     const savedTracks = await db.savedTrack.findMany({
       where: {
         userId: currentUser.id,
+      },
+      orderBy: {
+        addedAt: 'desc',
       },
       skip: offset,
       take: limit,
