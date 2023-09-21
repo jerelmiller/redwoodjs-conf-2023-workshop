@@ -2,6 +2,8 @@ import { ComponentPropsWithoutRef } from 'react'
 
 import ReactMarkdown from 'react-markdown'
 
+import { Link } from '@redwoodjs/router'
+
 type ReactMarkdownProps = ComponentPropsWithoutRef<typeof ReactMarkdown>
 
 interface MarkdownProps {
@@ -18,11 +20,21 @@ const components: ReactMarkdownProps['components'] = {
   h3: ({ children }) => <h1 className="mb-4 text-2xl">{children}</h1>,
   p: ({ children }) => <p className="mb-4 last:mb-0">{children}</p>,
   pre: ({ children }) => children,
-  a: ({ children, ...props }) => (
-    <a {...props} target="_blank" className="text-theme-light underline">
-      {children}
-    </a>
-  ),
+  a: ({ children, href, ...props }) => {
+    if (href?.match(/^http/)) {
+      return (
+        <a {...props} target="_blank" className="text-theme-light underline">
+          {children}
+        </a>
+      )
+    }
+
+    return (
+      <Link to={href ?? ''} className="text-theme-light underline">
+        {children}
+      </Link>
+    )
+  },
   code: ({ children, inline }) => {
     if (inline) {
       return (
