@@ -1,4 +1,9 @@
-import { RemoveSavedTrackInput } from 'types/graphql'
+import {
+  RemoveSavedTrackInput,
+  RemoveSavedTrackMutation,
+  RemoveSavedTrackMutationVariables,
+  SavedTrackEdge,
+} from 'types/graphql'
 
 import { useMutation } from '@redwoodjs/web'
 
@@ -15,13 +20,37 @@ const REMOVE_SAVED_TRACK_MUTATION = gql`
 `
 
 export const useRemoveSavedTrackMutation = () => {
-  const [execute] = useMutation(REMOVE_SAVED_TRACK_MUTATION)
+  const [execute] = useMutation<
+    RemoveSavedTrackMutation,
+    RemoveSavedTrackMutationVariables
+  >(REMOVE_SAVED_TRACK_MUTATION)
 
   return (input: RemoveSavedTrackInput) => {
     return execute({
       variables: { input },
       onCompleted: () => {
         NotificationManager.notify('Removed from your Liked Songs')
+      },
+      update: (cache, { data }) => {
+        if (!data?.removeSavedTrack?.track) {
+          return
+        }
+
+        cache.modify({
+          id: cache.identify({ __typename: 'CurrentUser' }),
+          fields: {
+            tracks: (existing, { readField }) => {
+              const edges = readField<SavedTrackEdge[]>('edges', existing) ?? []
+
+              return {
+                ...existing,
+                edges: edges.filter(
+                  (edge) => readField('id', edge.node) !== input.id
+                ),
+              }
+            },
+          },
+        })
       },
     })
   }

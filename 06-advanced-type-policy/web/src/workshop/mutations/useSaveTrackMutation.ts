@@ -3,6 +3,7 @@ import {
   SaveTrackInput,
   SaveTrackMutation,
   SaveTrackMutationVariables,
+  SavedTrackEdge,
 } from 'types/graphql'
 
 import { useMutation } from '@redwoodjs/web'
@@ -24,13 +25,45 @@ const SAVE_TRACK_MUTATION: TypedDocumentNode<
 `
 
 export const useSaveTrackMutation = () => {
-  const [execute] = useMutation(SAVE_TRACK_MUTATION)
+  const [execute] = useMutation<SaveTrackMutation, SaveTrackMutationVariables>(
+    SAVE_TRACK_MUTATION
+  )
 
   return (input: SaveTrackInput) => {
     return execute({
       variables: { input },
       onCompleted: () => {
         NotificationManager.notify('Added to your Liked Songs')
+      },
+      update: (cache, { data }) => {
+        if (!data?.saveTrack?.track) {
+          return
+        }
+
+        cache.modify({
+          id: cache.identify({ __typename: 'CurrentUser' }),
+          fields: {
+            tracks: (existing, { toReference, readField }) => {
+              const trackRef = toReference({
+                __typename: 'Track',
+                id: input.id,
+              })
+
+              const savedTrack = {
+                __typename: 'SavedTrackEdge',
+                addedAt: data.saveTrack?.addedAt,
+                node: trackRef,
+              }
+
+              const edges = readField<SavedTrackEdge[]>('edges', existing) ?? []
+
+              return {
+                ...existing,
+                edges: [savedTrack, ...edges],
+              }
+            },
+          },
+        })
       },
     })
   }
