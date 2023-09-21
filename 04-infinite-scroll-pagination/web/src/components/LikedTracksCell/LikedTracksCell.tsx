@@ -34,13 +34,13 @@ import TrackNumberTableCell from 'src/workshop/completed/components/TrackNumberT
 import TrackTitleTableCell from 'src/workshop/completed/components/TrackTitleTableCell'
 
 export const QUERY = gql`
-  query LikedTracksQuery {
+  query LikedTracksQuery($offset: Int = 0) {
     me {
       profile {
         id
         displayName
       }
-      tracks(limit: 10) {
+      tracks(limit: 10, offset: $offset) {
         pageInfo {
           total
           offset
