@@ -30,7 +30,7 @@ This setup guide will walk you through the prerequisites needed for the workshop
 yarn rw dev
 ```
 
-If everything works as expected, you should see a home screen with these instructions.
+If everything works as expected, you should see a home screen with the contents of this README.
 
 ## Workshop config
 
