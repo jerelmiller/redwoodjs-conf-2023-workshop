@@ -6,23 +6,23 @@ This setup guide will walk you through the prerequisites needed for the workshop
 
 1. Install dependencies
 
-```
-yarn
-```
+   ```
+   yarn
+   ```
 
 2. Apply the database schema.
 
-```
-yarn rw prisma migrate dev
-```
+   ```
+   yarn rw prisma migrate dev
+   ```
 
 3. Seed the database with Spotify data
 
-```
-yarn rw prisma db seed
-```
+   ```
+   yarn rw prisma db seed
+   ```
 
-> NOTE: If you'd like to customize some of the Spotify data that is displayed in the workshop app, see the section below on [customizing spotify data](#customize-the-spotify-data).
+   > NOTE: If you'd like to customize some of the Spotify data that is displayed in the workshop app, see the section below on [customizing spotify data](#customize-the-spotify-data).
 
 4. Start the app
 
