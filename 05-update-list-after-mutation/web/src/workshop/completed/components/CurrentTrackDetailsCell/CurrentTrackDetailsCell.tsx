@@ -5,8 +5,8 @@ import { Link, routes } from '@redwoodjs/router'
 import CoverPhoto from 'src/components/CoverPhoto'
 import DelimitedList from 'src/components/DelimitedList'
 import LikeButton from 'src/components/LikeButton'
-import { useRemoveSavedTrackMutation } from 'src/mutations/useRemoveSavedTrackMutation'
-import { useSaveTrackMutation } from 'src/mutations/useSaveTrackMutation'
+import { useRemoveSavedTrackMutation } from 'src/workshop/mutations/useRemoveSavedTrackMutation'
+import { useSaveTrackMutation } from 'src/workshop/mutations/useSaveTrackMutation'
 
 interface CurrentTrackDetailsCellProps {
   track: CurrentTrackDetailsCell_track | null | undefined

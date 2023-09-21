@@ -1,8 +1,8 @@
 import cx from 'classnames'
 
 import TableCell from 'src/components/TableCell'
-import { useRemoveSavedTrackMutation } from 'src/mutations/useRemoveSavedTrackMutation'
-import { useSaveTrackMutation } from 'src/mutations/useSaveTrackMutation'
+import { useRemoveSavedTrackMutation } from 'src/workshop/mutations/useRemoveSavedTrackMutation'
+import { useSaveTrackMutation } from 'src/workshop/mutations/useSaveTrackMutation'
 
 import LikeButton from '../LikeButton'
 
