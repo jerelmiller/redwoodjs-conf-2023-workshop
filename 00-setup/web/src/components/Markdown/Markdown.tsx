@@ -21,16 +21,24 @@ const components: ReactMarkdownProps['components'] = {
   p: ({ children }) => <p className="mb-4 last:mb-0">{children}</p>,
   pre: ({ children }) => children,
   a: ({ children, href, ...props }) => {
-    if (href?.match(/^http/)) {
+    const to = href?.replace(window.location.origin, '') ?? ''
+
+    if (to.match(/^http/)) {
       return (
-        <a {...props} target="_blank" className="text-theme-light underline">
+        <a
+          {...props}
+          href={href}
+          target="_blank"
+          rel="noreferrer"
+          className="text-theme-light underline"
+        >
           {children}
         </a>
       )
     }
 
     return (
-      <Link to={href ?? ''} className="text-theme-light underline">
+      <Link to={to} className="text-theme-light underline">
         {children}
       </Link>
     )
