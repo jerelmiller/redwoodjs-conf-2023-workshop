@@ -15,6 +15,7 @@ import PageTitle from 'src/components/PageTitle'
 import PlayButton from 'src/components/PlayButton'
 import ReleaseDate from 'src/components/ReleaseDate'
 import Skeleton from 'src/components/Skeleton'
+import { useContainsSavedTracks } from 'src/hooks/useContainsSavedTracks'
 import { useResumePlaybackMutation } from 'src/mutations/useResumePlaybackMutation'
 import { yearOfRelease } from 'src/utils/releaseDate'
 import { pluralize } from 'src/utils/string'
@@ -132,6 +133,9 @@ export const Failure = ({
 export const Success = ({
   album,
 }: CellSuccessProps<FindAlbumQuery, FindAlbumQueryVariables>) => {
+  const tracksContains = useContainsSavedTracks(
+    album.tracks?.edges.map((edge) => edge.node.id) ?? []
+  )
   const resumePlayback = useResumePlaybackMutation()
   const coverPhoto = album.images[0]
   const totalTracks = album.tracks?.pageInfo.total ?? 0
@@ -186,7 +190,10 @@ export const Success = ({
                     track={track}
                     includeCoverPhoto={false}
                   />
-                  <LikedTrackTableCell liked={false} track={track} />
+                  <LikedTrackTableCell
+                    liked={tracksContains.get(track.id) ?? false}
+                    track={track}
+                  />
                   <TableCell shrink>
                     <Duration durationMs={track.durationMs} />
                   </TableCell>
