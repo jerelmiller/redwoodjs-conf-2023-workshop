@@ -4,6 +4,8 @@ Welcome to the RedwoodJS Conf 2023 Apollo Client Workshop!
 
 In this workshop, we will be working with a scaled down version of Apollo's [Spotify Showcase](https://github.com/apollographql/spotify-showcase) built with Redwood. This app should provide enough complexity to get a more "real world" feel for the kinds of situations you may find yourself in with your own apps.
 
+> **Note:** A Spotify account is not required for this workshop. The data used in this workshop is persisted to a local database.
+
 In this workshop, we will be learning more about GraphQL fragments and the Apollo cache. We will cover topics such as:
 
 - Utilizing GraphQL fragments with components to declare their data needs
