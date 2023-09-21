@@ -62,6 +62,31 @@ export const typePolicies: TypePolicies = {
           return result
         },
       },
+      tracksContains: {
+        keyArgs: false,
+        read: (value, { args, storage }) => {
+          const ids: string[] = args?.ids ?? []
+
+          return ids.map((id) => storage.contains?.get(id))
+        },
+        merge: (existing = [], incoming, { args, storage }) => {
+          if (!args) {
+            return existing
+          }
+
+          const contains: Map<string, boolean> = storage.contains ?? new Map()
+          const ids: string[] = args?.ids ?? []
+
+          const result = ids.reduce(
+            (map, id, idx) => map.set(id, incoming[idx]),
+            contains
+          )
+
+          storage.contains = result
+
+          return Array.from(result.values())
+        },
+      },
     },
   },
 }

@@ -51,6 +51,21 @@ export const useRemoveSavedTrackMutation = () => {
             },
           },
         })
+
+        cache.writeFragment({
+          id: cache.identify({ __typename: 'CurrentUser' }),
+          fragment: gql`
+            fragment SaveTracksMutationFragment on CurrentUser {
+              tracksContains(ids: $ids)
+            }
+          `,
+          data: {
+            tracksContains: [false],
+          },
+          variables: {
+            ids: [input.id],
+          },
+        })
       },
     })
   }
