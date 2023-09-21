@@ -10,6 +10,7 @@ import CoverPhoto from 'src/components/CoverPhoto'
 import DelimitedList from 'src/components/DelimitedList'
 import LikeButton from 'src/components/LikeButton'
 import Skeleton from 'src/components/Skeleton/Skeleton'
+import { useContainsSavedTracks } from 'src/hooks/useContainsSavedTracks'
 import { useRemoveSavedTrackMutation } from 'src/mutations/useRemoveSavedTrackMutation'
 import { useSaveTrackMutation } from 'src/mutations/useSaveTrackMutation'
 
@@ -60,7 +61,8 @@ export const Success = ({ me }: CurrentTrackDetailsCellProps) => {
   const saveTrack = useSaveTrackMutation()
   const removeSavedTrack = useRemoveSavedTrackMutation()
   const currentTrack = me.player.playbackState?.track
-  const liked = false
+  const contains = useContainsSavedTracks(currentTrack ? [currentTrack.id] : [])
+  const liked = currentTrack ? contains.get(currentTrack.id) ?? false : false
 
   return (
     <div className="flex items-center gap-4">

@@ -28,6 +28,7 @@ import TableHead from 'src/components/TableHead'
 import TableHeader from 'src/components/TableHeader'
 import TableRow from 'src/components/TableRow'
 import TrackNumberTableCell from 'src/components/TrackNumberTableCell'
+import { useContainsSavedTracks } from 'src/hooks/useContainsSavedTracks'
 import { useResumePlaybackMutation } from 'src/mutations/useResumePlaybackMutation'
 import TrackTitleTableCell from 'src/workshop/components/TrackTitleTableCell'
 
@@ -137,6 +138,9 @@ export const Success = ({
   queryResult,
 }: CellSuccessProps<FindPlaylistQuery, FindPlaylistQueryVariables>) => {
   const resumePlayback = useResumePlaybackMutation()
+  const tracksContains = useContainsSavedTracks(
+    playlist.tracks.edges.map((edge) => edge.track.id)
+  )
   const { pageInfo } = playlist.tracks
   const totalTracks = pageInfo.total
   const coverPhoto = playlist.images[0]
@@ -203,7 +207,10 @@ export const Success = ({
                       </span>
                     )}
                   </TableCell>
-                  <LikedTrackTableCell liked={false} track={track} />
+                  <LikedTrackTableCell
+                    liked={tracksContains.get(track.id) ?? false}
+                    track={track}
+                  />
                   <TableCell shrink>
                     <Duration durationMs={track.durationMs} />
                   </TableCell>
