@@ -22,6 +22,10 @@ const components: ReactMarkdownProps['components'] = {
   h3: ({ children }) => <h1 className="mb-4 text-2xl">{children}</h1>,
   p: ({ children }) => <p className="mb-4 last:mb-0">{children}</p>,
   pre: ({ children }) => children,
+  img: ({ src, ...props }) => (
+    // eslint-disable-next-line jsx-a11y/alt-text
+    <img src={src?.replace('./web/public', '')} {...props} />
+  ),
   a: ({ children, href, ...props }) => {
     const to = href?.replace(window.location.origin, '') ?? ''
 
