@@ -6,18 +6,27 @@ export interface SessionData {
   id: string
 }
 
+const getSecret = () => {
+  const secret = process.env.SESSION_SECRET
+
+  if (!secret) {
+    throw new Error(
+      'You are missing a `SESSION_SECRET` environment variable. Please generate a secret with `yarn rw g secret` and set this value to `SESSION_SECRET` in the `.env` file at the root of the repo.'
+    )
+  }
+
+  return secret
+}
+
 export const encrypt = (data: SessionData) => {
-  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  return CryptoJS.AES.encrypt(JSON.stringify(data), process.env.SESSION_SECRET!)
+  return CryptoJS.AES.encrypt(JSON.stringify(data), getSecret())
 }
 
 export const decrypt = (text: string): SessionData => {
   try {
-    const data = CryptoJS.AES.decrypt(
-      text,
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      process.env.SESSION_SECRET!
-    ).toString(CryptoJS.enc.Utf8)
+    const data = CryptoJS.AES.decrypt(text, getSecret()).toString(
+      CryptoJS.enc.Utf8
+    )
 
     return JSON.parse(data)
   } catch (e) {
