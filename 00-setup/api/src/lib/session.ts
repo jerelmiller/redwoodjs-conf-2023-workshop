@@ -11,7 +11,7 @@ const getSecret = () => {
 
   if (!secret) {
     throw new Error(
-      'You are missing a `SESSION_SECRET` environment variable. Please generate a secret with `yarn rw g secret` and set this value to `SESSION_SECRET` in the `.env` file at the root of the repo.'
+      'You are missing a `SESSION_SECRET` environment variable. Please generate a secret with `yarn rw g secret` and set this value to `SESSION_SECRET` in the `.env` file at the root of the `00-setup` folder.'
     )
   }
 

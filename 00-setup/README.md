@@ -10,13 +10,25 @@ This setup guide will walk you through the prerequisites needed for the workshop
    yarn
    ```
 
-2. Apply the database schema.
+2. Generate a session secret
+
+   ```
+   yarn rw g secret
+   ```
+
+3. Copy the secret from the previous step and add it to `.env`. Your `.env` file should look similar to the following:
+
+   ```
+   SESSION_SECRET=VALUE_FROM_PREVIOUS_STEP
+   ```
+
+4. Apply the database schema.
 
    ```
    yarn rw prisma migrate dev
    ```
 
-3. Seed the database with Spotify data
+5. Seed the database with Spotify data
 
    ```
    yarn rw prisma db seed
@@ -24,7 +36,7 @@ This setup guide will walk you through the prerequisites needed for the workshop
 
    > NOTE: If you'd like to customize the user or device information for the workshop, see the [workshop config](#workshop-config) section for more information. This should be done before running seeds.
 
-4. Start the app
+6. Start the app
 
 ```
 yarn rw dev
