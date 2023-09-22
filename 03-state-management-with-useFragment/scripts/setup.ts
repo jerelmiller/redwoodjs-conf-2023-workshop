@@ -1,17 +1,27 @@
 import fs from 'node:fs'
 import path from 'node:path'
 
-const resolveSetupDir = (pathname: string) =>
-  getRelative(path.join('../../00-setup', pathname))
+const resolveSetupDir = (pathname: string) => {
+  const absolutePath = getAbsolute(pathname)
 
-const getRelative = (relativePath: string) =>
+  return getAbsolute(
+    path.join('../../00-setup', path.relative(process.cwd(), absolutePath))
+  )
+}
+
+const getAbsolute = (relativePath: string) =>
   path.resolve(path.join(__dirname, relativePath))
 
-const linkToShared = (pathname: string) => {
-  const absolutePath = getRelative(pathname)
-  const setupPath = resolveSetupDir(path.relative(process.cwd(), absolutePath))
+const linkIfExists = (pathname: string) => {
+  const setupPath = resolveSetupDir(pathname)
 
-  symlink(setupPath, absolutePath)
+  if (fs.existsSync(setupPath)) {
+    linkToShared(pathname)
+  }
+}
+
+const linkToShared = (pathname: string) => {
+  symlink(resolveSetupDir(pathname), getAbsolute(pathname))
 }
 
 // Create a tmp symlink, then rename it to force symlinking and avoid errors
@@ -27,5 +37,6 @@ export default async () => {
   linkToShared('../api/db/dev.db')
   linkToShared('../workshop.config.toml')
   linkToShared('../.env')
-  symlink(getRelative('../README.md'), getRelative('../web/src/README.md'))
+  linkIfExists('../web/public/avatar.png')
+  symlink(getAbsolute('../README.md'), getAbsolute('../web/src/README.md'))
 }
