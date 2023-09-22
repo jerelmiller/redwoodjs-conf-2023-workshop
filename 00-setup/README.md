@@ -34,7 +34,7 @@ This setup guide will walk you through the prerequisites needed for the workshop
    yarn rw prisma db seed
    ```
 
-   > NOTE: If you'd like to customize the user or device information for the workshop, see the [workshop config](#workshop-config) section for more information. This should be done before running seeds.
+   > NOTE: If you'd like to customize the user or device information for the workshop, see the [workshop customization](#customize-your-workshop-app) section for more information.
 
 6. Start the app
 
@@ -42,11 +42,13 @@ This setup guide will walk you through the prerequisites needed for the workshop
 yarn rw dev
 ```
 
-If everything works as expected, you should see a home screen with the contents of this README.
+If everything works as expected, you should see a home screen with the contents of this README. You may continue these instructions in the browser or proceed to log into the app. Logging in will ensure your database is setup correctly. Once logged in, you should see a grid of albums along with the "RedwoodJS Conf 2023" playlist in the sidebar.
 
-## Workshop config
+![app.png](./web/public/app.png)
 
-You can personalize this workshop experience by modifying the workshop config. This step is not required, though highly encouraged to get the most of your experience.
+## Customize your workshop app
+
+You can personalize the workshop app by modifying the `workshop.config.toml` file at the root of this setup directory. This step is not required, though highly encouraged to get the most of your experience.
 
 This configuration allows you to set your display name, avatar, and device information used for playback.
 
