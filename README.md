@@ -25,20 +25,13 @@ The setup steps will ensure that you're able to get the app up and running. This
 
 ## Setup
 
-Like Redwood, this workshop requires [Node.js](https://nodejs.org/en/) >= 18.x and [Yarn](https://yarnpkg.com/) >= 1.15. Please ensure these versions are installed on your machine.
+> Like Redwood, this workshop requires [Node.js](https://nodejs.org/en/) >= 18.x and [Yarn](https://yarnpkg.com/) >= 1.15. Please ensure these versions are installed on your machine.
 
-To get started, clone this repo onto your machine.
-
-```sh
-git clone https://github.com/jerelmiller/redwoodjs-conf-2023-workshop.git
-```
-
-Once cloned, navigate to the [`00-setup` folder](./00-setup/) and follow the instructions in the [README.md](./00-setup/README.md) to get the app up and running.
-
-It is also highly recommended that you install [Apollo Client's Devtools](https://github.com/apollographql/apollo-client-devtools) as we will be exploring the cache quite a lot throughout the exercises.
-
-Chrome Web Store: https://chrome.google.com/webstore/detail/apollo-client-developer-t/jdkknkkbebbapilgoeccciglkfbmbnfm
-Firefox Browser Add on: https://addons.mozilla.org/firefox/addon/apollo-developer-tools/
+1. Install [Apollo Client's Devtools](https://github.com/apollographql/apollo-client-devtools) as we will be exploring the cache quite a lot throughout the exercises.
+   - [Chrome Web Store](https://chrome.google.com/webstore/detail/apollo-client-developer-t/jdkknkkbebbapilgoeccciglkfbmbnfm)
+   - [Firefox Browser Add on](https://addons.mozilla.org/firefox/addon/apollo-developer-tools/)
+2. Fork and clone the repo onto your machine. It's recommended that you add this repo as an upstream dependency so you can pull in any last minute updates.
+3. Navigate to the [`00-setup` folder](./00-setup/) and follow the instructions in the [README.md](./00-setup/README.md). This will ensure you can successfully the run app for the workshop.
 
 ## Exercise structure and philosophy
 
