@@ -6,13 +6,16 @@ In this workshop, we will be working with a scaled down version of Apollo's [Spo
 
 > **Note:** A Spotify account is not required for this workshop. The data used in this workshop is persisted to a local database.
 
-In this workshop, we will be learning more about GraphQL fragments and the Apollo cache. We will cover topics such as:
+This workshop covers 6 exercises:
 
-- Utilizing GraphQL fragments with components to declare their data needs
-- Using the cache as a state manager by using GraphQL fragments to query against the cache
-- Using type policies to declare singleton types and why this can be beneficial
+1. Using GraphQL fragments to enable components to declare their own data needs.
+2. Using GraphQL fragments to make components more reusable
+3. Querying and reacting to cache updates with the `useFragment` hook
+4. Defining type policies to enable infinite scroll
+5. Updating a list of tracks after a mutation
+6. Combining advanced type policies with `writeFragment` to cover a tricky GraphQL schema design
 
-TODO NEED TO FINISH THIS LIST
+By the end of this exercise, we should have a fully functioning Spotify app.
 
 ## Before you arrive...
 
@@ -32,11 +35,14 @@ git clone https://github.com/jerelmiller/redwoodjs-conf-2023-workshop.git
 
 Once cloned, navigate to the [`00-setup` folder](./00-setup/) and follow the instructions in the [README.md](./00-setup/README.md) to get the app up and running.
 
-TODO add note about devtools
+It is also highly recommended that you install [Apollo Client's Devtools](https://github.com/apollographql/apollo-client-devtools) as we will be exploring the cache quite a lot throughout the exercises.
 
-## Exercises
+Chrome Web Store: https://chrome.google.com/webstore/detail/apollo-client-developer-t/jdkknkkbebbapilgoeccciglkfbmbnfm
+Firefox Browser Add on: https://addons.mozilla.org/firefox/addon/apollo-developer-tools/
 
-Each exercise is designed to build on the previous one. Because this app is complex with a good number of components that make up the UI, code that we interact with throughout the exercise will be available in the `web/src/workshop` folder. You're free to browse the other components and code that make up the app, but modifying anything outside `web/src/workshop` isn't necessary to complete the exercise.
+## Exercise structure and philosophy
+
+Each exercise is designed to build on the previous one. Because this app is complex with a good number of components that make up the UI, code that we interact with throughout the exercise will be available in the `web/src/workshop` folder. You're free to browse the other components and code that make up the app, but modifying code outside `web/src/workshop` isn't necessary to complete the exercises.
 
 > **NOTE:** In earlier exercises, you might start interacting with the app in a way that feels broken (e.g. a UI element not updating quite as you expect after an interaction). This is designed that way! Throughout each exercise, we will update various of our application to "fix" these issues. By the end, we should have a functioning app that works more like you'd expect.
 
