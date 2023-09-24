@@ -65,6 +65,8 @@ const components: ReactMarkdownProps['components'] = {
     )
   },
   ol: ({ children }) => <ol className="mb-4 list-decimal pl-4">{children}</ol>,
+  ul: ({ children }) => <ol className="mb-4 list-disc pl-4">{children}</ol>,
+  li: ({ children }) => <li className="[&>pre]:mt-4">{children}</li>,
   blockquote: ({ children }) => (
     <blockquote className="mb-4 border-l-4 border-l-primary pl-4 text-muted">
       {children}
