@@ -1,10 +1,8 @@
-# Exercise 3: Querying the cache with `useFragment`
+# Congratulations 🎉
 
-TODO
+You've now completed the workshop! We started with a semi-working Spotify app and turned it into a fully functioning application 🔥🔥🔥. Use this `final` directory as a reference for all the work we've done in the workshop. You can find the completed code for every component/module we changed in the `web/src/workshop` directory.
 
-## Goal
+I hope you've learned some valuable skills to level up your use of Apollo Client in your own Redwood apps! If you have any feedback for me, please get in touch!
 
-TODO
-
-- Add `keyFields` singleton types
-- Add `useFragment` to track title
+GitHub: [@jerelmiller](https://github.com/jerelmiller)
+Twitter/X: [@jerelmiller](https://twitter.com/jerelmiller)
