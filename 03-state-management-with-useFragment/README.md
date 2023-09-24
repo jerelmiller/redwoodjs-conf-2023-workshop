@@ -29,6 +29,10 @@ We've noticed that when we begin to play a track, we have several problems in ou
 
 It should be noted that we want to avoid additional network requests for this data since we already have it in the cache, which means that we do not want convert these components to Redwood cells.
 
+By the end of this exercise, our UI should look and behave like the following:
+
+![03-final-behavior.gif](./web/public/03-final-behavior.gif)
+
 ## Exercise
 
 We will be using GraphQL fragments as a means to query the cache in this exercise. While fragments are typically part of GraphQL queries, Apollo uses them in various ways.
@@ -37,4 +41,19 @@ We will be using a new hook in Apollo Client 3.8 called [`useFragment`](https://
 
 > NOTE: For this exercise, we will not be making any of these fragments part of existing queries. In your own apps you may decide to include these fragments as a part of queries to ensure the data will exist in the cache.
 
-This exercise will also require us to learn more about [type policies](https://www.apollographql.com/docs/react/caching/cache-configuration#typepolicy-fields) and [customizing cache IDs](https://www.apollographql.com/docs/react/caching/cache-configuration#customizing-cache-ids) to pull out a normalized type.
+To keep things simple, each component in this exercise declares static variables at the top of the component that represent the dynamic data we want to query in our cache. This way you do not need to find the UI elements that make up the styles in our play/pause states. Our job is to update these variables from a static value to the value in the cache.
+
+As an example, our `PagePlayButton` looks like this:
+
+```ts
+const PagePlayButton = ({ disabled, contextUri }: PagePlayButtonProps) => {
+  // ...
+  const isPlaying = false
+  const isCurrentContext = false
+  const isPlayingInContext = isPlaying && isCurrentContext
+}
+```
+
+Here `isPlaying` and `isCurrentContext` are set to the static value `false`. We want to these values to be dynamic and bind to the values in the cache so that as the user plays/pauses playback, our UI updates accordingly. You do not need to update more than these variables in each component for the UI to function correctly.
+
+This exercise will also require us to learn more about [type policies](https://www.apollographql.com/docs/react/caching/cache-configuration#typepolicy-fields) and [customizing cache IDs](https://www.apollographql.com/docs/react/caching/cache-configuration#customizing-cache-ids) which allows us to specify how data in the cache should be represented. Apollo uses a [normalized cache](https://www.apollographql.com/docs/react/caching/overview#data-normalization) which is an important to best understand how data is stored in the cache.
