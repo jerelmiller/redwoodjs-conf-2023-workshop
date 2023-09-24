@@ -37,8 +37,6 @@ We will be using Apollo's recommended approach to [colocating fragments](https:/
 
 > NOTE: This workshop will not be using Apollo's [fragment registry](https://www.apollographql.com/docs/react/data/fragments#registering-named-fragments-using-createfragmentregistry) for fragment registration, which provide a bit nicer developer experience. I encourage you to explore this utility yourself. Be on the lookout for some announcements from the Redwood team sometime soon in this regard 🙂.
 
-### Creating a fragment for a component
-
 We will start by adding a fragment to a component by creating a `fragments` static property on the component itself. Its value will be an object which will allow us to add named properties for each fragment definition.
 
 ```ts
