@@ -40,6 +40,7 @@ We will be using Apollo's recommended approach to [colocating fragments](https:/
 We will start by adding a fragment to a component by creating a `fragments` static property on the component itself. Its value will be an object which will allow us to add named properties for each fragment definition.
 
 ```ts
+// PlayControlCell.tsx
 const PlayControlCell = () => {
   // JSX
 }
@@ -52,13 +53,14 @@ Now we can start adding fragment definitions to this component using the `gql` f
 In this example, we want some data for the `PlaybackState` type in our component. We are first going to add a prop named `playbackState` that will receieve the data. We will also add a `playbackState` key to the `fragments` object with a value equal to an empty `gql` function. We will be declaring our fragment definition in the next step.
 
 ```ts
+// PlayControlCell.tsx
 interface PlayControlCellProps {
   // playbackState is nullable so we want to account for that and handle the fallback.
   // Note also that the type matches the name of our fragment.
   playbackState: PlayControlCell_playbackState | null | undefined
 }
 
-const PlayControlCell = ({ playbackState }) => {
+const PlayControlCell = ({ playbackState }: PlayControlCellProps) => {
   // JSX
 }
 
@@ -88,7 +90,7 @@ With the fragment definition in place, its time to add it our our query. Open up
 > NOTE: It is ok to remove the `__typename` field. This was included as a starting point to demonstrate the request waterfall.
 
 ```ts
-// PlaybarCell.ts
+// PlaybarCell.tsx
 export const QUERY = gql`
   query PlaybarQuery {
     me {
@@ -108,8 +110,8 @@ Notice here how the naming convention makes it easy to determine which component
 
 With that in place, we now need to make sure to pass this data to the component.
 
-```ts
-// PlaybarCell.ts
+```tsx
+// PlaybarCell.tsx
 export const Success = ({
   me,
 }: CellSuccessProps<PlaybarQuery, PlaybarQueryVariables>) => {
