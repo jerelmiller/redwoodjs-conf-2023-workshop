@@ -2,6 +2,8 @@ import { ComponentPropsWithoutRef } from 'react'
 
 import ReactMarkdown from 'react-markdown'
 
+import { Link } from '@redwoodjs/router'
+
 type ReactMarkdownProps = ComponentPropsWithoutRef<typeof ReactMarkdown>
 
 interface MarkdownProps {
@@ -14,15 +16,39 @@ const Markdown = ({ children }: MarkdownProps) => {
 
 const components: ReactMarkdownProps['components'] = {
   h1: ({ children }) => <h1 className="mb-8 text-5xl">{children}</h1>,
-  h2: ({ children }) => <h1 className="mb-4 text-4xl">{children}</h1>,
-  h3: ({ children }) => <h1 className="mb-4 text-3xl">{children}</h1>,
+  h2: ({ children }) => (
+    <h1 className="mb-4 mt-6 text-3xl first:mt-0">{children}</h1>
+  ),
+  h3: ({ children }) => <h1 className="mb-4 text-2xl">{children}</h1>,
   p: ({ children }) => <p className="mb-4 last:mb-0">{children}</p>,
   pre: ({ children }) => children,
-  a: ({ children, ...props }) => (
-    <a {...props} target="_blank" className="text-theme-light underline">
-      {children}
-    </a>
+  img: ({ src, ...props }) => (
+    // eslint-disable-next-line jsx-a11y/alt-text
+    <img src={src?.replace('./web/public', '')} {...props} />
   ),
+  a: ({ children, href, ...props }) => {
+    const to = href?.replace(window.location.origin, '') ?? ''
+
+    if (to.match(/^http/)) {
+      return (
+        <a
+          {...props}
+          href={href}
+          target="_blank"
+          rel="noreferrer"
+          className="text-theme-light underline"
+        >
+          {children}
+        </a>
+      )
+    }
+
+    return (
+      <Link to={to} className="text-theme-light underline">
+        {children}
+      </Link>
+    )
+  },
   code: ({ children, inline }) => {
     if (inline) {
       return (
@@ -38,6 +64,12 @@ const components: ReactMarkdownProps['components'] = {
       </pre>
     )
   },
+  ol: ({ children }) => <ol className="mb-4 list-decimal pl-4">{children}</ol>,
+  blockquote: ({ children }) => (
+    <blockquote className="mb-4 border-l-4 border-l-primary pl-4 text-muted">
+      {children}
+    </blockquote>
+  ),
 }
 
 export default Markdown
