@@ -133,6 +133,7 @@ export const Success = ({
   const resumePlayback = useResumePlaybackMutation()
   const pageInfo = me.tracks?.pageInfo
   const totalTracks = pageInfo?.total ?? 0
+  const trackEdges = me.tracks?.edges ?? []
 
   return (
     <PageContainer bgColor="#1F3363">
@@ -160,7 +161,7 @@ export const Success = ({
             contextUri={CONTEXT_URI}
           />
         </div>
-        {totalTracks > 0 ? (
+        {trackEdges.length > 0 ? (
           <Table>
             <TableHead>
               <TableHeader alignText="right">#</TableHeader>
@@ -173,7 +174,7 @@ export const Success = ({
               </TableHeader>
             </TableHead>
             <TableBody>
-              {me.tracks?.edges.map(({ addedAt, node: track }, index) => {
+              {trackEdges.map(({ addedAt, node: track }, index) => {
                 return (
                   <TableRow
                     key={track.id}
