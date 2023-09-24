@@ -29,7 +29,7 @@ You will be working in the [`web/src/workshop/components`](https://github.com/je
 
 Convert each these cells into a component that declares a fragment, then add that fragment to the `PlaybarQuery` in `PlaybarCell`. Don't forget to pass the data from `PlaybarCell` to the updated component!
 
-**DO NOT WORRY** if you are unable to convert all of the components before we move onto the next exercise. The number of components to convert for this exercise is for repetition and practice with this technique. If you do finish within the time limit, note therea are a few more components in `web/src/components` that are not in the `workshop` folder. Feel free to convert these as well for extra practice.
+**DO NOT WORRY** if you are unable to convert all of the components before we move onto the next exercise. The number of components to convert for this exercise is for repetition and practice with this technique. If you do finish within the time limit, note there are a few more components in `web/src/components` that are not in the `workshop` folder. Feel free to convert these as well for extra practice.
 
 ## Step-by-step
 
