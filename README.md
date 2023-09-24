@@ -30,8 +30,13 @@ The setup steps will ensure that you're able to get the app up and running. This
 1. Install [Apollo Client's Devtools](https://github.com/apollographql/apollo-client-devtools) as we will be exploring the cache quite a lot throughout the exercises.
    - [Chrome Web Store](https://chrome.google.com/webstore/detail/apollo-client-developer-t/jdkknkkbebbapilgoeccciglkfbmbnfm)
    - [Firefox Browser Add on](https://addons.mozilla.org/firefox/addon/apollo-developer-tools/)
-2. Fork and clone the repo onto your machine. It's recommended that you add this repo as an upstream dependency so you can pull in any last minute updates.
-3. Navigate to the [`00-setup` folder](./00-setup/) and follow the instructions in the [README.md](./00-setup/README.md). This will ensure you can successfully the run app for the workshop.
+2. (optional) Install GraphQL Network Inspector which makes it easier to view GraphQL requests and their operation names. This is not required but highly encouraged.
+
+   - [Chrome Web Store](https://chrome.google.com/webstore/detail/graphql-network-inspector/ndlbedplllcgconngcnfmkadhokfaaln)
+   - [Firefox Browser Add on](https://addons.mozilla.org/en-US/firefox/addon/graphql-network-inspector/)
+
+3. Fork and clone the repo onto your machine. It's recommended that you add this repo as an upstream dependency so you can pull in any last minute updates.
+4. Navigate to the [`00-setup` folder](./00-setup/) and follow the instructions in the [README.md](./00-setup/README.md). This will ensure you can successfully the run app for the workshop.
 
 ## Exercise structure and philosophy
 
