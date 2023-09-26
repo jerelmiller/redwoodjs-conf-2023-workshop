@@ -66,6 +66,11 @@ export const typePolicies: TypePolicies = {
         keyArgs: false,
         read: (value, { args, storage }) => {
           const ids: string[] = args?.ids ?? []
+          const incomplete = ids.some((id) => storage.contains?.get(id) == null)
+
+          if (incomplete) {
+            return
+          }
 
           return ids.map((id) => storage.contains?.get(id))
         },
