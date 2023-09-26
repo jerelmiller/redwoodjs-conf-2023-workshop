@@ -27,8 +27,10 @@ By the end of this exercise, our app should behave like the following:
 
 ## Exercise
 
-In this exercise, we will be adding both `read` and `merge` functions to our type policy that will allow us to read and write the data for this field.
+In this exercise, we will be adding both [`read`](https://www.apollographql.com/docs/react/caching/cache-field-behavior#the-read-function) and [`merge`](https://www.apollographql.com/docs/react/caching/cache-field-behavior#the-merge-function) functions to our type policy that will allow us to add some custom logic both when we write data to the cache and when we read from it.
 
-Our schema however is designed a bit oddly which makes caching this data tricky. Our schema contains a `tracksContains` field on the `CurrentUser` type which takes an array of IDs as an argument and returns an array of booleans. As we've learned with `keyFields`, by default Apollo will cache each combination of arguments separately in the cache. If we wanted to ask our cache if a specific track is liked, leaving it this way means we have to know the exact set of IDs used to query for the booleans.
+In this exercise, we will work with a uniquely designed field in our GraphQL schema. Due to its design, caching data on it is a bit tricky.
 
-We could set `keyArgs` to false, but doing so means that as I load different lists of IDs, the data gets overwritten. Worse yet, we have no way to know which boolean value corresponds to which ID.
+Our schema contains a `tracksContains` field on the `CurrentUser` type which takes an array of IDs as an argument and returns an array of booleans. This is used to look up a set of tracks to determine whether they are saved to the user's library or not. As we've learned with `keyFields`, Apollo will cache each combination of arguments separately by default in the cache.
+
+We will explore ways to utilize our cache despite the schema design to ensure we can properly associate the track IDs to the right boolean value.

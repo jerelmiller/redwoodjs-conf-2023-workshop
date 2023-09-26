@@ -30,3 +30,7 @@ By the end of this exercise, our app should behave like the following:
 ## Exercise
 
 In this exercise, we will be modifying mutations to manually write data to the cache when the mutation finishes. When adding a song to our liked songs page, we'd like the song to appear at the top of our list. Removing a liked song should immediately remove it from the list.
+
+In this exercise, we will make use of the Apollo Client [cache write APIs](https://www.apollographql.com/docs/react/caching/cache-interaction). Once our mutation is executed, we will need to interact with the cache to tell it how to add or remove saved tracks.
+
+You can find the saved tracks under the `CurrentUser` type's `tracks` field. This exercise will require us to modify this field to properly add or remove a track, depending on which mutation was executed.

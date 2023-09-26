@@ -29,4 +29,10 @@ By the end of this exercise, our UI should behave like the following:
 
 ## Exercise
 
-We will be working exclusively with type policies in this exercise. We need to adjust our cache settings so that as we fetch more tracks, the newly loaded tracks are concatented with the list of already loaded tracks.
+We will be working exclusively with [type policies](https://www.apollographql.com/docs/react/caching/cache-configuration#typepolicy-fields) in this exercise. We will need to adjust our cache settings so that as we fetch more tracks, the newly loaded tracks are concatented with the list of already loaded tracks. We can accomplish this through the use of a [merge function](https://www.apollographql.com/docs/react/caching/cache-field-behavior#the-merge-function) which gives us absolute control over how the data is written to the cache.
+
+You can find the type policies in `web/src/workshop/apollo/typePolicies.ts`.
+
+> NOTE: These type policies have been added to the `<RedwoodApolloProvider />` component in [`web/src/App.tsx`](./web/src/App.tsx). If you were adding type policies to your own app, this is where you'd add them.
+
+For this exercise, we will be working with 2 different GraphQL types and their fields. You can find the list of saved tracks under the `CurrentUser` type's `tracks` field. For a playlist, you can find the list of it's tracks under the `Playlist` type's `tracks` field.
