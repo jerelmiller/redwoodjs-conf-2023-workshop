@@ -1,4 +1,3 @@
-import { TypedDocumentNode } from '@apollo/client'
 import {
   SaveTrackInput,
   SaveTrackMutation,
@@ -10,10 +9,7 @@ import { useMutation } from '@redwoodjs/web'
 
 import NotificationManager from 'src/components/NotificationManager'
 
-const SAVE_TRACK_MUTATION: TypedDocumentNode<
-  SaveTrackMutation,
-  SaveTrackMutationVariables
-> = gql`
+const SAVE_TRACK_MUTATION = gql`
   mutation SaveTrackMutation($input: SaveTrackInput!) {
     saveTrack(input: $input) {
       addedAt
