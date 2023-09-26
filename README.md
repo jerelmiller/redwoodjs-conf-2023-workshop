@@ -75,3 +75,19 @@ yarn rw exec reset
 > ```
 >
 > Resetting your database in full may require you to login to the app in the exercise again to reset cookies. Visit http://localhost:8910/logout to log out of the app to clear cookies, then log in again.
+
+### GraphiQL
+
+You will be able to use GraphiQL to explore the schema, but if you want to query against authenticated fields, you will need to add the necessary headers to GraphiQL.
+
+In the "Headers" section of the GraphiQL interface, copy the following JSON value:
+
+```json
+{
+  "auth-provider": "custom-auth",
+  "cookie": "session=<use browser devtools>",
+  "authorization": "Bearer <your user id>"
+}
+```
+
+You will need to replace the `cookie` and `authorization` values with the values from your browser's devtools. You can find the value of both of these headers for any GraphQL request from the app.
