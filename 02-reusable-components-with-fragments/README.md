@@ -39,7 +39,7 @@ Like the first exercise, these components can be found in the `web/src/workshop/
 
 ### `<TrackTitleTableCell />`
 
-This component is rendered on the [playlist page](http://localhost:8910/playlists/6dct72C91vKsJtsznrCAm3), [album page](http://localhost:8910/albums/151w1FgRZfnKZA9FEcg9Z3), and [liked songs page](http://localhost:8910/collection/tracks). We can use the [`<ExplicitBadge />`](https://github.com/jerelmiller/redwoodjs-conf-2023-workshop/blob/main/02-reusable-components-with-fragments/web/src/components/ExplicitBadge/ExplicitBadge.tsx) component to denote the track as explicit.
+This component is rendered on the [playlist page](http://localhost:8910/playlists/6dct72C91vKsJtsznrCAm3), [album page](http://localhost:8910/albums/151w1FgRZfnKZA9FEcg9Z3), and [liked songs page](http://localhost:8910/collection/tracks). We will be using the [`<ExplicitBadge />`](https://github.com/jerelmiller/redwoodjs-conf-2023-workshop/blob/main/02-reusable-components-with-fragments/web/src/components/ExplicitBadge/ExplicitBadge.tsx) component to denote whether the track is explicit or not.
 
 ### `<AlbumTile />`
 
