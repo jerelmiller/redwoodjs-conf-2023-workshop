@@ -2,6 +2,7 @@ import { routes } from '@redwoodjs/router'
 
 import MediaTile from 'src/components/MediaTile'
 import MediaTileCoverPhoto from 'src/components/MediaTileCoverPhoto'
+import MediaTileDetails from 'src/components/MediaTileDetails/MediaTileDetails'
 import MediaTileTitle from 'src/components/MediaTileTitle'
 
 interface Album {
@@ -20,6 +21,10 @@ const AlbumTile = ({ album }: AlbumTileProps) => {
       <MediaTileCoverPhoto image={album.images[0]} />
       <div className="flex flex-col">
         <MediaTileTitle>{album.name}</MediaTileTitle>
+        <MediaTileDetails>
+          {/* Add the media details here. */}
+          {/* Be sure to wrap each chunk of text in a `<span />` */}
+        </MediaTileDetails>
       </div>
     </MediaTile>
   )
