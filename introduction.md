@@ -17,6 +17,10 @@ Each exercise in this workshop is contained in its own folder starting with a nu
    yarn rw dev
    ```
 
+## App
+
+We will be working with a scaled down version of Apollo's [Spotify Showcase](https://github.com/apollographql/spotify-showcase) built with Redwood. When you start up the app after setup and start clicking around, you'll notice that it mostly works, but has some bugs and improvements that can be made. Each exercise will start addressing each of these issues. By the time we are done, we should have a fully functioning Spotify app!
+
 ## Schema
 
 ### Current user
