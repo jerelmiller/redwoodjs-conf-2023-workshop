@@ -37,13 +37,21 @@ Using what we've learned from the first exercise, let's update our components to
 
 Like the first exercise, these components can be found in the `web/src/workshop/components` directory. This directory contains the 2 components that we will be working with in this exercise.
 
+### `<TrackTitleTableCell />`
+
+This component is rendered on the [playlist page](http://localhost:8910/playlists/6dct72C91vKsJtsznrCAm3), [album page](http://localhost:8910/albums/151w1FgRZfnKZA9FEcg9Z3), and [liked songs page](http://localhost:8910/collection/tracks). We can use the [`<ExplicitBadge />`](https://github.com/jerelmiller/redwoodjs-conf-2023-workshop/blob/main/02-reusable-components-with-fragments/web/src/components/ExplicitBadge/ExplicitBadge.tsx) component to denote the track as explicit.
+
 ### `<AlbumTile />`
 
-This component is rendered on both the [home page](http://localhost:8910/) and the [artist page](http://localhost:8910/artists/06HL4z0CvFAxyc27GXpf02). We can use some pre-built components and utilities to nicely format the album details under the title.
+This component is rendered on both the [home page](http://localhost:8910/) and the [artist page](http://localhost:8910/artists/06HL4z0CvFAxyc27GXpf02). We can use some pre-built components and utilities to display both the release date and album type in our component.
 
-- [`<MediaTileDetails />`](https://github.com/jerelmiller/redwoodjs-conf-2023-workshop/blob/main/02-reusable-components-with-fragments/web/src/components/MediaTileDetails/MediaTileDetails.tsx) - Accepts a `children` prop and renders the nice delimeter between each detail
-- [`<ReleaseDate />`](https://github.com/jerelmiller/redwoodjs-conf-2023-workshop/blob/main/02-reusable-components-with-fragments/web/src/components/ReleaseDate/ReleaseDate.tsx) - Parses and formats a `ReleaseDate` type in our GraphQL schema.
-- [`capitalize`](https://github.com/jerelmiller/redwoodjs-conf-2023-workshop/blob/43960a1576d08fc44c67171d004827db2567523c/02-reusable-components-with-fragments/web/src/utils/string.ts#L1-L2) - We can use this to nicely display the album type in the tile.
+**Release date**
+
+Use the [`<ReleaseDate />`](https://github.com/jerelmiller/redwoodjs-conf-2023-workshop/blob/main/02-reusable-components-with-fragments/web/src/components/ReleaseDate/ReleaseDate.tsx) component. This accepts a `ReleaseDate` object type from the schema, queried from the `releaseDate` field on an `Album`, and nicely formats it.
+
+**Album type**
+
+`albumType` is a field on the `Album` type in the schema. This is a GraphQL enum, which will be all uppercase. To nicely format, you can use the [`capitalize`](https://github.com/jerelmiller/redwoodjs-conf-2023-workshop/blob/43960a1576d08fc44c67171d004827db2567523c/02-reusable-components-with-fragments/web/src/utils/string.ts#L1-L2) utility to nicely display the album type in the tile.
 
 When finished, our details JSX should resemble the following:
 
@@ -64,8 +72,4 @@ const AlbumTile = ({ album }) => {
 }
 ```
 
-As extra credit, feel free to add or change album details displayed on the album tile to customize the information to play around with this pattern.
-
-### `<TrackTitleTableCell />`
-
-This component is rendered on the [playlist page](http://localhost:8910/playlists/6dct72C91vKsJtsznrCAm3), [album page](http://localhost:8910/albums/151w1FgRZfnKZA9FEcg9Z3), and [liked songs page](http://localhost:8910/collection/tracks). We can use the [`<ExplicitBadge />`](https://github.com/jerelmiller/redwoodjs-conf-2023-workshop/blob/main/02-reusable-components-with-fragments/web/src/components/ExplicitBadge/ExplicitBadge.tsx) component to denote the track as explicit.
+As extra credit, feel free to add or change album details displayed on the album tile to customize the displayed information. This gives you an opportunity to practice with this pattern.
