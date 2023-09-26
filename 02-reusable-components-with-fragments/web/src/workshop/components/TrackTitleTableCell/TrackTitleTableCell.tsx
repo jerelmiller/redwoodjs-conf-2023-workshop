@@ -2,8 +2,7 @@ import { Link, routes } from '@redwoodjs/router'
 
 import CoverPhoto from 'src/components/CoverPhoto'
 import DelimitedList from 'src/components/DelimitedList'
-// Use the ExplicitBadge component to mark the track as explicit
-// import ExplicitBadge from 'src/components/ExplicitBadge'
+import ExplicitBadge from 'src/components/ExplicitBadge'
 import TableCell from 'src/components/TableCell'
 
 interface Track {
@@ -23,6 +22,8 @@ const TrackTitleTableCell = ({
   includeCoverPhoto = true,
   track,
 }: TrackTitleTableCellProps) => {
+  const explicit = false
+
   return (
     <TableCell>
       <div className="flex items-end gap-2">
@@ -38,6 +39,7 @@ const TrackTitleTableCell = ({
             {track.name}
           </span>
           <div className="flex items-center gap-2">
+            {explicit && <ExplicitBadge />}
             <span className="text-muted">
               <DelimitedList delimiter=", ">
                 {track.artists.map((artist) => (
