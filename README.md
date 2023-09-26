@@ -1,9 +1,5 @@
 # RedwoodJS Conf 2023 Apollo Client Workshop
 
-https://bit.ly/rw-apollo-workshop
-
-<img src="./assets/code.png" alt="code.png" width="200" />
-
 Welcome to the RedwoodJS Conf 2023 Apollo Client Workshop!
 
 In this workshop, we will be working with a scaled down version of Apollo's [Spotify Showcase](https://github.com/apollographql/spotify-showcase) built with Redwood. This app should provide enough complexity to get a more "real world" feel for the kinds of situations you may find yourself in with your own apps.
