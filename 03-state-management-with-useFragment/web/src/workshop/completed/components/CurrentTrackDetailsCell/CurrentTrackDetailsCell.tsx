@@ -5,7 +5,6 @@ import { Link, routes } from '@redwoodjs/router'
 import CoverPhoto from 'src/components/CoverPhoto'
 import DelimitedList from 'src/components/DelimitedList'
 import LikeButton from 'src/components/LikeButton'
-import { useContainsSavedTracks } from 'src/hooks/useContainsSavedTracks'
 import { useRemoveSavedTrackMutation } from 'src/mutations/useRemoveSavedTrackMutation'
 import { useSaveTrackMutation } from 'src/mutations/useSaveTrackMutation'
 
@@ -16,7 +15,9 @@ interface CurrentTrackDetailsCellProps {
 const CurrentTrackDetailsCell = ({ track }: CurrentTrackDetailsCellProps) => {
   const saveTrack = useSaveTrackMutation()
   const removeSavedTrack = useRemoveSavedTrackMutation()
-  const contains = useContainsSavedTracks(track ? [track.id] : [])
+  // Don't use useContainsSavedTracks for this exercise to better illustrate
+  // playback state
+  const contains = new Map()
   const liked = track ? contains.get(track.id) ?? false : false
 
   return (

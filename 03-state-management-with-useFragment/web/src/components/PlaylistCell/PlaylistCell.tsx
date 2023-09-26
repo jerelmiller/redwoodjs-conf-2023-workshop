@@ -26,7 +26,6 @@ import TableCell from 'src/components/TableCell'
 import TableHead from 'src/components/TableHead'
 import TableHeader from 'src/components/TableHeader'
 import TableRow from 'src/components/TableRow'
-import { useContainsSavedTracks } from 'src/hooks/useContainsSavedTracks'
 import { useResumePlaybackMutation } from 'src/mutations/useResumePlaybackMutation'
 import PagePlayButton from 'src/workshop/components/PagePlayButton'
 import TrackNumberTableCell from 'src/workshop/components/TrackNumberTableCell'
@@ -141,9 +140,9 @@ export const Success = ({
   queryResult,
 }: CellSuccessProps<FindPlaylistQuery, FindPlaylistQueryVariables>) => {
   const resumePlayback = useResumePlaybackMutation()
-  const tracksContains = useContainsSavedTracks(
-    playlist.tracks.edges.map((edge) => edge.track.id)
-  )
+  // Don't use useContainsSavedTracks for this exercise to better illustrate
+  // playback state
+  const tracksContains = new Map()
   const { pageInfo } = playlist.tracks
   const totalTracks = pageInfo.total
   const coverPhoto = playlist.images[0]
